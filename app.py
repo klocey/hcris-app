@@ -41,10 +41,9 @@ gendat_df = pd.read_pickle('dataframe_data/GenDat4App.pkl')
 gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'NaN')
 gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'NaN')
 
-#print(list(gendat_df))
-#print(gendat_df.shape)
 
 ######################## SELECTION LISTS #####################################
+
 
 HOSPITALS = gendat_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')].tolist()
 beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].tolist()
@@ -52,15 +51,8 @@ states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_
 htypes = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].tolist()
 ctypes = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].tolist()
 
-#htypes = list(filter(lambda x: str(x) not in ['nan', np.nan], htypes))
-#ctypes = list(filter(lambda x: str(x) not in ['nan', np.nan], ctypes))
-
 htypes = ['NaN' if x is np.nan else x for x in htypes]
 ctypes = ['NaN' if x is np.nan else x for x in ctypes]
-
-#print(list(set(htypes)))
-#print(list(set(ctypes)))
-#print(len(htypes), len(ctypes), len(beds), len(HOSPITALS))
 
 HOSPITALS, beds, states, htypes, ctypes = (list(t) for t in zip(*sorted(zip(HOSPITALS, beds, states, htypes, ctypes))))
 HOSPITALS_SET = sorted(list(set(HOSPITALS)))
@@ -81,14 +73,14 @@ sub_categories.sort()
 
 breakdown_categories = ['TRIAL BALANCE OF EXPENSE ACCOUNTS',
                         'COMPUTATION OF INPATIENT OPERATING COSTS',
-                        #'COMPUTATION OF COST OF COST TO CHARGE RATIOS',
+                        'COMPUTATION OF COST OF COST TO CHARGE RATIOS',
                         'COST ALLOCATION',
                         ]
 url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/1125SIRFRANCISDRAKEOPERATINGCO(052043).csv'
-#main_df = cp.load(urlopen(url)) 
+
 main_df = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
 main_df = pd.DataFrame(columns = main_df.columns)
-#print(list(main_df))
+
 
 ################# DASH APP CONTROL FUNCTIONS #################################
 
