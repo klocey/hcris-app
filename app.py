@@ -37,7 +37,7 @@ app.config.suppress_callback_exceptions = True
 
 
 gendat_df = pd.read_pickle('dataframe_data/GenDat4App.pkl')
-
+ 
 gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'NaN')
 gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'NaN')
 
@@ -79,9 +79,6 @@ main_df = pd.DataFrame(columns = main_df.columns)
 ################# DASH APP CONTROL FUNCTIONS #################################
 
 def obs_pred_rsquare(obs, pred):
-    # Determines the prop of variability in a data set accounted for by a model
-    # In other words, this determines the proportion of variation explained by
-    # the 1:1 line in an observed-predicted plot.
     return 1 - sum((obs - pred) ** 2) / sum((obs - np.mean(obs)) ** 2)
 
 
