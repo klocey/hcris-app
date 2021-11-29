@@ -70,12 +70,6 @@ with open('dataframe_data/sub_categories.csv', newline='') as csvfile:
         sub_categories = row
 sub_categories.sort()
 
-
-breakdown_categories = ['TRIAL BALANCE OF EXPENSE ACCOUNTS',
-                        'COMPUTATION OF INPATIENT OPERATING COSTS',
-                        'COMPUTATION OF COST OF COST TO CHARGE RATIOS',
-                        'COST ALLOCATION',
-                        ]
 url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/1125SIRFRANCISDRAKEOPERATINGCO(052043).csv'
 
 main_df = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
@@ -118,15 +112,15 @@ def description_card2():
     return html.Div(
         id="description-card2",
         children=[
-            html.H5("Healthcare financial insights", style={
+            html.H5("Insights into Healthcare Cost Reports", style={
             'textAlign': 'left',
         }),
            html.P(" Dive into healthcare provider financial reports." +
                   " This app combines data from the Healthcare Cost Report Information System (HCRIS)" +
                   " with additional data from the Centers for Medicare & Medicaid Services (CMS)." +
                   " Until now, using these data meant tackling complex datasets with expensive software." +
-                  " This demo allows you to explore 70+ variables from 5 select healthcare providers." +
-                  " The full version will allow you to explore 2,000+ variables from 9,000+ providers.", style={
+                  " This app allows you to explore 2,000+ variables from over 9,000+ hospitals.",
+                  style={
             'textAlign': 'left',
         }), 
         ],
@@ -217,7 +211,7 @@ def generate_control_card1():
                 id="categories-select1",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=60,
+                optionHeight=70,
                 style={
                     #'width': '320px', 
                     'font-size': "90%",
@@ -292,7 +286,7 @@ def generate_control_card3():
                 id="categories-select2",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=60,
+                optionHeight=70,
                 style={
                     'width': '250px', 
                     'font-size': "90%",
@@ -308,7 +302,7 @@ def generate_control_card3():
                 id="categories-select22",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=60,
+                optionHeight=70,
                 style={
                     'width': '250px', 
                     'font-size': "90%",
@@ -327,7 +321,7 @@ def generate_control_card3():
                 id="categories-select2-2",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=60,
+                optionHeight=70,
                 style={
                     'width': '250px', 
                     'font-size': "90%",
@@ -343,7 +337,7 @@ def generate_control_card3():
                 id="categories-select22-2",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=60,
+                optionHeight=70,
                 style={
                     'width': '250px', 
                     'font-size': "90%",
@@ -418,9 +412,9 @@ def generate_control_card5():
             html.P("Select a category"),
             dcc.Dropdown(
                 id="categories-select2-3",
-                options=[{"label": i, "value": i} for i in breakdown_categories],
+                options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=60,
+                optionHeight=70,
                 style={
                     'width': '250px', 
                     'font-size': "90%",
@@ -487,10 +481,6 @@ def table1(hospitals2, var1, var2):
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
         new_df = pd.concat([new_df, tdf])
         
-        #print(new_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')])
-        
-    #new_df = main_df[main_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')].isin(hospitals2)]
-    
     var3 = re.sub(r'\([^)]*\)', '', var2)
     var3 = var1 + ': ' + var3,
     
@@ -581,8 +571,6 @@ def cost_report_plot1(hospitals2, var1, var2):
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
         new_df = pd.concat([new_df, tdf])
         
-        #print(new_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')])
-    
     fig_data = []
     for i, hospital in enumerate(hospitals2):
             
@@ -678,7 +666,6 @@ def cost_report_plot1(hospitals2, var1, var2):
 
 def cost_report_plot2(hospitals2, var1, var2):
     
-    #print('cost report plot 2 func, hospitals: ', hospitals2)
     if isinstance(hospitals2, str) == True:
         hospitals2 = [hospitals2]
 
@@ -735,8 +722,7 @@ def cost_report_plot2(hospitals2, var1, var2):
     new_df = new_df[new_df['Num and Name'].isin(hospitals2)]
 
     del main_df2
-    #print(list(set(new_df['Num and Name'].tolist()))) 
-
+    
     fig_data = []
     new_df['years'] = pd.to_datetime(new_df['Fiscal Year End Date']).dt.year
     years = list(set(new_df['years'].tolist()))
@@ -859,8 +845,6 @@ def cost_report_plot3(hospital, xvar1, xvar2, yvar1, yvar2, trendline):
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
         new_df = pd.concat([new_df, tdf])
         
-        #print(new_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')])
-    
     fig_data = []
     
     x = new_df.iloc[:, 
@@ -1050,19 +1034,16 @@ def cost_report_plot4(hospital, var1):
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
         sub_df = pd.concat([sub_df, tdf])
         
-        #print(new_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')])
-    
-    
+        
     sub_df1 = sub_df.iloc[:, sub_df.columns.get_level_values(2) == var1]
     sub_df1 = sub_df1.droplevel([0,1,2], axis=1).reset_index()
     
     dates = sub_df[('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')].tolist()
     
     sub_df1['Fiscal Year End Date'] = list(dates)
-    
+    sub_df1.dropna(how='any', axis=1, inplace=True)
     
     fig_data = []
-    
     col_list = list(sub_df1)
     col_list = col_list[1:-1]
     
@@ -1071,6 +1052,7 @@ def cost_report_plot4(hospital, var1):
             go.Bar(
             x = sub_df1['Fiscal Year End Date'],
             y = sub_df1[c],
+            hovertext=c,
             name=c,
             #marker_color='#99ccff',
             )
@@ -1120,16 +1102,13 @@ def cost_report_plot4(hospital, var1):
         ),
     )
     
-    ypos = 0
-    if var1 == 'TRIAL BALANCE OF EXPENSE ACCOUNTS': ypos = -0.9
-    elif var1 == 'COMPUTATION OF INPATIENT OPERATING COSTS': ypos = -0.9
-    elif var1 == 'COST ALLOCATION': ypos = -0.9
-    
+    ypos = -0.1
     figure.update_layout(
         legend=dict(
             orientation = "h",
             y = ypos,
-            yanchor = 'bottom',
+            yanchor = "top",
+            xanchor="left",
             traceorder = "normal",
             font = dict(
                 size = 10,
@@ -1204,9 +1183,6 @@ def map1(hospitals2, var1, var2):
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
         new_df = pd.concat([new_df, tdf])
         
-        #print(new_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')])
-    
-    
     figure = go.Figure()
     
     figure.add_trace(go.Scattermapbox(
@@ -1259,7 +1235,7 @@ app.layout = html.Div([
     dcc.Tabs([
         
         
-        dcc.Tab(label='Cost Reports Across Providers',
+        dcc.Tab(label='Cost Reports Across Hospitals',
         children=[
         
         # Banner
@@ -1315,7 +1291,7 @@ app.layout = html.Div([
                     id="des1",
                     className="mini_container",
                     style={
-                        'width': '45%',
+                        'width': '35%',
                         'display': 'inline-block',
                         #'border-radius': '0px',
                         #'box-shadow': '1px 1px 1px grey',
@@ -1323,40 +1299,26 @@ app.layout = html.Div([
                         #'padding': '0px',
                         #'margin-right': '0px',
                         #'margin-bottom': '10px',
-                        'fontSize':14,
-                        'textAlign': 'center',
-                        },
-                    ),
-                
-                html.Div(
-                    [html.B(id="text2", style={'fontSize':16},),
-                     html.H6(id="text3", style={'fontSize':16},)],
-                    id="des2",
-                    className="mini_container",
-                    style={
-                        'width': '52%',
-                        'display': 'inline-block',
-                        #'border-radius': '0px',
-                        #'box-shadow': '1px 1px 1px grey',
-                        #'background-color': '#f0f0f0',
-                        #'padding': '0px',
-                        #'margin-right': '0px',
-                        #'margin-bottom': '10px',
-                        'fontSize':14,
+                        'fontSize':16,
                         'textAlign': 'center',
                         },
                     ),
                     
                 html.Div(
-                    [html.A('Download the full cost reports for the selected hospitals in a CSV file', id='data_link', download="HCRIS_data_full.csv",
+                    [html.B('Download the full cost reports for the selected hospitals', style={'fontSize':16}),
+                     html.Br(),
+                     html.A('Cost_Reports_Full.csv',
+                            id='data_link', download="Cost_Reports_Full.csv",
                         href="",
                         target="_blank",
+                        style={'fontSize':16}
                         ),
+                     html.Br(),
                         ],
                     id="des3",
                     className="mini_container",
                     style={
-                        'width': '100%',
+                        'width': '62%',
                         'display': 'inline-block',
                         #'border-radius': '0px',
                         #'box-shadow': '1px 1px 1px grey',
@@ -1364,7 +1326,7 @@ app.layout = html.Div([
                         #'padding': '0px',
                         #'margin-right': '0px',
                         #'margin-bottom': '10px',
-                        'fontSize':14,
+                        'fontSize':16,
                         'textAlign': 'center',
                         },
                     ),
@@ -1713,7 +1675,6 @@ def update_table1(hospitals2, var1, var2, states_val, beds_val, htype_vals, ctyp
     )
 def update_cost_report_plot1(hospitals2, var1, var2, states_val, beds_val, htype_vals, ctype_vals):
     
-    #print('cost report plot 1, hospitals: ', hospitals2)
     low, high = beds_val
     h3 = []
     
@@ -1758,7 +1719,6 @@ def update_cost_report_plot1(hospitals2, var1, var2, states_val, beds_val, htype
     )
 def update_cost_report_plot2(hospitals2, var1, var2, states_val, beds_val, htype_vals, ctype_vals):
     
-    #print('cost report plot 2, hospitals: ', hospitals2)
     low, high = beds_val
     h3 = []
     
@@ -1800,7 +1760,6 @@ def update_cost_report_plot2(hospitals2, var1, var2, states_val, beds_val, htype
      ],
     )
 def update_output5(hospital):
-    print('hospital: ', hospital)
     if hospital == None:
         hospital = HOSPITALS[0]
     h = [hospital]
@@ -1876,7 +1835,6 @@ def update_output10(available_options):
      ],
     )
 def update_cost_report_plot3(hospital, xvar1, xvar2, yvar1, yvar2, trendline):
-    #print('cost_report_plot3: ', hospital)
     return cost_report_plot3(hospital, xvar1, xvar2, yvar1, yvar2, trendline)
 
 
@@ -1930,7 +1888,7 @@ def update_cost_report_plot4(hospital, var1):
 def update_text1(hospitals2, states_val, beds_val, htype_vals, ctype_vals):
     
     if hospitals2 is None:
-        return '0 providers selected'
+        return '0 hospitals selected'
     
     elif isinstance(hospitals2, str) == True:
         hospitals2 = [hospitals2]
@@ -1953,16 +1911,13 @@ def update_text1(hospitals2, states_val, beds_val, htype_vals, ctype_vals):
     hospitals2 = list(set(h3))
     hospitals2.sort()
     
-    text = str(len(hospitals2)) + ' providers selected'
+    text = str(len(hospitals2)) + ' hospitals selected'
     return text
 
 
 
 @app.callback(
-    [Output("text2", "children"),
-    Output("text3", "children"),
     Output("data_link", "href"),
-    ],
     [
      Input("hospital-select1", "value"),
      Input('categories-select1', 'value'),
@@ -1979,7 +1934,7 @@ def update_text2(hospitals2, var1, var2, states): #, beds, htypes):
     if hospitals2 == [] or var1 is None:
         csv_string = main_df.to_csv(index=False, encoding='utf-8')
         csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
-        return 'Choose a hospital', 'Choose a category', csv_string
+        return csv_string
         
     main_df2 = main_df.copy(deep=True)
     for val in hospitals2:
@@ -2060,7 +2015,7 @@ def update_text2(hospitals2, var1, var2, states): #, beds, htypes):
     
     del main_df2
     
-    return text2, text3, csv_string
+    return csv_string
 #########################################################################################
     
 
