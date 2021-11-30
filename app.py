@@ -187,7 +187,7 @@ def generate_control_card1():
             ),
             html.Br(),
             
-            html.P("Select a set of hospitals to compare"),
+            html.P("Select a set of hospitals to compare. Scroll or just start typing."),
             dcc.Dropdown(
                 id="hospital-select1",
                 options=[{"label": i, "value": i} for i in HOSPITALS],
@@ -201,7 +201,7 @@ def generate_control_card1():
             ),
             html.Br(),
             
-            html.P("Select a report category to analyze by"),
+            html.P("Select a report category to analyze. Scroll or just start typing."),
             dcc.Dropdown(
                 id="categories-select1",
                 options=[{"label": i, "value": i} for i in report_categories],
@@ -276,7 +276,7 @@ def generate_control_card3():
         children=[
             
             html.H5("Examine relationships between variables"),
-            html.P("Select a category and sub-category for your x-variable"),
+            html.P("Select a category and sub-category for your x-variable. Scroll or just start typing"),
             dcc.Dropdown(
                 id="categories-select2",
                 options=[{"label": i, "value": i} for i in report_categories],
@@ -311,7 +311,7 @@ def generate_control_card3():
             ),
             
             
-            html.P("Select a category and sub-category for your y-variable"),
+            html.P("Select a category and sub-category for your y-variable. Scroll or just start typing"),
             dcc.Dropdown(
                 id="categories-select2-2",
                 options=[{"label": i, "value": i} for i in report_categories],
@@ -404,7 +404,7 @@ def generate_control_card5():
         children=[
             
             html.H5("Breakdown financial reports by category"),
-            html.P("Select a category"),
+            html.P("Select a category. Scroll or just start typing"),
             dcc.Dropdown(
                 id="categories-select2-3",
                 options=[{"label": i, "value": i} for i in report_categories],
