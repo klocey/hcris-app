@@ -89,16 +89,14 @@ def description_card1():
     return html.Div(
         id="description-card1",
         children=[
-            html.H5("Healthcare financial insights", style={
+            html.H5("Healthcare cost reports", style={
             'textAlign': 'left',
         }),
-           html.P(" Dive into healthcare provider financial reports." +
-                  " This app combines data from the Healthcare Cost Report Information System (HCRIS)" +
-                  " with additional data from the Centers for Medicare & Medicaid Services (CMS)." +
-                  " Until now, using these data meant tackling complex datasets with expensive software."
-                  , style={
-            'textAlign': 'left',
-        }),  
+           dcc.Markdown(" Until now, using data from the Healthcare Cost Report Information System (HCRIS) meant tackling large complicated files with expensive software, or paying someone else to do it. This app allows you to analyze and download 2,000+ cost related variables for 9,000+ hospitals.",
+                  ),
+            html.Br(),
+            dcc.Markdown("This app runs on free servers, not super computers. If you want to analyze hundreds of hospitals at once, you can run the app locally by downloading the [source code](https://github.com/Rush-Quality-Analytics/hcris-app). Maybe you just want the [curated data](https://github.com/Rush-Quality-Analytics/HCRIS-databuilder).",
+            ),
         ],
     )
 
@@ -109,14 +107,14 @@ def description_card2():
     return html.Div(
         id="description-card2",
         children=[
-            html.H5("Insights into Healthcare Cost Reports", style={
+            html.H5("Healthcare cost reports", style={
             'textAlign': 'left',
         }),
-           html.P(" Dive into healthcare provider financial reports." +
-                  " This app combines data from the Healthcare Cost Report Information System (HCRIS)" +
-                  " with additional data from the Centers for Medicare & Medicaid Services (CMS)." +
-                  " Until now, using these data meant tackling complex datasets with expensive software." +
-                  " This app allows you to explore 2,000+ variables from over 9,000+ hospitals.",
+           html.P("Use this tab to analyze cost report data for an individual hospital." +
+                  " Most hospitals will not have data for most variables. Use the top left plot" +
+                  " to see which variables your chosen hospital has data for." +
+                  " Use the top right plot to examine one variable against another; choose from" +
+                  " 4 statistical fits.",
                   style={
             'textAlign': 'left',
         }), 
@@ -881,48 +879,53 @@ def cost_report_plot3(hospital, xvar1, xvar2, yvar1, yvar2, trendline):
     ty = []
     r2 = ''
     
-    if trendline == 'linear':
-        slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-        ty = intercept + slope*np.array(x)
-        
-        r2 = obs_pred_rsquare(y, ty)
-        r2 = np.round(100*r2, 1)
-        
-    elif trendline == 'locally weighted':
-        lowess = sm.nonparametric.lowess
-        ty = lowess(y, x)
-        ty = np.transpose(ty)
-        ty = ty[1]
-        
-        r2 = obs_pred_rsquare(y, ty)
-        r2 = np.round(100*r2, 1)
-        
-    elif trendline == 'quadratic':
-        z = np.polyfit(x, y, 2).tolist()
-        p = np.poly1d(z)
-        ty = p(x)
-        
-        r2 = obs_pred_rsquare(y, ty)
-        r2 = np.round(100*r2, 1)
-        
-    elif trendline == 'cubic':
-        z = np.polyfit(x, y, 3).tolist()
-        p = np.poly1d(z)
-        ty = p(x)
-        
-        r2 = obs_pred_rsquare(y, ty)
-        r2 = np.round(100*r2, 1)
-                
-        
-    fig_data.append(
-        go.Scatter(
-        x=x,
-        y=ty,
-        mode='lines',
-        marker=dict(color="#99ccff"),
-        )
-    )
+    if x.tolist() == [] or y.tolist() == []:
+        slope, intercept, r_value, p_value, std_err = np.nan, np.nan, np.nan, np.nan, np.nan
+        r2 = np.nan
     
+    else:
+        if trendline == 'linear':
+            slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+            ty = intercept + slope*np.array(x)
+            
+            r2 = obs_pred_rsquare(y, ty)
+            r2 = np.round(100*r2, 1)
+            
+        elif trendline == 'locally weighted':
+            lowess = sm.nonparametric.lowess
+            ty = lowess(y, x)
+            ty = np.transpose(ty)
+            ty = ty[1]
+            
+            r2 = obs_pred_rsquare(y, ty)
+            r2 = np.round(100*r2, 1)
+            
+        elif trendline == 'quadratic':
+            z = np.polyfit(x, y, 2).tolist()
+            p = np.poly1d(z)
+            ty = p(x)
+            
+            r2 = obs_pred_rsquare(y, ty)
+            r2 = np.round(100*r2, 1)
+            
+        elif trendline == 'cubic':
+            z = np.polyfit(x, y, 3).tolist()
+            p = np.poly1d(z)
+            ty = p(x)
+            
+            r2 = obs_pred_rsquare(y, ty)
+            r2 = np.round(100*r2, 1)
+                    
+        if x.tolist() != [] and y.tolist() != []:
+            fig_data.append(
+                go.Scatter(
+                x=x,
+                y=ty,
+                mode='lines',
+                marker=dict(color="#99ccff"),
+                )
+            )
+        
     #var3 = re.sub(r'\([^)]*\)', '', var2)
     
     figure = go.Figure(
@@ -938,7 +941,7 @@ def cost_report_plot3(hospital, xvar1, xvar2, yvar1, yvar2, trendline):
                         size=14,
                     ),
                 ),
-                rangemode="tozero",
+                #rangemode="tozero",
                 zeroline=True,
                 showticklabels=True,
             ),
@@ -953,7 +956,7 @@ def cost_report_plot3(hospital, xvar1, xvar2, yvar1, yvar2, trendline):
                         
                     ),
                 ),
-                rangemode="tozero",
+                #rangemode="tozero",
                 zeroline=True,
                 showticklabels=True,
                 
@@ -967,13 +970,14 @@ def cost_report_plot3(hospital, xvar1, xvar2, yvar1, yvar2, trendline):
         ),
     )
     
-    figure.update_layout(
-        title="Percent variation explained by the model: " + str(r2),
-        font=dict(
-                size=10,
-                color="rgb(38, 38, 38)"
-            ),
-        )
+    if x.tolist() != [] and y.tolist() != []:
+        figure.update_layout(
+            title="Percent variation explained by the model: " + str(r2),
+            font=dict(
+                    size=10,
+                    color="rgb(38, 38, 38)"
+                ),
+            )
     
     #figure.update_layout(
     #    legend=dict(
@@ -1391,7 +1395,7 @@ app.layout = html.Div([
         ],
         ),
         
-        dcc.Tab(label='Single Provider Analysis',
+        dcc.Tab(label='Single Hospital Analysis',
         children=[
         
         # Banner
@@ -1419,61 +1423,58 @@ app.layout = html.Div([
         ),
         
         html.Div(
+        id="right-column3",
+        className="five columns",
+        children=[
+            
+            html.Div(
+                id="single_hospital_cost_report_plot4",
+                children=[
+                    generate_control_card5(),
+                    dcc.Graph(id="cost_report_plot4"),
+                ],
+                style={
+                        'width': '110%',
+                        #'display': 'inline-block',
+                        'border-radius': '15px',
+                        'box-shadow': '1px 1px 1px grey',
+                        'background-color': '#f0f0f0',
+                        'padding': '10px',
+                        'margin-bottom': '10px',
+                        #'margin-right': '0px',
+                        'height': '770px',
+                        #'fontSize':16
+                        },
+                ),
+            ],
+        ),
+        
+        html.Div(
             id="right-column2",
-            className="five columns",
+            className="six columns",
             children=[
-                
                 html.Div(
                     id="single_hospital_cost_report_plot3",
                     children=[
                         generate_control_card3(),
-                        #html.B("Y vs. X"),
-                        #html.Hr(),
                         dcc.Graph(id="cost_report_plot3"),
                         generate_control_card4(),
                     ],
-                    style={'width': '110%', 'display': 'inline-block',
-                                 'border-radius': '15px',
-                                 'box-shadow': '1px 1px 1px grey',
-                                 'background-color': '#f0f0f0',
-                                 'padding': '10px',
-                                 'margin-bottom': '10px',
-                                 'display': 'inline-block',
-                                 'height': '770px',
-                                 #'fontSize':16
+                    style={
+                            'width': '100%',
+                            #'display': 'inline-block',
+                            'border-radius': '15px',
+                            'box-shadow': '1px 1px 1px grey',
+                            'background-color': '#f0f0f0',
+                            'padding': '10px',
+                            'margin-left': '60px',
+                            'margin-bottom': '10px',
+                            'height': '770px',
+                            #'fontSize':16
                             },
                     ),
                 ],                
             ),
-        
-        html.Div(
-            id="right-column3",
-            className="seven columns",
-            children=[
-                
-                html.Div(
-                    id="single_hospital_cost_report_plot4",
-                    children=[
-                        generate_control_card5(),
-                        #html.B("Y vs. X"),
-                        #html.Hr(),
-                        dcc.Graph(id="cost_report_plot4"),
-                    ],
-                    style={'width': '85%', 'display': 'inline-block',
-                                 'border-radius': '15px',
-                                 'box-shadow': '1px 1px 1px grey',
-                                 'background-color': '#f0f0f0',
-                                 'padding': '10px',
-                                 'margin-bottom': '10px',
-                                 'margin-left': '60px',
-                                 'display': 'inline-block',
-                                 'height': '770px',
-                                 #'fontSize':16
-                            },
-                    ),
-                ],                
-            ),
-        
         ],
         ),
         
