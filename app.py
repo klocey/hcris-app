@@ -2,25 +2,26 @@ import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
-from dash.exceptions import PreventUpdate
+#import dash_bootstrap_components as dbc
+#from dash.exceptions import PreventUpdate
 
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import warnings
-import sys
+#import sys
 import re
 import csv
     
-from urllib.request import urlopen
-import urllib
-from math import isnan
+#from urllib.request import urlopen
+#import urllib
+#from math import isnan
 import numpy as np
 import statsmodels.api as sm
 from scipy import stats
 
-warnings.filterwarnings('ignore')
-pd.set_option('display.max_columns', None)
+#warnings.filterwarnings('ignore')
+#pd.set_option('display.max_columns', None)
 
 
 px.set_mapbox_access_token('pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw')
@@ -825,7 +826,8 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
 def update_df1_tab1(hospitals):  ##!!
     
     if hospitals is None or hospitals == []:
-        raise PreventUpdate
+        return None
+    
     if isinstance(hospitals, str) == True:
         hospitals = [hospitals]
     
@@ -1314,7 +1316,7 @@ def update_cost_report_plot2(main_df, var1, var2):
 def update_hospital(hospital):
     
     if hospital is None:
-        raise PreventUpdate
+        return None
         
     prvdr = re.sub('\ |\?|\.|\!|\/|\;|\:', '', hospital)
         
