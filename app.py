@@ -2,6 +2,7 @@ import dash
 from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 #from dash.exceptions import PreventUpdate
 
 import pandas as pd
@@ -26,12 +27,25 @@ from scipy import stats
 px.set_mapbox_access_token('pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw')
 ################################# CONFIG APP #################################
 
+#########################################################################################
+################################# CONFIG APP ############################################
+#########################################################################################
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+FONT_AWESOME = "https://use.fontawesome.com/releases/v5.10.2/css/all.css"
+
+warnings.filterwarnings('ignore')
+pd.set_option('display.max_columns', None)
+
+external_stylesheets=[dbc.themes.BOOTSTRAP, FONT_AWESOME, 'https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-server = app.server
 app.config.suppress_callback_exceptions = True
+server = app.server
+
+#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+#app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+#server = app.server
+#app.config.suppress_callback_exceptions = True
 
 
 ################################# LOAD DATA ##################################
