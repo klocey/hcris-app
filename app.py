@@ -1918,4 +1918,5 @@ def update_text2(hospitals2, var1, var2, states): #, beds, htypes):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='127.0.0.1', port=8050, debug=True)
+    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+
