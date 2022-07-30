@@ -9,7 +9,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import warnings
-#import sys
+import sys
 import re
 import csv
     
@@ -52,17 +52,15 @@ server = app.server
 
 
 gendat_df = pd.read_pickle('dataframe_data/GenDat4App.pkl')
- 
 gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'NaN')
 gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'NaN')
 
-
 ######################## SELECTION LISTS #####################################
-
 
 HOSPITALS = gendat_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')].tolist()
 beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].tolist()
 states = gendat_df[('S2_1_C2_2', 'Hospital State', 'No Description', 'Hospital State (S2_1_C2_2)')].tolist()
+
 htypes = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].tolist()
 ctypes = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].tolist()
 
@@ -77,7 +75,9 @@ with open('dataframe_data/report_categories.csv', newline='') as csvfile:
     categories = csv.reader(csvfile, delimiter=',')
     for row in categories:
         report_categories = row
+        report_categories = report_categories[1:]
 report_categories.sort()
+
 
 with open('dataframe_data/sub_categories.csv', newline='') as csvfile:
     categories = csv.reader(csvfile, delimiter=',')
