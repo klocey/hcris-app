@@ -62,7 +62,7 @@ gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Co
 
 HOSPITALS = gendat_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')].tolist()
 beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].tolist()
-states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].tolist()
+states = gendat_df[('S2_1_C2_2', 'Hospital State', 'No Description', 'Hospital State (S2_1_C2_2)')].tolist()
 htypes = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].tolist()
 ctypes = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].tolist()
 
