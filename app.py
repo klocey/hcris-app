@@ -14,7 +14,7 @@ import re
 import csv
     
 #from urllib.request import urlopen
-#import urllib
+import urllib
 #from math import isnan
 import numpy as np
 import statsmodels.api as sm
@@ -759,9 +759,9 @@ def update_output6(value):
     #prevent_initial_call=True,
     )
 def update_output3(value, df):
-    main_df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
-    sub_cat = main_df2.columns.get_level_values(3).tolist()
-    del main_df2
+    df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
+    sub_cat = df2.columns.get_level_values(3).tolist()
+    del df2
     
     if df is not None:
         df = pd.read_json(df)
@@ -852,12 +852,12 @@ def update_df1_tab1(hospitals):  ##!!
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
         
         if i == 0:
-            main_df = tdf.copy(deep=True)
+            df = tdf.copy(deep=True)
         else:
-            main_df = pd.concat([main_df, tdf]) 
+            df = pd.concat([df, tdf]) 
     
     
-    return main_df.to_json()
+    return df.to_json()
     
     
 
@@ -949,9 +949,9 @@ def update_map_plot1(df, h):
      Input('categories-select11', 'value'),
      ],
     )
-def update_table1(main_df, var1, var2):
+def update_table1(df, var1, var2):
     
-    if main_df is None or var1 is None or var2 is None:
+    if df is None or var1 is None or var2 is None:
         figure = go.Figure(data=[go.Table(
             header=dict(values=[
                 'Provider name',
@@ -975,8 +975,8 @@ def update_table1(main_df, var1, var2):
             
         return figure
     
-    main_df = pd.read_json(main_df)
-    if main_df.shape[0] == 0:
+    df = pd.read_json(df)
+    if df.shape[0] == 0:
         figure = go.Figure(data=[go.Table(
             header=dict(values=[
                 'Provider name',
@@ -1006,15 +1006,13 @@ def update_table1(main_df, var1, var2):
                             'Fiscal year end date',
                             ])
             
-    table_df['Provider name'] = main_df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"]
-    table_df['Fiscal year end date'] = pd.to_datetime(main_df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"]).dt.date
+    table_df['Provider name'] = df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"]
+    table_df['Fiscal year end date'] = pd.to_datetime(df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"]).dt.date
     
     str_ = var1 + "', '" + var2 + "')"
-    column = [col for col in main_df.columns if col.endswith(str_)]  
+    column = [col for col in df.columns if col.endswith(str_)]  
     column = column[0]
-    obs_y = main_df[column].tolist()     
-    #obs_y = main_df.iloc[:, ((main_df.columns.get_level_values(2)==var1) & (main_df.columns.get_level_values(3)==var2))]                   
-    #obs_y = list(obs_y.iloc[0:, 0].tolist())
+    obs_y = df[column].tolist()     
     table_df[var3] = obs_y
                     
     table_df.sort_values(by=['Fiscal year end date'], ascending=[True])
@@ -1044,7 +1042,47 @@ def update_table1(main_df, var1, var2):
     return figure
     
     
+
+@app.callback(
+    Output("data_link", "href"),
+    [
+     Input('df_tab1', "data"),
+     ],
+    )
+def update_download(df): #, beds, htypes):
     
+    if df is None:
+        csv_string = main_df.to_csv(index=False, encoding='utf-8')
+        csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
+        return csv_string
+            
+    df = pd.read_json(df)
+    if df.shape[0] == 0:
+        csv_string = main_df.to_csv(index=False, encoding='utf-8')
+        csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
+        return csv_string
+    
+    
+    else:
+        tdf = main_df.copy(deep=True)
+        
+        c1 = tdf.columns.get_level_values(0).tolist()
+        c2 = tdf.columns.get_level_values(1).tolist()
+        c3 = tdf.columns.get_level_values(2).tolist()
+        c4 = tdf.columns.get_level_values(3).tolist()
+        
+        cols = list(df)
+        for i, c in enumerate(cols):
+            vals = df[c].tolist()
+            tdf[(c1[i], c2[i], c3[i], c4[i])] = vals
+            
+            
+        csv_string = tdf.to_csv(index=True, encoding='utf-8')
+        csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
+            
+    return csv_string
+
+
 @app.callback( # Update Line plot
     Output("cost_report_plot1", "figure"),
     [
@@ -1125,8 +1163,18 @@ def update_cost_report_plot1(df, var1, var2):
                 )
             )
         
-        var3 = re.sub(r'\([^)]*\)', '', var2)
-        
+        txt_ = '<b>' + var1 + '<b>'
+        if len(var2) > 40:
+            var_ls = []
+            for j in range(0, len(var2), 40):
+                var_ls.append(var2[j : j + 40])
+            
+            
+            for j in var_ls:
+                txt_ = txt_ + '<br>' + j 
+        else:
+            txt_ = txt_ + '<br>' + var2 
+            
         figure = go.Figure(
             data=fig_data,
             layout=go.Layout(
@@ -1147,7 +1195,7 @@ def update_cost_report_plot1(df, var1, var2):
                 
                 yaxis=dict(
                     title=dict(
-                        text='<b>' + var1 + '<b>' + '<br>' + var3 + '<br>' + ' ' + '<br>',
+                        text=txt_,
                         font=dict(
                             family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                             " Helvetica, Arial, sans-serif",
@@ -1192,7 +1240,7 @@ def update_cost_report_plot1(df, var1, var2):
      Input('categories-select11', 'value'),
      ],
     )
-def update_cost_report_plot2(main_df, var1, var2):
+def update_cost_report_plot2(df, var1, var2):
     
     figure = go.Figure(data=go.Scatter(x = [0], y = [0]))
         
@@ -1210,26 +1258,26 @@ def update_cost_report_plot2(main_df, var1, var2):
                       plot_bgcolor="#f0f0f0",
                       )
     
-    if main_df is None or var1 is None or var2 is None:
+    if df is None or var1 is None or var2 is None:
         return figure
         
     else:    
-        main_df = pd.read_json(main_df)
-        if main_df.shape[0] == 0:
+        df = pd.read_json(df)
+        if df.shape[0] == 0:
             return figure
         
         col_names = ['Fiscal Year End Date', 'Num and Name']
         new_df = pd.DataFrame(columns = col_names)
         
-        dates = main_df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"].tolist()
+        dates = df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"].tolist()
         new_df['Fiscal Year End Date'] = dates
         
         str_ = var1 + "', '" + var2 + "')"
-        column = [col for col in main_df.columns if col.endswith(str_)]  
+        column = [col for col in df.columns if col.endswith(str_)]  
         column = column[0]
-        new_df[var2] = main_df[column].tolist()
+        new_df[var2] = df[column].tolist()
         
-        new_df['Num and Name'] = main_df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].tolist()                   
+        new_df['Num and Name'] = df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].tolist()                   
         
         fig_data = []
         new_df['years'] = pd.to_datetime(new_df['Fiscal Year End Date']).dt.year
@@ -1252,8 +1300,19 @@ def update_cost_report_plot2(main_df, var1, var2):
                 #smarker_color=px.colors.sequential.Plasma,
             )
         )
+        
+        txt_ = '<b>' + var1 + '<b>'
+        if len(var2) > 40:
+            var_ls = []
+            for j in range(0, len(var2), 40):
+                var_ls.append(var2[j : j + 40])
             
-        var3 = re.sub(r'\([^)]*\)', '', var2)
+            
+            for j in var_ls:
+                txt_ = txt_ + '<br>' + j 
+        else:
+            txt_ = txt_ + '<br>' + var2 
+            
         figure = go.Figure(
             data=fig_data,
             layout=go.Layout(
@@ -1268,7 +1327,7 @@ def update_cost_report_plot2(main_df, var1, var2):
                 
                 yaxis=dict(
                     title=dict(
-                        text='<b>' + var1 + '<b>' + '<br>' + var3 + '<br>' + ' ' + '<br>',
+                        text=txt_,
                         font=dict(
                             family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                             " Helvetica, Arial, sans-serif",
@@ -1347,9 +1406,9 @@ def update_hospital(hospital):
      ],
     )
 def update_output7(value, df):
-    main_df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
-    sub_cat = main_df2.columns.get_level_values(3).tolist()
-    del main_df2
+    df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
+    sub_cat = df2.columns.get_level_values(3).tolist()
+    del df2
     
     if df is not None:
         df = pd.read_json(df)
@@ -1396,9 +1455,9 @@ def update_output8(available_options):
      ],
     )
 def update_output9(value, df):
-    main_df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
-    sub_cat = main_df2.columns.get_level_values(3).tolist()
-    del main_df2
+    df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
+    sub_cat = df2.columns.get_level_values(3).tolist()
+    del df2
     
     if df is not None:
         df = pd.read_json(df)
@@ -1571,6 +1630,30 @@ def update_cost_report_plot3(df, xvar1, xvar2, yvar1, yvar2, trendline):
             )
             
         #var3 = re.sub(r'\([^)]*\)', '', var2)
+    
+    txt1 = '<b>' + xvar1 + '<b>'
+    if len(xvar2) > 40:
+        var_ls = []
+        for j in range(0, len(xvar2), 40):
+            var_ls.append(xvar2[j : j + 40])
+        
+        
+        for j in var_ls:
+            txt1 = txt1 + '<br>' + j 
+    else:
+        txt1 = txt1 + '<br>' + xvar2 
+        
+    txt2 = '<b>' + yvar1 + '<b>'
+    if len(yvar2) > 40:
+        var_ls = []
+        for j in range(0, len(yvar2), 40):
+            var_ls.append(yvar2[j : j + 40])
+        
+        
+        for j in var_ls:
+            txt2 = txt2 + '<br>' + j 
+    else:
+        txt2 = txt2 + '<br>' + yvar2 
         
     figure = go.Figure(
         data=fig_data,
@@ -1578,7 +1661,7 @@ def update_cost_report_plot3(df, xvar1, xvar2, yvar1, yvar2, trendline):
             transition = {'duration': 500},
             xaxis=dict(
                 title=dict(
-                    text='<b>' + xvar1 + '<b>' + '<br>' + xvar2 + '<br>' + ' ' + '<br>',
+                    text=txt1,
                     font=dict(
                         family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                         " Helvetica, Arial, sans-serif",
@@ -1592,7 +1675,7 @@ def update_cost_report_plot3(df, xvar1, xvar2, yvar1, yvar2, trendline):
                 
             yaxis=dict(
                 title=dict(
-                    text='<b>' + yvar1 + '<b>' + '<br>' + yvar2 + '<br>' + ' ' + '<br>',
+                    text=txt2,
                     font=dict(
                         family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                         " Helvetica, Arial, sans-serif",
@@ -1771,12 +1854,9 @@ def update_output11(value):
                'quadratic', 'cubic']
     
     return [{"label": i, "value": i} for i in options]
+
+
 '''
-
-
-
-
-
 #########################################################################################
 
 
@@ -1824,106 +1904,6 @@ def update_text1(hospitals2, states_val, beds_val, htype_vals, ctype_vals):
     text = str(len(hospitals2)) + ' hospitals selected'
     return text
 
-
-
-@app.callback(
-    Output("data_link", "href"),
-    [
-     Input("hospital-select1", "value"),
-     Input('categories-select1', 'value'),
-     Input('categories-select11', 'value'),
-     Input('states-select1', 'value'),
-     #Input('beds', 'value'),
-     #Input('hospital_type', 'value'),
-     ],
-    )
-def update_text2(hospitals2, var1, var2, states): #, beds, htypes):
-    
-    if isinstance(hospitals2, str) == True:
-        hospitals2 = [hospitals2]
-    if hospitals2 == [] or var1 is None:
-        csv_string = main_df.to_csv(index=False, encoding='utf-8')
-        csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
-        return csv_string
-        
-    main_df2 = main_df.copy(deep=True)
-    for val in hospitals2:
-        
-        prvdr = re.sub('\ |\?|\.|\!|\/|\;|\:', '', val)
-        
-        url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
-        tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
-        main_df2 = pd.concat([main_df2, tdf]) 
-        
-    col_names =  ['Fiscal Year End Date', var2, 'Num and Name']
-    new_df = pd.DataFrame(columns = col_names)
-    
-    FY_END_DT = main_df2.iloc[:, 
-                ((main_df2.columns.get_level_values(0)=='FY_END_DT') & (main_df2.columns.get_level_values(1)=='Fiscal Year End Date '))]
-    dates = list(FY_END_DT.iloc[0:, 0].tolist())
-    new_df['Fiscal Year End Date'] = dates
-    
-    S3_1_C3_14 = main_df2.iloc[:, 
-                ((main_df2.columns.get_level_values(2)==var1) & (main_df2.columns.get_level_values(3)==var2))]
-    new_df[var2] = list(S3_1_C3_14.iloc[0:, 0].tolist())
-    
-    S2_1_C2_2 = main_df2.iloc[:, 
-                ((main_df2.columns.get_level_values(0)=='Num and Name') & (main_df2.columns.get_level_values(1)=='Num and Name'))]                   
-    new_df['Num and Name'] = list(S2_1_C2_2.iloc[0:, 0].tolist())
-    
-    new_df = new_df[new_df['Num and Name'].isin(hospitals2)]
-    new_df['years'] = pd.to_datetime(new_df['Fiscal Year End Date']).dt.year
-    new_df = new_df[new_df['years'] == 2021]
-    max_val = 0
-    max_prv = str()
-    min_val = 10**10
-    min_prv = str()
-
-    for i, hospital in enumerate(hospitals2):
-            
-        sub_df = new_df[new_df['Num and Name'] == hospital]
-        try:
-            obs_y = sub_df[var2].iloc[0]
-        
-            if obs_y > max_val:
-                max_val = obs_y
-                max_prv = hospital
-            
-            if obs_y < min_val:
-                min_val = obs_y
-                min_prv = hospital
-        except:
-            pass
-            
-    max_val = '{:,}'.format(max_val)
-    min_val = '{:,}'.format(min_val)
-    
-    col = main_df2.iloc[:, main_df2.columns.get_level_values(0)=='FY_END_DT']
-    col = list(col.iloc[0:, 0].tolist())
-    
-    main_df2 = main_df2.drop('FY_END_DT', axis = 1, level = 0)
-    main_df2['FY_END_DT', 'Fiscal Year End Date',
-             'HOSPITAL IDENTIFICATION INFORMATION',
-             'Fiscal Year End Date (FY_END_DT)'] = col
-
-    col = main_df2.iloc[:, main_df2.columns.get_level_values(0)=='Num and Name']
-    col = list(col.iloc[0:, 0].tolist())
-    
-    main_df2 = main_df2.drop('Num and Name', axis = 1, level = 0)
-    main_df2['Num and Name', 'Num and Name',
-             'Num and Name', 'Num and Name'] = col
-    
-    ls = list(main_df2.columns.get_level_values(0))
-    ls.reverse()
-    
-    main_df2 = main_df2.reindex(ls, axis=1, level=0)
-    
-    csv_string = main_df2.to_csv(index=True, encoding='utf-8')
-    csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
-    
-    del main_df2
-    
-    return csv_string
 #########################################################################################
 '''    
 
@@ -1931,5 +1911,5 @@ def update_text2(hospitals2, var1, var2, states): #, beds, htypes):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
