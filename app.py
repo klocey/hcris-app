@@ -1911,5 +1911,5 @@ def update_text1(hospitals2, states_val, beds_val, htype_vals, ctype_vals):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
 
