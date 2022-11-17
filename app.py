@@ -110,7 +110,7 @@ def description_card1():
            dcc.Markdown(" Until now, using data from the Healthcare Cost Report Information System (HCRIS) meant tackling large complicated files with expensive software, or paying someone else to do it. This app allows you to analyze and download 2,000+ cost related variables for 9,000+ hospitals.",
                   ),
             html.Br(),
-            dcc.Markdown("This app runs on free servers, not super computers. If you want to analyze hundreds of hospitals at once, you can run the app locally by downloading the [source code](https://github.com/Rush-Quality-Analytics/hcris-app). Maybe you just want the [curated data](https://github.com/Rush-Quality-Analytics/HCRIS-databuilder).",
+            dcc.Markdown("This app runs on free servers, not super computers.",
             ),
         ],
     )
@@ -484,8 +484,7 @@ app.layout = html.Div([
             style={'background-color': '#f9f9f9'},
             id="banner1",
             className="banner",
-            children=[  html.Img(src=app.get_asset_url("RUSH_full_color.jpg"),
-                               style={'textAlign': 'left'}),
+            children=[
                         html.Img(src=app.get_asset_url("plotly_logo.png"),
                                style={'textAlign': 'right'}),
                       ],
@@ -643,8 +642,7 @@ app.layout = html.Div([
             style={'background-color': '#f9f9f9'},
             id="banner2",
             className="banner",
-            children=[  html.Img(src=app.get_asset_url("RUSH_full_color.jpg"),
-                               style={'textAlign': 'left'}),
+            children=[
                         html.Img(src=app.get_asset_url("plotly_logo.png"),
                                style={'textAlign': 'right'}),
                       ],
