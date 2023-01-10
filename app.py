@@ -51,9 +51,14 @@ server = app.server
 ################################# LOAD DATA ##################################
 
 
-gendat_df = pd.read_pickle('dataframe_data/GenDat4App.pkl')
-gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'NaN')
-gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'NaN')
+gendat_df = pd.read_pickle('dataframe_data/GenDat4App_p4.pkl')
+gendat_df = gendat_df.dropna(how='any')
+
+#gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')] = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].replace(np.nan, 'NaN')
+#gendat_df[('S2_1_C2_2', 'Hospital State', 'No Description', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', 'No Description', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'NaN')
+
+#gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'NaN')
+#gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'NaN')
 
 ######################## SELECTION LISTS #####################################
 
@@ -763,7 +768,7 @@ def update_output3(value, df):
     
     if df is not None:
         df = pd.read_json(df)
-        df.dropna(axis=1, thresh = int(np.round(0.5*df.shape[0],0)), inplace=True) # 
+        df.dropna(axis=1, how='all', inplace=True)
         cols1 = list(df)
         cols2 = []
         for c in cols1:
@@ -832,9 +837,8 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
     [
      Input("hospital-select1", "value"),
      ],
-    #prevent_initial_call=True,
     )
-def update_df1_tab1(hospitals):  ##!!
+def update_df1_tab1(hospitals):
     
     if hospitals is None or hospitals == []:
         return None
@@ -854,6 +858,7 @@ def update_df1_tab1(hospitals):  ##!!
         else:
             df = pd.concat([df, tdf]) 
     
+    df.dropna(axis=1, how='all', inplace=True)
     
     return df.to_json()
     
@@ -1009,7 +1014,33 @@ def update_table1(df, var1, var2):
     
     str_ = var1 + "', '" + var2 + "')"
     column = [col for col in df.columns if col.endswith(str_)]  
+    
+    if len(column) == 0:
+        figure = go.Figure(data=[go.Table(
+            header=dict(values=[
+                'Provider name',
+                'Fiscal year end date',
+                'Variable of interest',
+                ],
+                fill_color='#b3d1ff',
+                align='left'),
+            ),
+            ],
+            )
+    
+        figure.update_layout(title_font=dict(size=14,
+                        color="rgb(38, 38, 38)", 
+                        ),
+                        margin=dict(l=10, r=10, b=10, t=0),
+                        paper_bgcolor="#f0f0f0",
+                        plot_bgcolor="#f0f0f0",
+                        height=300,
+                        )
+            
+        return figure
+    
     column = column[0]
+    
     obs_y = df[column].tolist()     
     table_df[var3] = obs_y
                     
@@ -1135,7 +1166,7 @@ def update_cost_report_plot1(df, var1, var2):
         return fig
         
     fig_data = []
-    hospitals = sorted(list(set(df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].tolist())))
+    hospitals = sorted(df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].unique())
     
     for i, hospital in enumerate(hospitals):
         
@@ -1147,7 +1178,31 @@ def update_cost_report_plot1(df, var1, var2):
             
         str_ = var1 + "', '" + var2 + "')"
         column = [col for col in sub_df.columns if col.endswith(str_)]  
+        print('line 155: column:', column)
+        
+        if len(column) == 0:
+            fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+
+            fig.update_yaxes(title_font=dict(size=14, 
+                                             #family='sans-serif', 
+                                             color="rgb(38, 38, 38)"))
+            fig.update_xaxes(title_font=dict(size=14, 
+                                             #family='sans-serif', 
+                                             color="rgb(38, 38, 38)"))
+
+            fig.update_layout(title_font=dict(size=14, 
+                              color="rgb(38, 38, 38)", 
+                              ),
+                              showlegend=True,
+                              margin=dict(l=100, r=10, b=10, t=10),
+                              paper_bgcolor="#f0f0f0",
+                              plot_bgcolor="#f0f0f0",
+                              )
+            
+            return fig
+        
         column = column[0]
+        
         obs_y = sub_df[column].tolist()     
         
         #dates, obs_y = map(list, zip(*sorted(zip(dates, obs_y), reverse=False)))
@@ -1272,7 +1327,12 @@ def update_cost_report_plot2(df, var1, var2):
         
         str_ = var1 + "', '" + var2 + "')"
         column = [col for col in df.columns if col.endswith(str_)]  
+        
+        if len(column) == 0:
+            return figure
+        
         column = column[0]
+            
         new_df[var2] = df[column].tolist()
         
         new_df['Num and Name'] = df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].tolist()                   
@@ -1392,7 +1452,8 @@ def update_hospital(hospital):
         
     url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
     df = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
-        
+    df.dropna(axis=1, how='all', inplace=True)
+    
     return df.to_json()
  
 
@@ -1410,7 +1471,7 @@ def update_output7(value, df):
     
     if df is not None:
         df = pd.read_json(df)
-        df.dropna(axis=1, thresh = df.shape[0], inplace=True) # 
+        df.dropna(axis=1, how='all', inplace=True)
         cols1 = list(df)
         cols2 = []
         for c in cols1:
@@ -1425,7 +1486,6 @@ def update_output7(value, df):
     else:
         sub_categories = sub_cat
     
-    #sub_categories = sorted(sub_categories)
     return [{"label": i, "value": i} for i in sub_categories]
 
 
@@ -1437,8 +1497,6 @@ def update_output7(value, df):
     )
 def update_output8(available_options):
     try:
-        #available_options = available_options[0]['value']
-        #available_options = sorted(available_options)
         return available_options[0]['value']
     except:
         return 'NUMBER OF BEDS'
@@ -1459,7 +1517,8 @@ def update_output9(value, df):
     
     if df is not None:
         df = pd.read_json(df)
-        df.dropna(axis=1, thresh = df.shape[0], inplace=True) # 
+        df.dropna(how='all', axis=1, inplace=True)
+        
         cols1 = list(df)
         cols2 = []
         for c in cols1:
@@ -1506,51 +1565,74 @@ def update_output10(available_options):
     )
 def update_cost_report_plot3(df, xvar1, xvar2, yvar1, yvar2, trendline):
     
-    
     if df is None or xvar1 is None or xvar2 is None or yvar1 is None or yvar2 is None or yvar2 == 'NUMBER OF BEDS':
             
-            tdf = pd.DataFrame(columns=['x', 'y'])
-            tdf['x'] = [0]
-            tdf['y'] = [0]
-            fig = px.scatter(tdf, x = 'x', y = 'y')
+        tdf = pd.DataFrame(columns=['x', 'y'])
+        tdf['x'] = [0]
+        tdf['y'] = [0]
+        fig = px.scatter(tdf, x = 'x', y = 'y')
 
-            fig.update_yaxes(title_font=dict(size=14, 
-                                         #family='sans-serif', 
-                                         color="rgb(38, 38, 38)"))
-            fig.update_xaxes(title_font=dict(size=14, 
-                                         #family='sans-serif', 
-                                         color="rgb(38, 38, 38)"))
-
-            fig.update_layout(title_font=dict(size=14, 
-                          color="rgb(38, 38, 38)", 
-                          ),
-                          showlegend=True,
-                          margin=dict(l=100, r=10, b=10, t=10),
-                          paper_bgcolor="#f0f0f0",
-                          plot_bgcolor="#f0f0f0",
-                          )
+        fig.update_yaxes(title_font=dict(size=14, 
+                                     #family='sans-serif', 
+                                     color="rgb(38, 38, 38)"))
+        fig.update_xaxes(title_font=dict(size=14, 
+                                     #family='sans-serif', 
+                                     color="rgb(38, 38, 38)"))
+        fig.update_layout(title_font=dict(size=14, 
+                      color="rgb(38, 38, 38)", 
+                      ),
+                      showlegend=True,
+                      margin=dict(l=100, r=10, b=10, t=10),
+                      paper_bgcolor="#f0f0f0",
+                      plot_bgcolor="#f0f0f0",
+                      )
         
-            return fig
+        return fig
             
+    
     df = pd.read_json(df)
     
     fig_data = []
     
     dates = df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"].tolist()
     #df['years'] = pd.to_datetime(dates).dt.year
-    
     #headers = list(set(list(df)))
     
-    str_ = xvar1 + "', '" + xvar2 + "')"
+    str_1 = xvar1 + "', '" + xvar2 + "')"
+    str_2 = yvar1 + "', '" + yvar2 + "')"
     
-    column = [col for col in df.columns if col.endswith(str_)]  
-    column = column[0]
-    x = df[column].tolist()
+    column1 = [col for col in df.columns if col.endswith(str_1)]
+    column2 = [col for col in df.columns if col.endswith(str_2)]
     
-    str_ = yvar1 + "', '" + yvar2 + "')"
-    column = [col for col in df.columns if col.endswith(str_)]  
-    column = column[0]
-    y = df[column].tolist()
+    if len(column1) == 0 or len(column2) == 0:
+        
+        tdf = pd.DataFrame(columns=['x', 'y'])
+        tdf['x'] = [0]
+        tdf['y'] = [0]
+        fig = px.scatter(tdf, x = 'x', y = 'y')
+
+        fig.update_yaxes(title_font=dict(size=14, 
+                                     #family='sans-serif', 
+                                     color="rgb(38, 38, 38)"))
+        fig.update_xaxes(title_font=dict(size=14, 
+                                     #family='sans-serif', 
+                                     color="rgb(38, 38, 38)"))
+        fig.update_layout(title_font=dict(size=14, 
+                      color="rgb(38, 38, 38)", 
+                      ),
+                      showlegend=True,
+                      margin=dict(l=100, r=10, b=10, t=10),
+                      paper_bgcolor="#f0f0f0",
+                      plot_bgcolor="#f0f0f0",
+                      )
+        
+        return fig
+    
+    column1 = column1[0]
+    x = df[column1].tolist()
+    
+    column2 = column2[0]
+    y = df[column2].tolist()
     
     hospital = list(set(df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].tolist()))                 
     
@@ -1757,8 +1839,8 @@ def update_cost_report_plot4(df, var1):
         
         x_ls = list(set(df[c].tolist()))
         x = [x for x in x_ls if x == x]
-        if len(x) == 0:
-            continue
+        #if len(x) == 0:
+        #    continue
         
         s = c.split("', ")[-1]
         s = s[1:-2]
@@ -1909,5 +1991,5 @@ def update_text1(hospitals2, states_val, beds_val, htype_vals, ctype_vals):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
