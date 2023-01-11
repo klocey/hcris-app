@@ -843,6 +843,8 @@ def update_df1_tab1(hospitals):
         
         prvdr = re.sub('\ |\?|\.|\!|\/|\;|\:', '', val)
         
+        print('prvdr:', prvdr)
+        
         url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
         
@@ -1003,7 +1005,7 @@ def update_table1(df, var1, var2):
                             ])
             
     table_df['Provider name'] = df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"]
-    table_df['Fiscal year end date'] = pd.to_datetime(df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"]).dt.date
+    table_df['Fiscal year end date'] = pd.to_datetime(df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]).dt.date
     
     str_ = var1 + "', '" + var2 + "')"
     column = [col for col in df.columns if col.endswith(str_)]  
@@ -1167,7 +1169,7 @@ def update_cost_report_plot1(df, var1, var2):
         #sub_df.sort_values(by=["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"],
         #                        ascending=[True], inplace=True)
             
-        dates = sub_df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"]
+        dates = sub_df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]
             
         str_ = var1 + "', '" + var2 + "')"
         column = [col for col in sub_df.columns if col.endswith(str_)]  
@@ -1315,7 +1317,7 @@ def update_cost_report_plot2(df, var1, var2):
         col_names = ['Fiscal Year End Date', 'Num and Name']
         new_df = pd.DataFrame(columns = col_names)
         
-        dates = df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"].tolist()
+        dates = df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"].tolist()
         new_df['Fiscal Year End Date'] = dates
         
         str_ = var1 + "', '" + var2 + "')"
@@ -1587,7 +1589,7 @@ def update_cost_report_plot3(df, xvar1, xvar2, yvar1, yvar2, trendline):
     
     fig_data = []
     
-    dates = df["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"].tolist()
+    dates = df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"].tolist()
     #df['years'] = pd.to_datetime(dates).dt.year
     #headers = list(set(list(df)))
     
@@ -1821,7 +1823,7 @@ def update_cost_report_plot4(df, var1):
         if var1 in h:
             columns.append(h)
     
-    date_col = "('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"
+    date_col = "('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"
     
     df = df.filter(items=columns + [date_col], axis=1)    
     df.dropna(how='all', axis=0, inplace=True)
@@ -1978,7 +1980,7 @@ def update_text1(hospitals2, states_val, beds_val, htype_vals, ctype_vals):
     return text
 
 #########################################################################################
-'''    
+'''
 
 
 
