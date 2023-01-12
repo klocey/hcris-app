@@ -48,7 +48,7 @@ gendat_df = pd.read_pickle('dataframe_data/GenDat4App_p4.pkl')
 gendat_df = gendat_df.dropna(how='any')
 
 #gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')] = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].replace(np.nan, 'NaN')
-#gendat_df[('S2_1_C2_2', 'Hospital State', 'No Description', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', 'No Description', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'NaN')
+#gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'NaN')
 
 #gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'NaN')
 #gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'NaN')
@@ -57,7 +57,7 @@ gendat_df = gendat_df.dropna(how='any')
 
 HOSPITALS = gendat_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')].tolist()
 beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].tolist()
-states = gendat_df[('S2_1_C2_2', 'Hospital State', 'No Description', 'Hospital State (S2_1_C2_2)')].tolist()
+states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].tolist()
 
 htypes = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].tolist()
 ctypes = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].tolist()
@@ -843,8 +843,6 @@ def update_df1_tab1(hospitals):
         
         prvdr = re.sub('\ |\?|\.|\!|\/|\;|\:', '', val)
         
-        print('prvdr:', prvdr)
-        
         url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
         
@@ -1173,7 +1171,6 @@ def update_cost_report_plot1(df, var1, var2):
             
         str_ = var1 + "', '" + var2 + "')"
         column = [col for col in sub_df.columns if col.endswith(str_)]  
-        print('line 155: column:', column)
         
         if len(column) == 0:
             fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
