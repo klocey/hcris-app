@@ -18,7 +18,6 @@ import statsmodels.api as sm
 from scipy import stats
 
 px.set_mapbox_access_token('pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw')
-################################# CONFIG APP #################################
 
 #########################################################################################
 ################################# CONFIG APP ############################################
@@ -43,25 +42,23 @@ server = app.server
 
 ################################# LOAD DATA ##################################
 
-
 gendat_df = pd.read_pickle('dataframe_data/GenDat4App_p4.pkl')
-gendat_df = gendat_df.dropna(how='any')
-
-#gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')] = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].replace(np.nan, 'NaN')
-#gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'NaN')
-
-#gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'NaN')
-#gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'NaN')
+gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'Not given')
+gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'Not given')
+gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'Not given')
 
 ######################## SELECTION LISTS #####################################
 
-HOSPITALS = gendat_df[('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')].tolist()
+HOSPITALS = gendat_df[('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')].tolist()
+CMS_NUMS = len(gendat_df[('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDENTIFICATION INFORMATION', 'Hospital Provider Number (PRVDR_NUM)')].unique()) 
+# 
 beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].tolist()
-states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].tolist()
 
+states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].tolist()
 htypes = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].tolist()
 ctypes = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].tolist()
 
+states = ['NaN' if x is np.nan else x for x in states]
 htypes = ['NaN' if x is np.nan else x for x in htypes]
 ctypes = ['NaN' if x is np.nan else x for x in ctypes]
 
@@ -83,7 +80,7 @@ with open('dataframe_data/sub_categories.csv', newline='') as csvfile:
         sub_categories = row
 sub_categories.sort()
 
-url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/1125SIRFRANCISDRAKEOPERATINGCO(052043).csv'
+url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/052043.csv'
 
 main_df = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
 main_df = pd.DataFrame(columns = main_df.columns)
@@ -164,9 +161,9 @@ def generate_control_card1():
             html.P("Select hospital types"),
             dcc.Dropdown(
                 id="hospital_type1",
-                options=[{"label": i, "value": i} for i in list(set(htypes))],
+                options=[{"label": i, "value": i} for i in sorted(list(set(htypes)))],
                 multi=True,
-                value=list(set(htypes)),
+                value=sorted(list(set(htypes))),
                 style={
                     #'width': '320px', 
                     'font-size': "100%",
@@ -177,9 +174,9 @@ def generate_control_card1():
             html.P("Select hospital control types"),
             dcc.Dropdown(
                 id="control_type1",
-                options=[{"label": i, "value": i} for i in list(set(ctypes))],
+                options=[{"label": i, "value": i} for i in sorted(list(set(ctypes)))],
                 multi=True,
-                value=list(set(ctypes)),
+                value=sorted(list(set(ctypes))),
                 style={
                     #'width': '320px', 
                     'font-size': "100%",
@@ -190,9 +187,9 @@ def generate_control_card1():
             html.P("Select a set of states"),
             dcc.Dropdown(
                 id="states-select1",
-                options=[{"label": i, "value": i} for i in list(set(states))],
+                options=[{"label": i, "value": i} for i in sorted(list(set(states)))],
                 multi=True,
-                value=list(set(states)),
+                value=sorted(list(set(states))),
                 style={
                     #'width': '320px', 
                     'font-size': "100%",
@@ -200,7 +197,16 @@ def generate_control_card1():
             ),
             html.Br(),
             
-            html.P("Select a set of hospitals to compare. Scroll or start typing keywords."),
+            html.P("Select 1 or more hospitals",
+                   style={'display': 'inline-block', 'width': '58%'},),
+            
+            html.I(className="fas fa-question-circle fa-lg", id="target1",
+                style={'display': 'inline-block', 'width': '10%', 'color':'#99ccff'},
+                ),
+            dbc.Tooltip("Hospital names can change over time. This app not only returns data for the hospitals you choose but also returns data for any hospitals with matching CMS numbers.", target="target1",
+                style = {'font-size': 12},
+                ),
+            
             dcc.Dropdown(
                 id="hospital-select1",
                 options=[{"label": i, "value": i} for i in HOSPITALS_SET],
@@ -214,7 +220,16 @@ def generate_control_card1():
             ),
             html.Br(),
             
-            html.P("Select a report category to analyze. Scroll or start typing keywords. Once a category is chosen, the app will automatically filter on the sub-categories that contain data for at least one of your chosen hospitals."),
+            html.P("Select a category to analyze",
+                    style={'display': 'inline-block', 'width': '62%'},),
+             
+            html.I(className="fas fa-question-circle fa-lg", id="target2",
+                 style={'display': 'inline-block', 'width': '10%', 'color':'#99ccff'},
+                 ),
+            dbc.Tooltip("Once a category is chosen, the app will automatically filter on the cost report features that contain data for one or more of your hospitals. That way, you don't have to wade through features that contain zero data.", 
+                        target="target2", style = {'font-size': 12},
+                 ),
+                    
             dcc.Dropdown(
                 id="categories-select1",
                 options=[{"label": i, "value": i} for i in report_categories],
@@ -513,7 +528,7 @@ app.layout = html.Div([
                         html.Hr(),
                         dcc.Graph(id="map_plot1"),
                     ],
-                    style={'width': '100%', 'display': 'inline-block',
+                    style={'width': '107%', 'display': 'inline-block',
                                  'border-radius': '15px',
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
@@ -524,12 +539,14 @@ app.layout = html.Div([
                 ),
                 
                 html.Div(
-                    [html.B(str(len(HOSPITALS_SET)) + " hospitals available", style={'fontSize':16}),
+                    [html.B(str(CMS_NUMS) + " CMS numbers among", style={'fontSize':16}),
+                     html.Br(),
+                     html.B(str(len(HOSPITALS_SET)) + " hospital names", style={'fontSize':16}),
                      html.H6(id="text1", style={'fontSize':16},)],
                     id="des1",
                     className="mini_container",
                     style={
-                        'width': '35%',
+                        'width': '38%',
                         'display': 'inline-block',
                         #'border-radius': '0px',
                         #'box-shadow': '1px 1px 1px grey',
@@ -543,7 +560,7 @@ app.layout = html.Div([
                     ),
                     
                 html.Div(
-                    [html.B('Download the full cost reports for the selected hospitals', style={'fontSize':16}),
+                    [html.B('Download cost reports for your selected hospitals', style={'fontSize':16}),
                      html.Br(),
                      html.A('Cost_Reports_Full.csv',
                             id="data_link", download="Cost_Reports_Full.csv",
@@ -556,7 +573,7 @@ app.layout = html.Div([
                     id="des3",
                     className="mini_container",
                     style={
-                        'width': '62%',
+                        'width': '59%',
                         'display': 'inline-block',
                         #'border-radius': '0px',
                         #'box-shadow': '1px 1px 1px grey',
@@ -578,7 +595,7 @@ app.layout = html.Div([
                         html.Hr(),
                         dcc.Graph(id="cost_report_plot1"),
                     ],
-                    style={'width': '100%', 'display': 'inline-block',
+                    style={'width': '107%', 'display': 'inline-block',
                                  'border-radius': '15px',
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
@@ -598,7 +615,7 @@ app.layout = html.Div([
                         html.Hr(),
                         dcc.Graph(id="table1"),
                     ],
-                    style={'width': '100%', 'display': 'inline-block',
+                    style={'width': '107%', 'display': 'inline-block',
                                  'border-radius': '15px',
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
@@ -618,7 +635,7 @@ app.layout = html.Div([
                         html.Hr(),
                         dcc.Graph(id="cost_report_plot2"),
                     ],
-                    style={'width': '100%', 'display': 'inline-block',
+                    style={'width': '107%', 'display': 'inline-block',
                                  'border-radius': '15px',
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
@@ -649,7 +666,7 @@ app.layout = html.Div([
             id="left-column2",
             className="columns",
             children=[description_card2(), generate_control_card2()],
-            style={'width': '95%', 'display': 'inline-block',
+            style={'width': '96%', 'display': 'inline-block',
                                  'border-radius': '15px',
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
@@ -670,7 +687,7 @@ app.layout = html.Div([
                     dcc.Graph(id="cost_report_plot4"),
                 ],
                 style={
-                        'width': '110%',
+                        'width': '114%',
                         #'display': 'inline-block',
                         'border-radius': '15px',
                         'box-shadow': '1px 1px 1px grey',
@@ -697,7 +714,7 @@ app.layout = html.Div([
                         generate_control_card4(),
                     ],
                     style={
-                            'width': '100%',
+                            'width': '105%',
                             #'display': 'inline-block',
                             'border-radius': '15px',
                             'box-shadow': '1px 1px 1px grey',
@@ -731,18 +748,6 @@ app.layout = html.Div([
     #prevent_initial_call=True,
     )
 def update_output1(value):
-    return 'Filter on number of beds: {}'.format(value)
-
-
-
-@app.callback( # Updated number of beds text
-    Output('Filterbeds2', 'children'),
-    [
-     Input('beds2', 'value'),
-     ],
-    #prevent_initial_call=True,
-    )
-def update_output6(value):
     return 'Filter on number of beds: {}'.format(value)
 
 
@@ -802,7 +807,6 @@ def update_output4(available_options):
      Input('hospital_type1', 'value'),
      Input('control_type1', 'value'),
      ],
-    #prevent_initial_call=True,
     )
 def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
     
@@ -814,13 +818,11 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
         ht = htypes[i]
         ct = ctypes[i]
         if b > low and b < high:
-            if s in states_vals:
-                if ht in htype_vals:
-                    if ct in ctype_vals:
-                        hospitals.append(h)
+            if s in states_vals and ht in htype_vals:
+                if ct in ctype_vals:
+                    hospitals.append(h)
             
-    hospitals = list(set(hospitals))
-    hospitals.sort()
+    hospitals = sorted(list(set(hospitals)))
     return [{"label": i, "value": i} for i in hospitals]
 
 
@@ -829,9 +831,15 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
     Output('df_tab1', "data"),
     [
      Input("hospital-select1", "value"),
+     Input("hospital-select1", "options"),
      ],
     )
-def update_df1_tab1(hospitals):
+def update_df1_tab1(hospitals, hospital_options):
+    
+    options = []
+    for h in hospital_options:
+        h1 = list(h.values())
+        options.append(h1[0])
     
     if hospitals is None or hospitals == []:
         return None
@@ -839,9 +847,15 @@ def update_df1_tab1(hospitals):
     if isinstance(hospitals, str) == True:
         hospitals = [hospitals]
     
+    hospitals = list(set(hospitals) & set(options))
+    
+    if hospitals == []:
+        return None
+    
     for i, val in enumerate(hospitals):
         
         prvdr = re.sub('\ |\?|\.|\!|\/|\;|\:', '', val)
+        prvdr = prvdr[prvdr.find("(")+1:prvdr.find(")")]
         
         url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
         tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
@@ -866,43 +880,46 @@ def update_df1_tab1(hospitals):
     )
 def update_map_plot1(df, h):
     
-    if df is None:
-        figure = go.Figure()
-        figure.add_trace(go.Scattermapbox(
+    figure = go.Figure()
+    figure.add_trace(go.Scattermapbox(
+    ),
+    )
+    
+    figure.update_layout(
+        autosize=True,
+        hovermode='closest',
+        mapbox=dict(
+            accesstoken='pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw',
+            bearing=0,
+            center=go.layout.mapbox.Center(
+                lat=39,
+                lon=-98
         ),
+        pitch=20,
+        zoom=3,
+        style='light',
         )
-        
-        figure.update_layout(
-            autosize=True,
-            hovermode='closest',
-            mapbox=dict(
-                accesstoken='pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw',
-                bearing=0,
-                center=go.layout.mapbox.Center(
-                    lat=39,
-                    lon=-98
-            ),
-            pitch=20,
-            zoom=3,
-            style='light',
-            )
+    )
+
+    figure.update_layout(
+        height=300, 
+        margin={"r":0,"t":0,"l":0,"b":0},
         )
-    
-        figure.update_layout(
-            height=300, 
-            margin={"r":0,"t":0,"l":0,"b":0},
-            )
-    
+
+    if df is None:
         return figure
     
     df = pd.read_json(df)
     
-    figure = go.Figure()
+    features = list(df)
+    if "('Lon', 'Lon', 'Lon', 'Lon')" not in features or "('Lat', 'Lat', 'Lat', 'Lat')" not in features:
+        return figure
     
+    figure = go.Figure()
     figure.add_trace(go.Scattermapbox(
         lon = df["('Lon', 'Lon', 'Lon', 'Lon')"],
         lat = df["('Lat', 'Lat', 'Lat', 'Lat')"],
-        text = df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"],
+        text = df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"],
                
         marker = dict(
             size = 10,
@@ -950,9 +967,9 @@ def update_table1(df, var1, var2):
     if df is None or var1 is None or var2 is None:
         figure = go.Figure(data=[go.Table(
             header=dict(values=[
-                'Provider name',
+                'Hospital',
                 'Fiscal year end date',
-                'Variable of interest',
+                'Feature',
                 ],
                 fill_color='#b3d1ff',
                 align='left'),
@@ -975,9 +992,9 @@ def update_table1(df, var1, var2):
     if df.shape[0] == 0:
         figure = go.Figure(data=[go.Table(
             header=dict(values=[
-                'Provider name',
+                'Hospital',
                 'Fiscal year end date',
-                'Variable of interest',
+                'Feature',
                 ],
                 fill_color='#b3d1ff',
                 align='left'),
@@ -998,11 +1015,11 @@ def update_table1(df, var1, var2):
     
     var3 = re.sub(r'\([^)]*\)', '', var2)        
     table_df = pd.DataFrame(columns=[
-                            'Provider name',
+                            'Hospital',
                             'Fiscal year end date',
                             ])
             
-    table_df['Provider name'] = df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"]
+    table_df['Hospital'] = df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"]
     table_df['Fiscal year end date'] = pd.to_datetime(df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]).dt.date
     
     str_ = var1 + "', '" + var2 + "')"
@@ -1011,9 +1028,9 @@ def update_table1(df, var1, var2):
     if len(column) == 0:
         figure = go.Figure(data=[go.Table(
             header=dict(values=[
-                'Provider name',
+                'Hospital',
                 'Fiscal year end date',
-                'Variable of interest',
+                'Feature',
                 ],
                 fill_color='#b3d1ff',
                 align='left'),
@@ -1044,7 +1061,7 @@ def update_table1(df, var1, var2):
         header=dict(values=list(table_df.columns),
                     fill_color='#b3d1ff',
                     align='left'),
-        cells=dict(values=[table_df['Provider name'], 
+        cells=dict(values=[table_df['Hospital'], 
                            table_df['Fiscal year end date'],
                            table_df[var3],
                            ],
@@ -1088,16 +1105,18 @@ def update_download(df): #, beds, htypes):
     else:
         tdf = main_df.copy(deep=True)
         
-        c1 = tdf.columns.get_level_values(0).tolist()
-        c2 = tdf.columns.get_level_values(1).tolist()
-        c3 = tdf.columns.get_level_values(2).tolist()
-        c4 = tdf.columns.get_level_values(3).tolist()
+        #c1 = tdf.columns.get_level_values(0).tolist()
+        #c2 = tdf.columns.get_level_values(1).tolist()
+        #c3 = tdf.columns.get_level_values(2).tolist()
+        #c4 = tdf.columns.get_level_values(3).tolist()
         
         cols = list(df)
+        
         for i, c in enumerate(cols):
             vals = df[c].tolist()
-            tdf[(c1[i], c2[i], c3[i], c4[i])] = vals
             
+            c = list(eval(c))
+            tdf[(c[0], c[1], c[2], c[3])] = vals
             
         csv_string = tdf.to_csv(index=True, encoding='utf-8')
         csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
@@ -1159,14 +1178,21 @@ def update_cost_report_plot1(df, var1, var2):
         return fig
         
     fig_data = []
-    hospitals = sorted(df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].unique())
+    #x = "('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDENTIFICATION INFORMATION', 'Hospital Provider Number (PRVDR_NUM)')"
+    x = "('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"
+    hospitals = sorted(df[x].unique())
     
     for i, hospital in enumerate(hospitals):
         
-        sub_df = df[df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"] == hospital]
+        #hospital = str(hospital)
+        #if len(hospital) < 6:
+        #    hospital = '0' + hospital
+            
+        sub_df = df[df[x] == hospital]
+        
         #sub_df.sort_values(by=["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"],
         #                        ascending=[True], inplace=True)
-            
+           
         dates = sub_df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]
             
         str_ = var1 + "', '" + var2 + "')"
@@ -1203,7 +1229,7 @@ def update_cost_report_plot1(df, var1, var2):
                 go.Scatter(
                     x=dates,
                     y=obs_y,
-                    name=hospital,
+                    name=str(hospital),
                     mode="lines",
                 )
             )
@@ -1311,7 +1337,7 @@ def update_cost_report_plot2(df, var1, var2):
         if df.shape[0] == 0:
             return figure
         
-        col_names = ['Fiscal Year End Date', 'Num and Name']
+        col_names = ['Fiscal Year End Date', 'Curated Name and Num']
         new_df = pd.DataFrame(columns = col_names)
         
         dates = df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"].tolist()
@@ -1327,7 +1353,7 @@ def update_cost_report_plot2(df, var1, var2):
             
         new_df[var2] = df[column].tolist()
         
-        new_df['Num and Name'] = df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].tolist()                   
+        new_df['Curated Name and Num'] = df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].tolist()                   
         
         fig_data = []
         new_df['years'] = pd.to_datetime(new_df['Fiscal Year End Date']).dt.year
@@ -1339,7 +1365,7 @@ def update_cost_report_plot2(df, var1, var2):
             return figure
         
         obs_y = sub_df[var2].tolist()
-        hospitals2 = sub_df['Num and Name'].tolist()
+        hospitals2 = sub_df['Curated Name and Num'].tolist()
         
         
         fig_data.append(
@@ -1405,7 +1431,7 @@ def update_cost_report_plot2(df, var1, var2):
                 
                 sub_df = new_df[new_df['years'] == year]
                 obs_y = sub_df[var2].tolist()
-                hospitals2 = sub_df['Num and Name'].tolist()
+                hospitals2 = sub_df['Curated Name and Num'].tolist()
                 
                 figure.add_trace(go.Bar(
                     x = hospitals2,
@@ -1441,7 +1467,8 @@ def update_hospital(hospital):
         return None
         
     prvdr = re.sub('\ |\?|\.|\!|\/|\;|\:', '', hospital)
-        
+    prvdr = prvdr[prvdr.find("(")+1:prvdr.find(")")]
+    
     url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
     df = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
     df.dropna(axis=1, how='all', inplace=True)
@@ -1626,7 +1653,7 @@ def update_cost_report_plot3(df, xvar1, xvar2, yvar1, yvar2, trendline):
     column2 = column2[0]
     y = df[column2].tolist()
     
-    hospital = list(set(df["('Num and Name', 'Num and Name', 'Num and Name', 'Num and Name')"].tolist()))                 
+    hospital = list(set(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].tolist()))                 
     
     fig_data = []
         
@@ -1983,5 +2010,5 @@ def update_text1(hospitals2, states_val, beds_val, htype_vals, ctype_vals):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
 
