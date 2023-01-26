@@ -85,6 +85,8 @@ url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provide
 main_df = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
 main_df = pd.DataFrame(columns = main_df.columns)
 
+print(main_df.shape[1], 'HCRIS features')
+
 
 ################# DASH APP CONTROL FUNCTIONS #################################
 
@@ -102,11 +104,13 @@ def description_card1():
             html.H5("Healthcare cost reports", style={
             'textAlign': 'left',
         }),
-           dcc.Markdown(" Until now, using data from the Healthcare Cost Report Information System (HCRIS) meant tackling large complicated files with expensive software, or paying someone else to do it. This app allows you to analyze and download 2,000+ cost related variables for 9,000+ hospitals.",
-                  ),
-            html.Br(),
-            dcc.Markdown("This app runs on free servers, not super computers.",
-            ),
+           dcc.Markdown("Until now, using data from the Healthcare Cost Report Information System (HCRIS) " +
+                        "meant tackling large complicated files with expensive software, or paying someone " +
+                        "else to do it."),
+           dcc.Markdown("This app allows you to analyze and download 3,800+ cost related " +
+                        "variables for 6,000+ hospitals, for each year since 2010. Get the source code " +
+                        "for this app [here] (https://github.com/klocey/hcris-app) and the cost reports " +
+                        "for all hospitals [here] (https://github.com/klocey/HCRIS-databuilder/tree/master/provider_data)."),
         ],
     )
 
@@ -538,31 +542,10 @@ app.layout = html.Div([
                             },
                 ),
                 
+                
+                
                 html.Div(
-                    [html.B(str(CMS_NUMS) + " CMS numbers among", style={'fontSize':16}),
-                     html.Br(),
-                     html.B(str(len(HOSPITALS_SET)) + " hospital names", style={'fontSize':16}),
-                     html.H6(id="text1", style={'fontSize':16},)],
-                    id="des1",
-                    className="mini_container",
-                    style={
-                        'width': '38%',
-                        'display': 'inline-block',
-                        #'border-radius': '0px',
-                        #'box-shadow': '1px 1px 1px grey',
-                        #'background-color': '#f0f0f0',
-                        #'padding': '0px',
-                        #'margin-right': '0px',
-                        #'margin-bottom': '10px',
-                        'fontSize':16,
-                        'textAlign': 'center',
-                        },
-                    ),
-                    
-                html.Div(
-                    [html.B('Download cost reports for your selected hospitals', style={'fontSize':16}),
-                     html.Br(),
-                     html.A('Cost_Reports_Full.csv',
+                    [html.A('Download cost reports for your selected hospitals',
                             id="data_link", download="Cost_Reports_Full.csv",
                         href="",
                         target="_blank",
@@ -573,21 +556,20 @@ app.layout = html.Div([
                     id="des3",
                     className="mini_container",
                     style={
-                        'width': '59%',
+                        'width': '107%',
                         'display': 'inline-block',
-                        #'border-radius': '0px',
-                        #'box-shadow': '1px 1px 1px grey',
-                        #'background-color': '#f0f0f0',
-                        #'padding': '0px',
-                        #'margin-right': '0px',
-                        #'margin-bottom': '10px',
+                        'border-radius': '10px',
+                        'box-shadow': '1px 1px 1px grey',
+                        'background-color': '#f0f0f0',
+                        'padding': '10px',
+                        'margin-right': '10px',
+                        'margin-bottom': '10px',
                         'fontSize':16,
                         'textAlign': 'center',
                         },
                     ),
                 
-                #html.Br(),
-                #html.Br(),
+                
                 html.Div(
                     id="cost_report1",
                     children=[
@@ -1955,7 +1937,7 @@ def update_output11(value):
     return [{"label": i, "value": i} for i in options]
 
 
-'''
+
 #########################################################################################
 
 
@@ -2004,11 +1986,11 @@ def update_text1(hospitals2, states_val, beds_val, htype_vals, ctype_vals):
     return text
 
 #########################################################################################
-'''
+
 
 
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
