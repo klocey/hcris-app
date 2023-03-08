@@ -96,16 +96,16 @@ def description_card1():
     return html.Div(
         id="description-card1",
         children=[
-            html.H5("Healthcare cost reports", style={
+            html.H5("Hospital cost reports", style={
             'textAlign': 'left',
         }),
-           dcc.Markdown("Until now, using data from the Healthcare Cost Report Information System (HCRIS) " +
-                        "meant tackling large complicated files with expensive software, or paying someone " +
+           dcc.Markdown("Gaining insights into the Healthcare Cost Report Information System (HCRIS) " +
+                        "usually means tackling large, complicated files with expensive software or paying someone " +
                         "else to do it."),
            dcc.Markdown("This app allows you to analyze and download 3,800+ cost related " +
                         "variables for 6,000+ hospitals, for each year since 2010. Get the source code " +
-                        "for this app [here] (https://github.com/klocey/hcris-app) and the cost reports " +
-                        "for all hospitals [here] (https://github.com/klocey/HCRIS-databuilder/tree/master/provider_data)."),
+                        "for this app [here] (https://github.com/Rush-Quality-Analytics/hcris-app) and the cost reports " +
+                        "for all hospitals [here] (https://github.com/Rush-Quality-Analytics/HCRIS-databuilder/tree/master/provider_data)."),
         ],
     )
 
@@ -479,10 +479,11 @@ app.layout = html.Div([
             style={'background-color': '#f9f9f9'},
             id="banner1",
             className="banner",
-            children=[
-                        html.Img(src=app.get_asset_url("plotly_logo.png"),
-                               style={'textAlign': 'right'}),
-                      ],
+            children=[html.Img(src=app.get_asset_url("RUSH_full_color.jpg"), 
+                               style={'textAlign': 'left'}),
+                      html.Img(src=app.get_asset_url("plotly_logo.png"), 
+                               style={'textAlign': 'right'})],
+
         ),
         
     # Left column
@@ -554,7 +555,7 @@ app.layout = html.Div([
                     id="cost_report1",
                     children=[
                         html.H5("Cost Report Across Fiscal Years"),
-                        html.P("Select a category and sub-category for your x-variable."),
+                        html.P("Select a category and a feature."),
                         dcc.Dropdown(
                             id="categories-select1",
                             options=[{"label": i, "value": i} for i in report_categories],
