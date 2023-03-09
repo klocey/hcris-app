@@ -13,7 +13,8 @@ import re
 import csv
 import math
 import random
-    
+import timeit
+
 import urllib
 import numpy as np
 import statsmodels.api as sm
@@ -176,12 +177,19 @@ def generate_control_card1():
             html.Div(id='Filterbeds1'),
             dcc.RangeSlider(
                 id='beds1',
-                count=1,
-                min=1,
-                max=2752,
-                step=1,
-                
-                value=[1, 2752],
+                #count=1,
+                min=0,
+                max=2800,
+                step=50,
+                marks={
+                        100: '100',
+                        500: '500',
+                        1000: '1000',
+                        1500: '1500',
+                        2000: '2000',
+                        2500: '2500',
+                    },
+                value=[1, 2800],
                 ),
             
             html.Br(),
@@ -532,6 +540,10 @@ def generate_control_card5():
 app.layout = html.Div([
     
     dcc.Store(id='df_tab1', storage_type='memory'),
+    html.Div(
+        id='url_ls',
+        style={'display': 'none'}
+        ),
     
     # Banner
     html.Div(
@@ -714,8 +726,9 @@ app.layout = html.Div([
 
 
     
-###############################    TAB 1    #############################################
+##############################   Callbacks   ############################################
 #########################################################################################
+
 
 @app.callback( # Updated number of beds text
     Output('Filterbeds1', 'children'),
@@ -735,11 +748,14 @@ def update_output1(value):
      ],
     )
 def update_output3(value, df):
+    
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
     
     if df is not None:
+        start = timeit.default_timer()
+        
         df = pd.read_json(df)
         df.dropna(axis=1, how='all', inplace=True)
         cols1 = list(df)
@@ -753,11 +769,15 @@ def update_output3(value, df):
         for c in sub_cat:
             if c in cols2:
                 sub_categories.append(c)
+                
+        ex_time = timeit.default_timer() - start
+        print("update_output3 executed in "+str(ex_time)) # It returns time in seconds
+        
     else:
         sub_categories = sub_cat
-        
+    
+    
     return [{"label": i, "value": i} for i in sub_categories]
-
 
 
 @app.callback( # Select sub-category
@@ -783,6 +803,7 @@ def update_output4(available_options):
      ],
     )
 def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
+    start = timeit.default_timer()
     
     low, high = bed_range
     hospitals = []
@@ -797,17 +818,21 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
                     hospitals.append(h)
             
     hospitals = sorted(list(set(hospitals)))
+    
+    ex_time = timeit.default_timer() - start
+    print("update_hospitals executed in "+str(ex_time)) # It returns time in seconds
+    
     return [{"label": i, "value": i} for i in hospitals]
 
 
-
 @app.callback(
-    Output('df_tab1', "data"),
+    Output('url_ls', "children"),
     [Input('btn1', 'n_clicks')],
     [State("hospital-select1", "value"),
      State("hospital-select1", "options"),],
     )
-def update_df1_tab1(btn1, hospitals, hospital_options):
+def get_urls(btn1, hospitals, hospital_options):
+    start = timeit.default_timer()
     
     options = []
     for h in hospital_options:
@@ -815,6 +840,8 @@ def update_df1_tab1(btn1, hospitals, hospital_options):
         options.append(h1[0])
     
     if hospitals is None or hospitals == []:
+        ex_time = timeit.default_timer() - start
+        print("get_urls executed in "+str(ex_time)) # It returns time in seconds
         return None
     
     if isinstance(hospitals, str) == True:
@@ -823,27 +850,81 @@ def update_df1_tab1(btn1, hospitals, hospital_options):
     hospitals = list(set(hospitals) & set(options))
     
     if hospitals == []:
+        ex_time = timeit.default_timer() - start
+        print("get_urls executed in "+str(ex_time)) # It returns time in seconds
         return None
     
+    url_ls = []
     for i, val in enumerate(hospitals):
         
         prvdr = re.sub('\ |\?|\.|\!|\/|\;|\:', '', val)
         prvdr = prvdr[prvdr.find("(")+1:prvdr.find(")")]
         
         url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
-        tdf = pd.read_csv(url, header=[0,1,2,3], index_col=[0])
+        url_ls.append(url)
+    
+    ex_time = timeit.default_timer() - start
+    print("get_urls executed in "+str(ex_time)) # It returns time in seconds
+    
+    return url_ls
+    
+
+@app.callback(
+    Output('df_tab1', "data"),
+    [
+     Input('url_ls', 'children'),
+     Input('df_tab1', "data"),
+     ],
+    )
+def update_df1_tab1(urls, df):
+    
+    start = timeit.default_timer()
+    
+    if urls is None or urls is []:
+        return None
+    
+    elif df is None:
         
-        if i == 0:
-            df = tdf.copy(deep=True)
-        else:
+        for i, url in enumerate(urls):
+            
+            tdf = pd.read_csv(url, header=[0,1,2,3], index_col=[0])
+            tdf[('data url', 'data url', 'data url', 'data url')] = [url] * tdf.shape[0]
+            
+            if i == 0:
+                df = tdf.copy(deep=True)
+            else:
+                df = pd.concat([df, tdf]) 
+                
+        df.dropna(axis=1, how='all', inplace=True)
+        df.reset_index(drop=True, inplace=True)
+        
+        ex_time = timeit.default_timer() - start
+        print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
+        return df.to_json()
+
+    else:
+        df = pd.read_json(df)
+        df = df[df["('data url', 'data url', 'data url', 'data url')"].isin(urls)]
+        df_urls = df["('data url', 'data url', 'data url', 'data url')"].unique()
+        
+        url_ls = list(set(urls)-set(df_urls))
+             
+        for i, url in enumerate(url_ls):
+            print('new:', url)
+            
+            tdf = pd.read_csv(url, header=[0,1,2,3], index_col=[0])
+            tdf = tdf.to_json()
+            tdf = pd.read_json(tdf)
+            tdf["('data url', 'data url', 'data url', 'data url')"] = [url] * tdf.shape[0]
             df = pd.concat([df, tdf]) 
     
-    df.dropna(axis=1, how='all', inplace=True)
-    df.reset_index(drop=True, inplace=True)
-    
-    return df.to_json()
-    
-    
+        df.dropna(axis=1, how='all', inplace=True)
+        df.reset_index(drop=True, inplace=True)
+        
+        ex_time = timeit.default_timer() - start
+        print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
+        return df.to_json()
+
 
 @app.callback(
     Output("map_plot1", "figure"),
@@ -927,10 +1008,6 @@ def update_map_plot1(df, h):
     
     return figure
 
-    
-
-    
-    
 
 @app.callback(
     Output("data_link", "href"),
@@ -938,17 +1015,24 @@ def update_map_plot1(df, h):
      Input('df_tab1', "data"),
      ],
     )
-def update_download(df): #, beds, htypes):
+def update_download(df):
+    
+    start = timeit.default_timer()
     
     if df is None:
         csv_string = main_df.to_csv(index=False, encoding='utf-8')
         csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
+        
+        ex_time = timeit.default_timer() - start
+        print("update_download executed in "+str(ex_time)) # It returns time in seconds
         return csv_string
             
     df = pd.read_json(df)
     if df.shape[0] == 0:
         csv_string = main_df.to_csv(index=False, encoding='utf-8')
         csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
+        ex_time = timeit.default_timer() - start
+        print("update_download executed in "+str(ex_time)) # It returns time in seconds
         return csv_string
     
     
@@ -965,6 +1049,8 @@ def update_download(df): #, beds, htypes):
         csv_string = tdf.to_csv(index=True, encoding='utf-8')
         csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
             
+    ex_time = timeit.default_timer() - start
+    print("update_download executed in "+str(ex_time)) # It returns time in seconds
     return csv_string
 
 
@@ -977,6 +1063,8 @@ def update_download(df): #, beds, htypes):
      ],
     )
 def update_cost_report_plot1(df, var1, var2):
+    
+    start = timeit.default_timer()
     
     if df is None or var1 is None or var1 is None:
         fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
@@ -996,6 +1084,9 @@ def update_cost_report_plot1(df, var1, var2):
                           paper_bgcolor="#f0f0f0",
                           plot_bgcolor="#f0f0f0",
                           )
+        
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
         
         return fig
          
@@ -1018,6 +1109,9 @@ def update_cost_report_plot1(df, var1, var2):
                           paper_bgcolor="#f0f0f0",
                           plot_bgcolor="#f0f0f0",
                           )
+        
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
         
         return fig
         
@@ -1057,6 +1151,9 @@ def update_cost_report_plot1(df, var1, var2):
                               plot_bgcolor="#f0f0f0",
                               )
             
+            ex_time = timeit.default_timer() - start
+            print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+            
             return fig
         
         column = column[0]
@@ -1084,16 +1181,18 @@ def update_cost_report_plot1(df, var1, var2):
                 )
         
         txt_ = '<b>' + var1 + '<b>'
-        if len(var2) > 40:
+        var2b = re.sub("\(.*?\)|\[.*?\]","", var2)
+        
+        if len(var2b) > 40:
             var_ls = []
-            for j in range(0, len(var2), 40):
-                var_ls.append(var2[j : j + 40])
+            for j in range(0, len(var2b), 40):
+                var_ls.append(var2b[j : j + 40])
             
             
             for j in var_ls:
                 txt_ = txt_ + '<br>' + j 
         else:
-            txt_ = txt_ + '<br>' + var2 
+            txt_ = txt_ + '<br>' + var2b 
             
         figure = go.Figure(
             data=fig_data,
@@ -1154,10 +1253,11 @@ def update_cost_report_plot1(df, var1, var2):
     del dates
     del x
     
+    ex_time = timeit.default_timer() - start
+    print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+    
     return figure
     
-
- 
 
 @app.callback( # Update available sub_categories
     Output('categories-select22', 'options'),
@@ -1167,6 +1267,9 @@ def update_cost_report_plot1(df, var1, var2):
      ],
     )
 def update_output7(value, df):
+    
+    start = timeit.default_timer()
+    
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
@@ -1187,6 +1290,9 @@ def update_output7(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
+    
+    ex_time = timeit.default_timer() - start
+    print("update_output7 executed in "+str(ex_time)) # It returns time in seconds
     
     return [{"label": i, "value": i} for i in sub_categories]
 
@@ -1204,7 +1310,6 @@ def update_output8(available_options):
         return 'NUMBER OF BEDS'
     
     
-
 @app.callback( # Update available sub_categories
     Output('categories-select22-2', 'options'),
     [
@@ -1213,6 +1318,9 @@ def update_output8(available_options):
      ],
     )
 def update_output9(value, df):
+
+    start = timeit.default_timer()
+
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
@@ -1236,8 +1344,10 @@ def update_output9(value, df):
         sub_categories = sub_cat
     
     #sub_categories = sorted(sub_categories)
-    return [{"label": i, "value": i} for i in sub_categories]
+    ex_time = timeit.default_timer() - start
+    print("update_output9 executed in "+str(ex_time)) # It returns time in seconds
 
+    return [{"label": i, "value": i} for i in sub_categories]
 
 
 @app.callback( # Select sub-category
@@ -1252,9 +1362,6 @@ def update_output10(available_options):
     except:
         return 'NUMBER OF BEDS'
     
-    
-    
-
 
 @app.callback( # Update available sub_categories
     Output('categories-select33', 'options'),
@@ -1264,6 +1371,9 @@ def update_output10(available_options):
      ],
     )
 def update_output11(value, df):
+    
+    start = timeit.default_timer()
+    
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
@@ -1285,6 +1395,9 @@ def update_output11(value, df):
     else:
         sub_categories = sub_cat
     
+    ex_time = timeit.default_timer() - start
+    print("update_output11 executed in "+str(ex_time)) # It returns time in seconds
+
     return [{"label": i, "value": i} for i in sub_categories]
 
 
@@ -1298,8 +1411,7 @@ def update_output12(available_options):
     try:
         return available_options[0]['value']
     except:
-        return 'NUMBER OF BEDS'
-    
+        return 'NUMBER OF BEDS'    
     
 
 @app.callback( # Update available sub_categories
@@ -1310,6 +1422,9 @@ def update_output12(available_options):
      ],
     )
 def update_output13(value, df):
+    
+    start = timeit.default_timer()
+    
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
@@ -1332,9 +1447,11 @@ def update_output13(value, df):
     else:
         sub_categories = sub_cat
     
+    ex_time = timeit.default_timer() - start
+    print("update_output13 executed in "+str(ex_time)) # It returns time in seconds
+
     #sub_categories = sorted(sub_categories)
     return [{"label": i, "value": i} for i in sub_categories]
-
 
 
 @app.callback( # Select sub-category
@@ -1348,9 +1465,7 @@ def update_output14(available_options):
         return available_options[0]['value']
     except:
         return 'NUMBER OF BEDS'
-
-
-    
+  
 
 @app.callback( # Update Line plot
     Output("cost_report_plot2", "figure"),
@@ -1366,6 +1481,7 @@ def update_output14(available_options):
     [State("df_tab1", "data")],
     )
 def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, df):
+    start = timeit.default_timer()
     
     if df is None or xvar1 is None or xvar2 is None or yvar1 is None or yvar2 is None or yvar2 == 'NUMBER OF BEDS':
             
@@ -1389,6 +1505,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                       plot_bgcolor="#f0f0f0",
                       )
         
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
         return fig
             
     
@@ -1424,6 +1542,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                       plot_bgcolor="#f0f0f0",
                       )
         
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
         return fig
     
     
@@ -1694,30 +1814,30 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
         )
     )
     
-    
     txt1 = '<b>' + xvar1 + '<b>'
-    if len(xvar2) > 40:
+    xvar2b = re.sub("\(.*?\)|\[.*?\]","", xvar2)
+    if len(xvar2b) > 40:
         var_ls = []
-        for j in range(0, len(xvar2), 40):
-            var_ls.append(xvar2[j : j + 40])
-        
+        for j in range(0, len(xvar2b), 40):
+            var_ls.append(xvar2b[j : j + 40])
         
         for j in var_ls:
             txt1 = txt1 + '<br>' + j 
     else:
-        txt1 = txt1 + '<br>' + xvar2 
+        txt1 = txt1 + '<br>' + xvar2b
+    
         
     txt2 = '<b>' + yvar1 + '<b>'
-    if len(yvar2) > 40:
+    yvar2b = re.sub("\(.*?\)|\[.*?\]","", yvar2)
+    if len(yvar2b) > 40:
         var_ls = []
-        for j in range(0, len(yvar2), 40):
-            var_ls.append(yvar2[j : j + 40])
-        
+        for j in range(0, len(yvar2b), 40):
+            var_ls.append(yvar2b[j : j + 40])
         
         for j in var_ls:
             txt2 = txt2 + '<br>' + j 
     else:
-        txt2 = txt2 + '<br>' + yvar2 
+        txt2 = txt2 + '<br>' + yvar2b
         
     figure = go.Figure(
         data=fig_data,
@@ -1792,9 +1912,10 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     del txt1
     del txt2
     
+    ex_time = timeit.default_timer() - start
+    print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
+
     return figure
-
-
 
 
 @app.callback( # Update Line plot
@@ -1808,6 +1929,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
      ],
     )
 def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
+    
+    start = timeit.default_timer()
     
     if df is None or numer1 is None or numer2 is None or denom1 is None or denom2 is None or denom2 == 'NUMBER OF BEDS':
             
@@ -1831,6 +1954,8 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
                       plot_bgcolor="#f0f0f0",
                       )
         
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
         return fig
             
     
@@ -1868,7 +1993,8 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
                       paper_bgcolor="#f0f0f0",
                       plot_bgcolor="#f0f0f0",
                       )
-        
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
         return fig
     
     
@@ -1980,9 +2106,9 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
     del date_var
     del name_var
     
+    ex_time = timeit.default_timer() - start
+    print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
     return figure
-
-
 
 
 @app.callback( # Update available sub_categories
@@ -2003,5 +2129,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
