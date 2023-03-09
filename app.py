@@ -11,11 +11,16 @@ import warnings
 import sys
 import re
 import csv
+import math
+import random
     
 import urllib
 import numpy as np
 import statsmodels.api as sm
 from scipy import stats
+from sklearn.preprocessing import PolynomialFeatures
+from statsmodels.stats.outliers_influence import summary_table
+
 
 px.set_mapbox_access_token('pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw')
 
@@ -81,9 +86,32 @@ main_df = pd.DataFrame(columns = main_df.columns)
 print(main_df.shape[1], 'HCRIS features')
 print(CMS_NUMS, 'CMS numbers')
 print(len(list(set(HOSPITALS))), 'hospitals')
+
+random.seed(42)
+
+COLORS = []
+for h in HOSPITALS:
+    if 'RUSH UNIVERSITY' in h:
+        clr = '#167e04'
+    else:
+        clr = '#' + "%06x" % random.randint(0, 0xFFFFFF)
+    COLORS.append(clr)
+    
+
 print(len(sub_categories), 'choosable features')
 
 ################# DASH APP CONTROL FUNCTIONS #################################
+
+def myround(n):
+    if n == 0:
+        return 0
+    sgn = -1 if n < 0 else 1
+    scale = int(-math.floor(math.log10(abs(n))))
+    if scale <= 0:
+        scale = 2
+    factor = 10**scale
+    return sgn*math.floor(abs(n)*factor)/factor
+
 
 def obs_pred_rsquare(obs, pred):
     return 1 - sum((obs - pred) ** 2) / sum((obs - np.mean(obs)) ** 2)
@@ -255,7 +283,7 @@ def generate_control_card3():
         children=[
             
             html.H5("Examine relationships between variables"),
-            html.P("Select a category and feature for your x-variable."),
+            html.P("Select a category, feature, and scale for your x-variable. "),
             dcc.Dropdown(
                 id="categories-select2",
                 options=[{"label": i, "value": i} for i in report_categories],
@@ -289,8 +317,23 @@ def generate_control_card3():
                     }
             ),
             
+            dcc.Dropdown(
+                    id='x_transform',
+                    options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
+                    multi=False, value='linear',
+                    style={'width': '120px', 
+                            'font-size': "90%",
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            #'box-shadow': '1px 1px 1px grey',
+                            #'background-color': '#f0f0f0',
+                            'padding': '0px',
+                            'margin-left': '10px',
+                         },
+                    ),
             
-            html.P("Select a category and feature for your y-variable."),
+            
+            html.P("Select a category, feature, and scale for your y-variable. "),
             dcc.Dropdown(
                 id="categories-select2-2",
                 options=[{"label": i, "value": i} for i in report_categories],
@@ -324,6 +367,22 @@ def generate_control_card3():
                     }
             ),
             
+            dcc.Dropdown(
+                    id='y_transform',
+                    options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
+                    multi=False, value='linear',
+                    style={'width': '120px', 
+                            'font-size': "90%",
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            #'box-shadow': '1px 1px 1px grey',
+                            #'background-color': '#f0f0f0',
+                            'padding': '0px',
+                            'margin-left': '10px',
+                         },
+                    ),
+            
+            
         ],
         style={
             #'width': '2000px', 
@@ -348,7 +407,7 @@ def generate_control_card4():
             html.P("Select a model for fitting a trendline"),
             dcc.Dropdown(
                 id='trendline-1',
-                value='locally weighted',
+                value='linear',
                 style={
                     'width': '200px', 
                     'font-size': "100%",
@@ -772,7 +831,7 @@ def update_df1_tab1(btn1, hospitals, hospital_options):
         prvdr = prvdr[prvdr.find("(")+1:prvdr.find(")")]
         
         url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
-        tdf = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
+        tdf = pd.read_csv(url, header=[0,1,2,3], index_col=[0])
         
         if i == 0:
             df = tdf.copy(deep=True)
@@ -780,6 +839,7 @@ def update_df1_tab1(btn1, hospitals, hospital_options):
             df = pd.concat([df, tdf]) 
     
     df.dropna(axis=1, how='all', inplace=True)
+    df.reset_index(drop=True, inplace=True)
     
     return df.to_json()
     
@@ -1006,17 +1066,22 @@ def update_cost_report_plot1(df, var1, var2):
         #dates, obs_y = map(list, zip(*sorted(zip(dates, obs_y), reverse=False)))
         hospital = str(hospital)
         
+        hi = HOSPITALS.index(hospital)
+        clr = COLORS[hi]
+        
         if len(hospital) > 30:
             hospital = hospital[0:20] + ' ... ' + hospital[-8:]
-            
+        
         fig_data.append(
-                go.Scatter(
-                    x=dates,
-                    y=obs_y,
-                    name=hospital,
-                    mode='lines+markers',
+                    go.Scatter(
+                        x=dates,
+                        y=obs_y,
+                        name=hospital,
+                        mode='lines+markers',
+                        marker=dict(color=clr),
+                        #text= text,
+                    )
                 )
-            )
         
         txt_ = '<b>' + var1 + '<b>'
         if len(var2) > 40:
@@ -1294,11 +1359,13 @@ def update_output14(available_options):
      Input('categories-select22', 'value'),
      Input('categories-select2-2', 'value'),
      Input('categories-select22-2', 'value'),
+     Input('x_transform', 'value'),
+     Input('y_transform', 'value'),
      Input('trendline-1', 'value'),
      ],
     [State("df_tab1", "data")],
     )
-def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, trendline, df):
+def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, df):
     
     if df is None or xvar1 is None or xvar2 is None or yvar1 is None or yvar2 is None or yvar2 == 'NUMBER OF BEDS':
             
@@ -1328,9 +1395,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, trendline, df):
     df = pd.read_json(df)
     
     fig_data = []
-    
-    #df['years'] = pd.to_datetime(dates).dt.year
-    #headers = list(set(list(df)))
     
     str_1 = xvar1 + "', '" + xvar2 + "')"
     str_2 = yvar1 + "', '" + yvar2 + "')"
@@ -1366,7 +1430,7 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, trendline, df):
     hospitals = sorted(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())                 
     
     fig_data = []
-    for hospital in hospitals:
+    for i, hospital in enumerate(hospitals):
         
         tdf = df[df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"] == hospital]
         
@@ -1387,15 +1451,29 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, trendline, df):
         
         x, y, dates, names = map(list, zip(*sorted(zip(x, y, dates, names), reverse=False)))
         
+        if xscale == 'log10' and np.nanmin(x) >= 0:
+            x = np.log10(x)
+        elif xscale == 'square root' and np.nanmin(x) >= 0:
+            x = np.sqrt(x)
+            
+        if yscale == 'log10' and np.nanmin(y) >= 0:
+            y = np.log10(y)
+        elif yscale == 'square root' and np.nanmin(y) >= 0:
+            y = np.sqrt(y)
+            
+        hi = HOSPITALS.index(hospital)
+        clr = COLORS[hi]
+        
         if len(hospital) > 30:
             hospital = hospital[0:20] + ' ... ' + hospital[-8:]
-            
+        
         fig_data.append(
                     go.Scatter(
                         x=x,
                         y=y,
                         name=hospital,
                         mode='markers',
+                        marker=dict(color=clr),
                         text= text,
                     )
                 )
@@ -1411,6 +1489,16 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, trendline, df):
     column2 = column2[0]
     y = df[column2].tolist()
     
+    if xscale == 'log10' and np.nanmin(x) >= 0:
+        x = np.log10(x)
+    elif xscale == 'square root' and np.nanmin(x) >= 0:
+        x = np.sqrt(x)
+        
+    if yscale == 'log10' and np.nanmin(y) >= 0:
+        y = np.log10(y)
+    elif yscale == 'square root' and np.nanmin(y) >= 0:
+        y = np.sqrt(y)
+        
     tdf = pd.DataFrame(columns = ['x', 'y'])
     tdf['x'] = x
     tdf['y'] = y
@@ -1428,52 +1516,184 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, trendline, df):
     if x.tolist() == [] or y.tolist() == []:
         slope, intercept, r_value, p_value, std_err = np.nan, np.nan, np.nan, np.nan, np.nan
         r2 = np.nan
+    
         
+    tdf.replace([np.inf, -np.inf], np.nan, inplace=True)
+    tdf.dropna(how='any', inplace=True)
+        
+    x_o = tdf['x'].values.tolist()
+    y_o = tdf['y'].values.tolist()
+    x_o, y_o = zip(*sorted(zip(x_o, y_o)))
+    
+    x_o = np.array(x_o)
+    y_o = np.array(y_o)
+    
+    #Create single dimension
+    x = x_o[:, np.newaxis]
+    y = y_o[:, np.newaxis]
+
+    inds = x.ravel().argsort()  # Sort x values and get index
+    x = x.ravel()[inds].reshape(-1, 1)
+    y = y[inds] #Sort y according to x sorted index
+    
+    d = int()
+    if model == 'linear': d = 1
+    elif model == 'quadratic': d = 2
+    elif model == 'cubic': d = 3
+    
+    polynomial_features = PolynomialFeatures(degree = d)
+    xp = polynomial_features.fit_transform(x)
+        
+    model = sm.OLS(y, xp).fit()
+    ypred = model.predict(xp)
+    ypred = ypred.tolist()
+    
+    poly_coefs = model.params[1:].tolist()
+    poly_coefs.reverse()
+    
+    poly_exponents = list(range(1, len(poly_coefs)+1))
+    poly_exponents.reverse()
+    
+    eqn = 'y = '
+    for i, p in enumerate(poly_coefs):
+        exp = poly_exponents[i]
+        
+        if exp == 1:
+            exp = 'x'
+        elif exp == 2:
+            exp = 'x²'
+        elif exp == 3:
+            exp = 'x³'
+        
+        if i == 0:
+            p = myround(p)
+            eqn = eqn + str(p) + exp
+            
+        else:
+            if p >= 0:
+                p = myround(p)
+                eqn = eqn + ' + ' + str(p) + exp
+            else:
+                p = myround(p)
+                eqn = eqn + ' - ' + str(np.abs(p)) + exp
+    
+    b = model.params[0]
+    if b >= 0:
+        b = myround(b)
+        eqn = eqn + ' + ' + str(b)
     else:
-        if trendline == 'linear':
-            slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-            ty = intercept + slope*np.array(x)
+        b = myround(b)
+        eqn = eqn + ' - ' + str(np.abs(b))
+        
+    r2 = model.rsquared_adj
+    r2_adj = model.rsquared_adj
+    aic = model.aic
+    bic = model.bic
+    fp = model.f_pvalue
+    llf = model.llf
+    
+    st, data, ss2 = summary_table(model, alpha=0.05)
+    fittedvalues = data[:, 2]
+    predict_mean_se  = data[:, 3]
+    predict_mean_ci_low, predict_mean_ci_upp = data[:, 4:6].T
+    predict_ci_low, predict_ci_upp = data[:, 6:8].T
+    
+    outlier_y = []
+    outlier_x = []
+    nonoutlier_y = []
+    nonoutlier_x = []
+    for i, yi in enumerate(y_o):
+        if yi > predict_ci_upp[i] or yi < predict_ci_low[i]:
+            outlier_y.append(yi)
+            outlier_x.append(x_o[i])
+        else:
+            nonoutlier_y.append(yi)
+            nonoutlier_x.append(x_o[i])
+            
+    clr = "#3399ff"
+    #x, y, ypred = zip(*sorted(zip(x, y, ypred)))
+    
+    fig_data.append(go.Scatter(
+                        x = nonoutlier_x,
+                        y = nonoutlier_y,
+                        name = 'Non-outliers',
+                        mode = "markers",
+                        opacity = 1.0,
+                        marker = dict(size=10,
+                                    color=clr,
+                                    symbol="diamond-open",
+                                    )
+                    )
+                )
                 
-            r2 = obs_pred_rsquare(y, ty)
-            r2 = np.round(100*r2, 1)
-                
-        elif trendline == 'locally weighted':
-            lowess = sm.nonparametric.lowess
-            ty = lowess(y, x)
-            ty = np.transpose(ty)
-            ty = ty[1]
-                
-            r2 = obs_pred_rsquare(y, ty)
-            r2 = np.round(100*r2, 1)
-                
-        elif trendline == 'quadratic':
-            z = np.polyfit(x, y, 2).tolist()
-            p = np.poly1d(z)
-            ty = p(x)
-                
-            r2 = obs_pred_rsquare(y, ty)
-            r2 = np.round(100*r2, 1)
-                
-        elif trendline == 'cubic':
-            z = np.polyfit(x, y, 3).tolist()
-            p = np.poly1d(z)
-            ty = p(x)
-                
-            r2 = obs_pred_rsquare(y, ty)
-            r2 = np.round(100*r2, 1)
-                        
-        if x.tolist() != [] and y.tolist() != []:
-            fig_data.append(
+    fig_data.append(go.Scatter(
+            x = outlier_x,
+            y = outlier_y,
+            name = 'Outliers',
+            mode = "markers",
+            opacity = 1.0,
+            marker = dict(size=10,
+                        color="#ff0000",
+                        symbol="diamond-open",
+                        )
+        )
+    )
+    
+    fig_data.append(
                 go.Scatter(
-                x=x,
-                y=ty,
-                name='fitted line',
-                mode='lines',
-                marker=dict(color="#99ccff"),
+                    x = x_o,
+                    y = ypred,
+                    mode = "lines",
+                    name = 'fitted: r2 = <sup>'+str(np.round(r2, 3))+'</sup>',
+                    opacity = 0.75,
+                    line = dict(color = clr, width = 2),
                 )
             )
-            
-        #var3 = re.sub(r'\([^)]*\)', '', var2)
+    
+    fig_data.append(
+        go.Scatter(
+            x = x_o,
+            y = predict_mean_ci_upp,
+            mode = "lines",
+            name = 'upper 95 CI',
+            opacity = 0.75,
+            line = dict(color = clr, width = 2, dash='dash'),
+        )
+    )
+    
+    fig_data.append(
+        go.Scatter(
+            x = x_o,
+            y = predict_mean_ci_low,
+            mode = "lines",
+            name = 'lower 95 CI',
+            opacity = 0.75,
+            line = dict(color = clr, width = 2, dash='dash'),
+        )
+    )
+    
+    fig_data.append(
+        go.Scatter(
+            x = x_o,
+            y = predict_ci_upp,
+            mode = "lines",
+            name = 'upper 95 PI',
+            opacity = 0.75,
+            line = dict(color = clr, width = 2, dash='dot'),
+        )
+    )
+    
+    fig_data.append(
+        go.Scatter(
+            x = x_o,
+            y = predict_ci_low,
+            mode = "lines",
+            name = 'lower 95 PI',
+            opacity = 0.75,
+            line = dict(color = clr, width = 2, dash='dot'),
+        )
+    )
+    
     
     txt1 = '<b>' + xvar1 + '<b>'
     if len(xvar2) > 40:
@@ -1680,6 +1900,9 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
         
         text = names + '<br>' + dates.astype(str)
         
+        hi = HOSPITALS.index(hospital)
+        clr = COLORS[hi]
+        
         if len(hospital) > 30:
             hospital = hospital[0:20] + ' ... ' + hospital[-8:]
             
@@ -1689,6 +1912,7 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
                         y=y,
                         name=hospital,
                         mode='lines+markers',
+                        marker=dict(color=clr),
                         text= text,
                     )
                 )
@@ -1768,8 +1992,7 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
      ],
     )
 def update_output15(value):
-    options = ['linear', 'locally weighted',
-               'quadratic', 'cubic']
+    options = ['linear', 'quadratic', 'cubic']
     
     return [{"label": i, "value": i} for i in options]
 
