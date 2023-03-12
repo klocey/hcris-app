@@ -64,6 +64,7 @@ ctypes = ['NaN' if x is np.nan else x for x in ctypes]
 HOSPITALS, beds, states, htypes, ctypes = (list(t) for t in zip(*sorted(zip(HOSPITALS, beds, states, htypes, ctypes))))
 HOSPITALS_SET = sorted(list(set(HOSPITALS)))
 
+ddfs = "90%"
 
 with open('dataframe_data/report_categories.csv', newline='') as csvfile:
     categories = csv.reader(csvfile, delimiter=',')
@@ -138,6 +139,7 @@ def description_card1():
         ],
     )
 
+
 def description_card2():
     """
     :return: A Div containing dashboard title & descriptions.
@@ -158,7 +160,6 @@ def description_card2():
         }), 
         ],
     )
-
 
 
 def generate_control_card1():
@@ -201,7 +202,7 @@ def generate_control_card1():
                 value=sorted(list(set(htypes))),
                 style={
                     #'width': '320px', 
-                    'font-size': "100%",
+                    'font-size': ddfs,
                     },
                 ),
             
@@ -214,7 +215,7 @@ def generate_control_card1():
                 value=sorted(list(set(ctypes))),
                 style={
                     #'width': '320px', 
-                    'font-size': "100%",
+                    'font-size': ddfs,
                     },
                 ),
             
@@ -227,7 +228,7 @@ def generate_control_card1():
                 value=sorted(list(set(states))),
                 style={
                     #'width': '320px', 
-                    'font-size': "100%",
+                    'font-size': ddfs,
                     }
             ),
             html.Br(),
@@ -250,7 +251,7 @@ def generate_control_card1():
                 optionHeight=50,
                 style={
                     #'width': '320px',
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     }
             ),
             html.Br(),
@@ -278,8 +279,6 @@ def generate_control_card1():
     )
 
 
-
-
 def generate_control_card3():
     
     """
@@ -299,7 +298,7 @@ def generate_control_card3():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -315,7 +314,7 @@ def generate_control_card3():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -330,7 +329,7 @@ def generate_control_card3():
                     options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
                     multi=False, value='linear',
                     style={'width': '120px', 
-                            'font-size': "90%",
+                            'font-size': ddfs,
                             'display': 'inline-block',
                             'border-radius': '15px',
                             #'box-shadow': '1px 1px 1px grey',
@@ -349,7 +348,7 @@ def generate_control_card3():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -365,7 +364,7 @@ def generate_control_card3():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -380,7 +379,7 @@ def generate_control_card3():
                     options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
                     multi=False, value='linear',
                     style={'width': '120px', 
-                            'font-size': "90%",
+                            'font-size': ddfs,
                             'display': 'inline-block',
                             'border-radius': '15px',
                             #'box-shadow': '1px 1px 1px grey',
@@ -394,12 +393,10 @@ def generate_control_card3():
         ],
         style={
             #'width': '2000px', 
-            'font-size': "90%",
+            'font-size': "100%",
             'display': 'inline-block',
             },
     )
-
-
 
 
 def generate_control_card4():
@@ -411,14 +408,14 @@ def generate_control_card4():
     return html.Div(
         id="control-card4",
         children=[
-            
-            html.P("Select a model for fitting a trendline"),
+            html.Br(),
+            html.P("Select a model to fit. You can also select a focal hospital."),
             dcc.Dropdown(
                 id='trendline-1',
                 value='linear',
                 style={
                     'width': '200px', 
-                    'font-size': "100%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -427,19 +424,31 @@ def generate_control_card4():
                     'margin-left': '0px',
                     }
             ),
+            dcc.Dropdown(
+                id='hospital-select1c',
+                options=[{"label": i, "value": i} for i in []],
+                value=None,
+                placeholder='Select a focal hospital',
+                optionHeight=70,
+                style={
+                    'width': '250px', 
+                    'font-size': ddfs,
+                    'display': 'inline-block',
+                    'border-radius': '15px',
+                    #'box-shadow': '1px 1px 1px grey',
+                    #'background-color': '#f0f0f0',
+                    'padding': '0px',
+                    'margin-left': '15px',
+                    }
+            ),
             
         ],
         style={
             #'width': '2000px', 
-            'font-size': "90%",
+            'font-size': "100%",
             'display': 'inline-block',
             },
     )
-
-
-
-
-
 
 
 def generate_control_card5():
@@ -461,7 +470,7 @@ def generate_control_card5():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -477,7 +486,7 @@ def generate_control_card5():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -496,7 +505,7 @@ def generate_control_card5():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -512,7 +521,7 @@ def generate_control_card5():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': "90%",
+                    'font-size': ddfs,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -525,11 +534,10 @@ def generate_control_card5():
         ],
         style={
             #'width': '2000px', 
-            'font-size': "90%",
+            'font-size': "100%",
             'display': 'inline-block',
             },
     )
-
 
 
 #########################################################################################
@@ -595,16 +603,36 @@ app.layout = html.Div([
                 ),
                 
                 
-                
                 html.Div(
-                    [html.A('Download cost reports for your selected hospitals',
-                            id="data_link", download="Cost_Reports_Full.csv",
-                        href="",
-                        target="_blank",
-                        style={'fontSize':16}
+                    [
+                     html.Div(
+                        [html.B(str(len(HOSPITALS_SET)) + " hospitals available", style={'fontSize':16,
+                                                                                         'display': 'inline-block',}),
+                         html.H6(id="text1", style={'fontSize':16, 'display': 'inline-block'},)],
+                        id="des1",
+                        className="mini_container",
+                        style={
+                            'width': '35%',
+                            'display': 'inline-block',
+                            #'border-radius': '0px',
+                            #'box-shadow': '1px 1px 1px grey',
+                            #'background-color': '#f0f0f0',
+                            #'padding': '0px',
+                            #'margin-right': '0px',
+                            #'margin-bottom': '10px',
+                            'fontSize':16,
+                            'textAlign': 'center',
+                            },
                         ),
-                     html.Br(),
-                        ],
+                     
+                    html.Button("Download cost reports", id="download-btn",
+                        style={'width': '25%',
+                            'display': 'inline-block'},),
+                    dcc.Download(id="data-download"),
+                    
+                    html.Br(),
+                    ],
+                    
                     id="des3",
                     className="mini_container",
                     style={
@@ -626,15 +654,16 @@ app.layout = html.Div([
                     id="cost_report1",
                     children=[
                         html.H5("Cost Report Across Fiscal Years"),
-                        html.P("Select a category and a feature."),
+                        html.P("Select a category and then a feature. You may also select a focal hospital."),
                         dcc.Dropdown(
                             id="categories-select1",
                             options=[{"label": i, "value": i} for i in report_categories],
                             value=None,
+                            placeholder='Select a category',
                             optionHeight=70,
                             style={
                                 'width': '250px', 
-                                'font-size': "90%",
+                                'font-size': ddfs,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
                                 #'box-shadow': '1px 1px 1px grey',
@@ -647,16 +676,34 @@ app.layout = html.Div([
                             id="categories-select11",
                             options=[{"label": i, "value": i} for i in report_categories],
                             value=None,
+                            placeholder='Select a feature',
                             optionHeight=70,
                             style={
                                 'width': '250px', 
-                                'font-size': "90%",
+                                'font-size': ddfs,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
                                 #'box-shadow': '1px 1px 1px grey',
                                 #'background-color': '#f0f0f0',
                                 'padding': '0px',
                                 'margin-left': '10px',
+                                }
+                        ),
+                        dcc.Dropdown(
+                            id='hospital-select1b',
+                            options=[{"label": i, "value": i} for i in []],
+                            value=None,
+                            placeholder='Select a focal hospital',
+                            optionHeight=70,
+                            style={
+                                'width': '250px', 
+                                'font-size': ddfs,
+                                'display': 'inline-block',
+                                'border-radius': '15px',
+                                #'box-shadow': '1px 1px 1px grey',
+                                #'background-color': '#f0f0f0',
+                                'padding': '0px',
+                                'margin-left': '15px',
                                 }
                         ),
                         
@@ -692,7 +739,7 @@ app.layout = html.Div([
                         'background-color': '#f0f0f0',
                         'padding': '10px',
                         'margin-bottom': '10px',
-                        'height': '770px',
+                        'height': '810px',
                         },
                 ),
                 html.Br(),
@@ -704,6 +751,24 @@ app.layout = html.Div([
                     children=[
                         generate_control_card5(),
                         dcc.Graph(id="cost_report_plot3"),
+                        html.P("You may select a select a focal hospital."),
+                        dcc.Dropdown(
+                            id='hospital-select1d',
+                            options=[{"label": i, "value": i} for i in []],
+                            value=None,
+                            placeholder='Select a focal hospital',
+                            optionHeight=70,
+                            style={
+                                'width': '250px', 
+                                'font-size': ddfs,
+                                'display': 'inline-block',
+                                'border-radius': '15px',
+                                #'box-shadow': '1px 1px 1px grey',
+                                #'background-color': '#f0f0f0',
+                                'padding': '0px',
+                                'margin-left': '10px',
+                                }
+                        ),
                         ],
                     style={
                         'width': '107%',
@@ -713,7 +778,7 @@ app.layout = html.Div([
                         'background-color': '#f0f0f0',
                         'padding': '10px',
                         'margin-bottom': '10px',
-                        'height': '700px',
+                        'height': '780px',
                         },
                 ),
                 html.Br(),
@@ -723,9 +788,7 @@ app.layout = html.Div([
     ],
 )
 
-
-
-    
+  
 ##############################   Callbacks   ############################################
 #########################################################################################
 
@@ -826,7 +889,11 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
 
 
 @app.callback(
-    Output('url_ls', "children"),
+    [Output('url_ls', "children"),
+     Output("text1", 'children'),
+     Output('hospital-select1b', 'options'),
+     Output('hospital-select1c', 'options'),
+     Output('hospital-select1d', 'options')],
     [Input('btn1', 'n_clicks')],
     [State("hospital-select1", "value"),
      State("hospital-select1", "options"),],
@@ -842,7 +909,9 @@ def get_urls(btn1, hospitals, hospital_options):
     if hospitals is None or hospitals == []:
         ex_time = timeit.default_timer() - start
         print("get_urls executed in "+str(ex_time)) # It returns time in seconds
-        return None
+        ls1 = [{"label": i, "value": i} for i in ['No focal hospital']]
+        #ls2 = [{"label": i, "value": i} for i in ['No focal hospital']]
+        return None, ', 0 selected', ls1, ls1, ls1 
     
     if isinstance(hospitals, str) == True:
         hospitals = [hospitals]
@@ -852,7 +921,9 @@ def get_urls(btn1, hospitals, hospital_options):
     if hospitals == []:
         ex_time = timeit.default_timer() - start
         print("get_urls executed in "+str(ex_time)) # It returns time in seconds
-        return None
+        ls1 = [{"label": i, "value": i} for i in ['No focal hospital']]
+        #ls2 = [{"label": i, "value": i} for i in ['No focal hospital']]
+        return None, ', 0 selected', ls1, ls1, ls1
     
     url_ls = []
     for i, val in enumerate(hospitals):
@@ -866,7 +937,11 @@ def get_urls(btn1, hospitals, hospital_options):
     ex_time = timeit.default_timer() - start
     print("get_urls executed in "+str(ex_time)) # It returns time in seconds
     
-    return url_ls
+    txt = ', ' + str(len(hospitals)) + ' selected'
+    hospitals = ['No focal hospital'] + hospitals
+    ls1 = [{"label": i, "value": i} for i in hospitals]
+    #ls2 = [{"label": i, "value": i} for i in hospitals]
+    return url_ls, txt, ls1, ls1, ls1 
     
 
 @app.callback(
@@ -1009,33 +1084,22 @@ def update_map_plot1(df, h):
     return figure
 
 
+
 @app.callback(
-    Output("data_link", "href"),
-    [
-     Input('df_tab1', "data"),
-     ],
-    )
-def update_download(df):
-    
-    start = timeit.default_timer()
+    Output("data-download", "data"),
+    Input("download-btn", "n_clicks"),
+    [State('df_tab1', "data")],
+    prevent_initial_call=True,
+)
+def update_download(n_clicks, df):
     
     if df is None:
-        csv_string = main_df.to_csv(index=False, encoding='utf-8')
-        csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
-        
-        ex_time = timeit.default_timer() - start
-        print("update_download executed in "+str(ex_time)) # It returns time in seconds
-        return csv_string
+        return dcc.send_data_frame(main_df.to_csv, "cost_reports.csv")
             
     df = pd.read_json(df)
     if df.shape[0] == 0:
-        csv_string = main_df.to_csv(index=False, encoding='utf-8')
-        csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
-        ex_time = timeit.default_timer() - start
-        print("update_download executed in "+str(ex_time)) # It returns time in seconds
-        return csv_string
-    
-    
+        return dcc.send_data_frame(main_df.to_csv, "cost_reports.csv")
+        
     else:
         tdf = main_df.copy(deep=True)
         cols = list(df)
@@ -1046,217 +1110,12 @@ def update_download(df):
             c = list(eval(c))
             tdf[(c[0], c[1], c[2], c[3])] = vals
             
-        csv_string = tdf.to_csv(index=True, encoding='utf-8')
-        csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
+        #csv_string = tdf.to_csv(index=True, encoding='utf-8')
+        #csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
             
-    ex_time = timeit.default_timer() - start
-    print("update_download executed in "+str(ex_time)) # It returns time in seconds
-    return csv_string
-
-
-@app.callback( # Update Line plot
-    Output("cost_report_plot1", "figure"),
-    [
-     Input('df_tab1', "data"),
-     Input('categories-select1', 'value'),
-     Input('categories-select11', 'value'),
-     ],
-    )
-def update_cost_report_plot1(df, var1, var2):
+    return dcc.send_data_frame(tdf.to_csv, "cost_reports.csv")
     
-    start = timeit.default_timer()
-    
-    if df is None or var1 is None or var1 is None:
-        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
 
-        fig.update_yaxes(title_font=dict(size=14, 
-                                         #family='sans-serif', 
-                                         color="rgb(38, 38, 38)"))
-        fig.update_xaxes(title_font=dict(size=14, 
-                                         #family='sans-serif', 
-                                         color="rgb(38, 38, 38)"))
-
-        fig.update_layout(title_font=dict(size=14, 
-                          color="rgb(38, 38, 38)", 
-                          ),
-                          showlegend=True,
-                          margin=dict(l=100, r=10, b=10, t=10),
-                          paper_bgcolor="#f0f0f0",
-                          plot_bgcolor="#f0f0f0",
-                          )
-        
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
-        
-        return fig
-         
-    df = pd.read_json(df)
-    if df.shape[0] == 0:
-        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
-
-        fig.update_yaxes(title_font=dict(size=14, 
-                                         #family='sans-serif', 
-                                         color="rgb(38, 38, 38)"))
-        fig.update_xaxes(title_font=dict(size=14, 
-                                         #family='sans-serif', 
-                                         color="rgb(38, 38, 38)"))
-
-        fig.update_layout(title_font=dict(size=14, 
-                          color="rgb(38, 38, 38)", 
-                          ),
-                          showlegend=True,
-                          margin=dict(l=100, r=10, b=10, t=10),
-                          paper_bgcolor="#f0f0f0",
-                          plot_bgcolor="#f0f0f0",
-                          )
-        
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
-        
-        return fig
-        
-    fig_data = []
-    #x = "('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDENTIFICATION INFORMATION', 'Hospital Provider Number (PRVDR_NUM)')"
-    x = "('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"
-    hospitals = sorted(df[x].unique())
-    
-    for i, hospital in enumerate(hospitals):
-        
-        sub_df = df[df[x] == hospital]
-        
-        #sub_df.sort_values(by=["('FY_END_DT', 'Fiscal Year End Date ', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date  (FY_END_DT)')"],
-        #                        ascending=[True], inplace=True)
-           
-        dates = sub_df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]
-            
-        str_ = var1 + "', '" + var2 + "')"
-        column = [col for col in sub_df.columns if col.endswith(str_)]  
-        
-        if len(column) == 0:
-            fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
-
-            fig.update_yaxes(title_font=dict(size=14, 
-                                             #family='sans-serif', 
-                                             color="rgb(38, 38, 38)"))
-            fig.update_xaxes(title_font=dict(size=14, 
-                                             #family='sans-serif', 
-                                             color="rgb(38, 38, 38)"))
-
-            fig.update_layout(title_font=dict(size=14, 
-                              color="rgb(38, 38, 38)", 
-                              ),
-                              showlegend=True,
-                              margin=dict(l=100, r=10, b=10, t=10),
-                              paper_bgcolor="#f0f0f0",
-                              plot_bgcolor="#f0f0f0",
-                              )
-            
-            ex_time = timeit.default_timer() - start
-            print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
-            
-            return fig
-        
-        column = column[0]
-        
-        obs_y = sub_df[column].tolist()     
-        
-        #dates, obs_y = map(list, zip(*sorted(zip(dates, obs_y), reverse=False)))
-        hospital = str(hospital)
-        
-        hi = HOSPITALS.index(hospital)
-        clr = COLORS[hi]
-        
-        if len(hospital) > 30:
-            hospital = hospital[0:20] + ' ... ' + hospital[-8:]
-        
-        fig_data.append(
-                    go.Scatter(
-                        x=dates,
-                        y=obs_y,
-                        name=hospital,
-                        mode='lines+markers',
-                        marker=dict(color=clr),
-                        #text= text,
-                    )
-                )
-        
-        txt_ = '<b>' + var1 + '<b>'
-        var2b = re.sub("\(.*?\)|\[.*?\]","", var2)
-        
-        if len(var2b) > 40:
-            var_ls = []
-            for j in range(0, len(var2b), 40):
-                var_ls.append(var2b[j : j + 40])
-            
-            
-            for j in var_ls:
-                txt_ = txt_ + '<br>' + j 
-        else:
-            txt_ = txt_ + '<br>' + var2b 
-            
-        figure = go.Figure(
-            data=fig_data,
-            layout=go.Layout(
-                transition = {'duration': 500},
-                xaxis=dict(
-                    title=dict(
-                        text="<b>Date</b>",
-                        font=dict(
-                            family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
-                            " Helvetica, Arial, sans-serif",
-                            size=18,
-                        ),
-                    ),
-                    rangemode="tozero",
-                    zeroline=True,
-                    showticklabels=True,
-                ),
-                
-                yaxis=dict(
-                    title=dict(
-                        text=txt_,
-                        font=dict(
-                            family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
-                            " Helvetica, Arial, sans-serif",
-                            size=14,
-                            
-                        ),
-                    ),
-                    rangemode="tozero",
-                    zeroline=True,
-                    showticklabels=True,
-                    
-                ),
-                
-                margin=dict(l=100, r=30, b=10, t=40),
-                showlegend=True,
-                height=400,
-                paper_bgcolor="#f0f0f0",
-                plot_bgcolor="#f0f0f0",
-            ),
-        )
-        
-        figure.update_layout(
-            legend=dict(
-                traceorder="normal",
-                font=dict(
-                    size=10,
-                    color="rgb(38, 38, 38)"
-                ),
-                
-            )
-        )    
-    
-    del df
-    del hospitals
-    del fig_data
-    del dates
-    del x
-    
-    ex_time = timeit.default_timer() - start
-    print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
-    
-    return figure
     
 
 @app.callback( # Update available sub_categories
@@ -1468,6 +1327,221 @@ def update_output14(available_options):
   
 
 @app.callback( # Update Line plot
+    Output("cost_report_plot1", "figure"),
+    [
+     Input('df_tab1', "data"),
+     Input('categories-select1', 'value'),
+     Input('categories-select11', 'value'),
+     Input('hospital-select1b', 'value'),
+     ],
+    prevent_initial_call=True,
+    )
+def update_cost_report_plot1(df, var1, var2, focal_h):
+    
+    start = timeit.default_timer()
+    
+    if df is None or var1 is None or var1 is None:
+        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+
+        fig.update_yaxes(title_font=dict(size=14, 
+                                         #family='sans-serif', 
+                                         color="rgb(38, 38, 38)"))
+        fig.update_xaxes(title_font=dict(size=14, 
+                                         #family='sans-serif', 
+                                         color="rgb(38, 38, 38)"))
+
+        fig.update_layout(title_font=dict(size=14, 
+                          color="rgb(38, 38, 38)", 
+                          ),
+                          showlegend=True,
+                          margin=dict(l=100, r=10, b=10, t=10),
+                          paper_bgcolor="#f0f0f0",
+                          plot_bgcolor="#f0f0f0",
+                          )
+        
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+        
+        return fig
+         
+    df = pd.read_json(df)
+    if df.shape[0] == 0:
+        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+
+        fig.update_yaxes(title_font=dict(size=14, 
+                                         #family='sans-serif', 
+                                         color="rgb(38, 38, 38)"))
+        fig.update_xaxes(title_font=dict(size=14, 
+                                         #family='sans-serif', 
+                                         color="rgb(38, 38, 38)"))
+
+        fig.update_layout(title_font=dict(size=14, 
+                          color="rgb(38, 38, 38)", 
+                          ),
+                          showlegend=True,
+                          margin=dict(l=100, r=10, b=10, t=10),
+                          paper_bgcolor="#f0f0f0",
+                          plot_bgcolor="#f0f0f0",
+                          )
+        
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+        
+        return fig
+        
+    fig_data = []
+    x = "('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"
+    hospitals = sorted(df[x].unique())
+    
+    try:
+        hospitals.remove(focal_h)
+        hospitals.append(focal_h)
+    except:
+        pass
+    
+    for i, hospital in enumerate(hospitals):
+            
+        sub_df = df[df[x] == hospital]
+        
+        sub_df.sort_values(by=["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"],
+                                ascending=True, inplace=True)
+           
+        dates = sub_df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]
+         
+        str_ = var1 + "', '" + var2 + "')"
+        column = [col for col in sub_df.columns if col.endswith(str_)]  
+        
+        if len(column) == 0:
+            fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+
+            fig.update_yaxes(title_font=dict(size=14, 
+                                             #family='sans-serif', 
+                                             color="rgb(38, 38, 38)"))
+            fig.update_xaxes(title_font=dict(size=14, 
+                                             #family='sans-serif', 
+                                             color="rgb(38, 38, 38)"))
+
+            fig.update_layout(title_font=dict(size=14, 
+                              color="rgb(38, 38, 38)", 
+                              ),
+                              showlegend=True,
+                              margin=dict(l=100, r=10, b=10, t=10),
+                              paper_bgcolor="#f0f0f0",
+                              plot_bgcolor="#f0f0f0",
+                              )
+            
+            ex_time = timeit.default_timer() - start
+            print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+            
+            return fig
+        
+        column = column[0]
+        
+        obs_y = sub_df[column].tolist()     
+        
+        #dates, obs_y = map(list, zip(*sorted(zip(dates, obs_y), reverse=False)))
+        hospital = str(hospital)
+        
+        hi = HOSPITALS.index(hospital)
+        if hospital == focal_h or focal_h == 'No focal hospital' or focal_h not in hospitals:
+            clr = COLORS[hi]
+        else:
+            clr = '#cccccc'
+        
+        if len(hospital) > 30:
+            hospital = hospital[0:20] + ' ... ' + hospital[-8:]
+        
+        fig_data.append(
+                    go.Scatter(
+                        x=dates,
+                        y=obs_y,
+                        name=hospital,
+                        mode='lines+markers',
+                        marker=dict(color=clr),
+                        #text= text,
+                    )
+                )
+        
+        txt_ = '<b>' + var1 + '<b>'
+        var2b = re.sub("\(.*?\)|\[.*?\]","", var2)
+        
+        if len(var2b) > 40:
+            var_ls = []
+            for j in range(0, len(var2b), 40):
+                var_ls.append(var2b[j : j + 40])
+            
+            
+            for j in var_ls:
+                txt_ = txt_ + '<br>' + j 
+        else:
+            txt_ = txt_ + '<br>' + var2b 
+            
+        figure = go.Figure(
+            data=fig_data,
+            layout=go.Layout(
+                transition = {'duration': 500},
+                xaxis=dict(
+                    title=dict(
+                        text="<b>Date</b>",
+                        font=dict(
+                            family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
+                            " Helvetica, Arial, sans-serif",
+                            size=18,
+                        ),
+                    ),
+                    rangemode="tozero",
+                    zeroline=True,
+                    showticklabels=True,
+                ),
+                
+                yaxis=dict(
+                    title=dict(
+                        text=txt_,
+                        font=dict(
+                            family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
+                            " Helvetica, Arial, sans-serif",
+                            size=14,
+                            
+                        ),
+                    ),
+                    rangemode="tozero",
+                    zeroline=True,
+                    showticklabels=True,
+                    
+                ),
+                
+                margin=dict(l=100, r=30, b=10, t=40),
+                showlegend=True,
+                height=400,
+                paper_bgcolor="#f0f0f0",
+                plot_bgcolor="#f0f0f0",
+            ),
+        )
+        
+        figure.update_layout(
+            legend=dict(
+                traceorder="normal",
+                font=dict(
+                    size=10,
+                    color="rgb(38, 38, 38)"
+                ),
+                
+            )
+        )    
+    
+    del df
+    del hospitals
+    del fig_data
+    del dates
+    del x
+    
+    ex_time = timeit.default_timer() - start
+    print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+    
+    return figure
+
+
+@app.callback( # Update Line plot
     Output("cost_report_plot2", "figure"),
     [
      Input('categories-select2', 'value'),
@@ -1477,19 +1551,18 @@ def update_output14(available_options):
      Input('x_transform', 'value'),
      Input('y_transform', 'value'),
      Input('trendline-1', 'value'),
+     Input('hospital-select1c', 'value'),
      ],
     [State("df_tab1", "data")],
+    prevent_initial_call=True,
     )
-def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, df):
+def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, focal_h, df):
     start = timeit.default_timer()
     
     if df is None or xvar1 is None or xvar2 is None or yvar1 is None or yvar2 is None or yvar2 == 'NUMBER OF BEDS':
             
-        tdf = pd.DataFrame(columns=['x', 'y'])
-        tdf['x'] = [0]
-        tdf['y'] = [0]
-        fig = px.scatter(tdf, x = 'x', y = 'y')
-
+        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+        
         fig.update_yaxes(title_font=dict(size=14, 
                                      #family='sans-serif', 
                                      color="rgb(38, 38, 38)"))
@@ -1522,11 +1595,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     
     if len(column1) == 0 or len(column2) == 0:
         
-        tdf = pd.DataFrame(columns=['x', 'y'])
-        tdf['x'] = [0]
-        tdf['y'] = [0]
-        fig = px.scatter(tdf, x = 'x', y = 'y')
-
+        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+        
         fig.update_yaxes(title_font=dict(size=14, 
                                      #family='sans-serif', 
                                      color="rgb(38, 38, 38)"))
@@ -1548,6 +1618,12 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     
     
     hospitals = sorted(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())                 
+    
+    try:
+        hospitals.remove(focal_h)
+        hospitals.append(focal_h)
+    except:
+        pass
     
     fig_data = []
     for i, hospital in enumerate(hospitals):
@@ -1582,7 +1658,10 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
             y = np.sqrt(y)
             
         hi = HOSPITALS.index(hospital)
-        clr = COLORS[hi]
+        if hospital == focal_h or focal_h == 'No focal hospital' or focal_h not in hospitals:
+            clr = COLORS[hi]
+        else:
+            clr = '#cccccc'
         
         if len(hospital) > 30:
             hospital = hospital[0:20] + ' ... ' + hospital[-8:]
@@ -1643,6 +1722,30 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
         
     x_o = tdf['x'].values.tolist()
     y_o = tdf['y'].values.tolist()
+    
+    if x_o is None or y_o is None or len(x_o) == 0 or len(y_o) == 0:
+        
+        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+        
+        fig.update_yaxes(title_font=dict(size=14, 
+                                     #family='sans-serif', 
+                                     color="rgb(38, 38, 38)"))
+        fig.update_xaxes(title_font=dict(size=14, 
+                                     #family='sans-serif', 
+                                     color="rgb(38, 38, 38)"))
+        fig.update_layout(title_font=dict(size=14, 
+                      color="rgb(38, 38, 38)", 
+                      ),
+                      showlegend=True,
+                      margin=dict(l=100, r=10, b=10, t=10),
+                      paper_bgcolor="#f0f0f0",
+                      plot_bgcolor="#f0f0f0",
+                      )
+        
+        ex_time = timeit.default_timer() - start
+        print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
+        return fig
+        
     x_o, y_o = zip(*sorted(zip(x_o, y_o)))
     
     x_o = np.array(x_o)
@@ -1883,7 +1986,7 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
         
     if x.tolist() != [] and y.tolist() != []:
         figure.update_layout(
-            title="Percent variation explained by the model: " + str(r2),
+            title="Percent variation explained by the model: " + str(100*np.round(r2,2)),
             font=dict(
                 size=10,
                 color="rgb(38, 38, 38)"
@@ -1926,19 +2029,18 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
      Input('categories-select33', 'value'),
      Input('categories-select3-2', 'value'),
      Input('categories-select33-2', 'value'),
+     Input('hospital-select1d', 'value'),
      ],
+    prevent_initial_call=True,
     )
-def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
+def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
     
     start = timeit.default_timer()
     
     if df is None or numer1 is None or numer2 is None or denom1 is None or denom2 is None or denom2 == 'NUMBER OF BEDS':
             
-        tdf = pd.DataFrame(columns=['x', 'y'])
-        tdf['x'] = [0]
-        tdf['y'] = [0]
-        fig = px.scatter(tdf, x = 'x', y = 'y')
-
+        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+        
         fig.update_yaxes(title_font=dict(size=14, 
                                      #family='sans-serif', 
                                      color="rgb(38, 38, 38)"))
@@ -1974,11 +2076,8 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
     
     if len(column1) == 0 or len(column2) == 0:
         
-        tdf = pd.DataFrame(columns=['x', 'y'])
-        tdf['x'] = [0]
-        tdf['y'] = [0]
-        fig = px.scatter(tdf, x = 'x', y = 'y')
-
+        fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
+        
         fig.update_yaxes(title_font=dict(size=14, 
                                      #family='sans-serif', 
                                      color="rgb(38, 38, 38)"))
@@ -1999,6 +2098,12 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
     
     
     hospitals = sorted(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())                 
+    
+    try:
+        hospitals.remove(focal_h)
+        hospitals.append(focal_h)
+    except:
+        pass
     
     fig_data = []
     for hospital in hospitals:
@@ -2027,7 +2132,10 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
         text = names + '<br>' + dates.astype(str)
         
         hi = HOSPITALS.index(hospital)
-        clr = COLORS[hi]
+        if hospital == focal_h or focal_h == 'No focal hospital' or focal_h not in hospitals:
+            clr = COLORS[hi]
+        else:
+            clr = '#cccccc'
         
         if len(hospital) > 30:
             hospital = hospital[0:20] + ' ... ' + hospital[-8:]
@@ -2042,6 +2150,9 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
                         text= text,
                     )
                 )
+    
+    numer2 = re.sub("\(.*?\)|\[.*?\]","", numer2)
+    denom2 = re.sub("\(.*?\)|\[.*?\]","", denom2)
     
     figure = go.Figure(
         data=fig_data,
@@ -2063,7 +2174,7 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2):
                 
             yaxis=dict(
                 title=dict(
-                    text="<b>" + numer2 + ' / ' + denom2 + "</b>",
+                    text= "<b>" + numer2 + ' /<br>' + denom2 + "</b>",
                     font=dict(
                         family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                         " Helvetica, Arial, sans-serif",
@@ -2129,5 +2240,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
 
