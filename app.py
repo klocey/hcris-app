@@ -817,7 +817,7 @@ def update_output3(value, df):
     del df2
     
     if df is not None:
-        start = timeit.default_timer()
+        #start = timeit.default_timer()
         
         df = pd.read_json(df)
         df.dropna(axis=1, how='all', inplace=True)
@@ -833,8 +833,8 @@ def update_output3(value, df):
             if c in cols2:
                 sub_categories.append(c)
                 
-        ex_time = timeit.default_timer() - start
-        print("update_output3 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_output3 executed in "+str(ex_time)) # It returns time in seconds
         
     else:
         sub_categories = sub_cat
@@ -866,7 +866,7 @@ def update_output4(available_options):
      ],
     )
 def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     low, high = bed_range
     hospitals = []
@@ -882,8 +882,8 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
             
     hospitals = sorted(list(set(hospitals)))
     
-    ex_time = timeit.default_timer() - start
-    print("update_hospitals executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("update_hospitals executed in "+str(ex_time)) # It returns time in seconds
     
     return [{"label": i, "value": i} for i in hospitals]
 
@@ -899,7 +899,7 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
      State("hospital-select1", "options"),],
     )
 def get_urls(btn1, hospitals, hospital_options):
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     options = []
     for h in hospital_options:
@@ -907,8 +907,8 @@ def get_urls(btn1, hospitals, hospital_options):
         options.append(h1[0])
     
     if hospitals is None or hospitals == []:
-        ex_time = timeit.default_timer() - start
-        print("get_urls executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("get_urls executed in "+str(ex_time)) # It returns time in seconds
         ls1 = [{"label": i, "value": i} for i in ['No focal hospital']]
         #ls2 = [{"label": i, "value": i} for i in ['No focal hospital']]
         return None, ', 0 selected', ls1, ls1, ls1 
@@ -919,8 +919,8 @@ def get_urls(btn1, hospitals, hospital_options):
     hospitals = list(set(hospitals) & set(options))
     
     if hospitals == []:
-        ex_time = timeit.default_timer() - start
-        print("get_urls executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("get_urls executed in "+str(ex_time)) # It returns time in seconds
         ls1 = [{"label": i, "value": i} for i in ['No focal hospital']]
         #ls2 = [{"label": i, "value": i} for i in ['No focal hospital']]
         return None, ', 0 selected', ls1, ls1, ls1
@@ -934,8 +934,8 @@ def get_urls(btn1, hospitals, hospital_options):
         url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
         url_ls.append(url)
     
-    ex_time = timeit.default_timer() - start
-    print("get_urls executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("get_urls executed in "+str(ex_time)) # It returns time in seconds
     
     txt = ', ' + str(len(hospitals)) + ' selected'
     hospitals = ['No focal hospital'] + hospitals
@@ -953,7 +953,7 @@ def get_urls(btn1, hospitals, hospital_options):
     )
 def update_df1_tab1(urls, df):
     
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     if urls is None or urls is []:
         return None
@@ -973,8 +973,8 @@ def update_df1_tab1(urls, df):
         df.dropna(axis=1, how='all', inplace=True)
         df.reset_index(drop=True, inplace=True)
         
-        ex_time = timeit.default_timer() - start
-        print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
         return df.to_json()
 
     else:
@@ -996,8 +996,8 @@ def update_df1_tab1(urls, df):
         df.dropna(axis=1, how='all', inplace=True)
         df.reset_index(drop=True, inplace=True)
         
-        ex_time = timeit.default_timer() - start
-        print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
         return df.to_json()
 
 
@@ -1127,7 +1127,7 @@ def update_download(n_clicks, df):
     )
 def update_output7(value, df):
     
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
@@ -1150,8 +1150,8 @@ def update_output7(value, df):
     else:
         sub_categories = sub_cat
     
-    ex_time = timeit.default_timer() - start
-    print("update_output7 executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("update_output7 executed in "+str(ex_time)) # It returns time in seconds
     
     return [{"label": i, "value": i} for i in sub_categories]
 
@@ -1178,7 +1178,7 @@ def update_output8(available_options):
     )
 def update_output9(value, df):
 
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
 
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
@@ -1203,8 +1203,8 @@ def update_output9(value, df):
         sub_categories = sub_cat
     
     #sub_categories = sorted(sub_categories)
-    ex_time = timeit.default_timer() - start
-    print("update_output9 executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("update_output9 executed in "+str(ex_time)) # It returns time in seconds
 
     return [{"label": i, "value": i} for i in sub_categories]
 
@@ -1231,7 +1231,7 @@ def update_output10(available_options):
     )
 def update_output11(value, df):
     
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
@@ -1254,8 +1254,8 @@ def update_output11(value, df):
     else:
         sub_categories = sub_cat
     
-    ex_time = timeit.default_timer() - start
-    print("update_output11 executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("update_output11 executed in "+str(ex_time)) # It returns time in seconds
 
     return [{"label": i, "value": i} for i in sub_categories]
 
@@ -1282,7 +1282,7 @@ def update_output12(available_options):
     )
 def update_output13(value, df):
     
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
@@ -1306,8 +1306,8 @@ def update_output13(value, df):
     else:
         sub_categories = sub_cat
     
-    ex_time = timeit.default_timer() - start
-    print("update_output13 executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("update_output13 executed in "+str(ex_time)) # It returns time in seconds
 
     #sub_categories = sorted(sub_categories)
     return [{"label": i, "value": i} for i in sub_categories]
@@ -1338,7 +1338,7 @@ def update_output14(available_options):
     )
 def update_cost_report_plot1(df, var1, var2, focal_h):
     
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     if df is None or var1 is None or var1 is None:
         fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
@@ -1359,8 +1359,8 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                           plot_bgcolor="#f0f0f0",
                           )
         
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
         
         return fig
          
@@ -1384,8 +1384,8 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                           plot_bgcolor="#f0f0f0",
                           )
         
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
         
         return fig
         
@@ -1430,8 +1430,8 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                               plot_bgcolor="#f0f0f0",
                               )
             
-            ex_time = timeit.default_timer() - start
-            print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+            #ex_time = timeit.default_timer() - start
+            #print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
             
             return fig
         
@@ -1535,8 +1535,8 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
     del dates
     del x
     
-    ex_time = timeit.default_timer() - start
-    print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
     
     return figure
 
@@ -1557,7 +1557,7 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
     prevent_initial_call=True,
     )
 def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, focal_h, df):
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     if df is None or xvar1 is None or xvar2 is None or yvar1 is None or yvar2 is None or yvar2 == 'NUMBER OF BEDS':
             
@@ -1578,8 +1578,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                       plot_bgcolor="#f0f0f0",
                       )
         
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
         return fig
             
     
@@ -1612,8 +1612,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                       plot_bgcolor="#f0f0f0",
                       )
         
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
         return fig
     
     
@@ -1647,15 +1647,112 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
         
         x, y, dates, names = map(list, zip(*sorted(zip(x, y, dates, names), reverse=False)))
         
-        if xscale == 'log10' and np.nanmin(x) >= 0:
-            x = np.log10(x)
-        elif xscale == 'square root' and np.nanmin(x) >= 0:
-            x = np.sqrt(x)
+        # 1. linear-linear
+        
+        # 2. 
+        if xscale == 'log10' and yscale == 'log10':
+            x2, y2, dates2 = [], [], []
+            for i, val in enumerate(x):
+                if x[i] > 0 and y[i] > 0:
+                    x2.append(x[i])
+                    y2.append(y[i])
+                    dates2.append(dates[i])
+                    
+            x = np.log10(x2).tolist()
+            y = np.log10(y2).tolist()
+            dates = list(dates2)
+        
+        # 3.
+        elif xscale == 'square root' and yscale == 'square root':
+            x2, y2, dates2 = [], [], []
+            for i, val in enumerate(x):
+                if x[i] >= 0 and y[i] >= 0:
+                    x2.append(x[i])
+                    y2.append(y[i])
+                    dates2.append(dates[i])
+                    
+            x = np.sqrt(x2).tolist()
+            y = np.log10(y2.tolist())
+            dates = list(dates2)
+
+        # 4.
+        elif xscale == 'log10' and yscale == 'linear':
+            x2, y2, dates2 = [], [], []
+            for i, val in enumerate(x):
+                if x[i] > 0:
+                    x2.append(x[i])
+                    y2.append(y[i])
+                    dates2.append(dates[i])
+                    
+            x = np.log10(x2).tolist()
+            y = list(y2)
+            dates = list(dates2)
+        
+        # 5.
+        elif yscale == 'log10' and xscale == 'linear':
+            x2, y2, dates2 = [], [], []
+            for i, val in enumerate(x):
+                if y[i] > 0:
+                    x2.append(x[i])
+                    y2.append(y[i])
+                    dates2.append(dates[i])
+                    
+            x = list(x2)
+            y = np.log10(y2)
+            dates = list(dates2)
+        
+        # 6.
+        elif xscale == 'square root' and yscale == 'linear':
+            x2, y2, dates2 = [], [], []
+            for i, val in enumerate(x):
+                if x[i] >= 0:
+                    x2.append(x[i])
+                    y2.append(y[i])
+                    dates2.append(dates[i])
+                    
+            x = np.sqrt(x2).tolist()
+            y = list(y2)
+            dates = list(dates2)
+        
+        # 7.
+        elif yscale == 'square root' and xscale == 'linear':
+            x2, y2, dates2 = [], [], []
+            for i, val in enumerate(x):
+                if y[i] >= 0:
+                    x2.append(x[i])
+                    y2.append(y[i])
+                    dates2.append(dates[i])
+                    
+            x = list(x2)
+            y = np.sqrt(y2).tolist()
+            dates = list(dates2)
             
-        if yscale == 'log10' and np.nanmin(y) >= 0:
-            y = np.log10(y)
-        elif yscale == 'square root' and np.nanmin(y) >= 0:
-            y = np.sqrt(y)
+        # 8. 
+        elif xscale == 'log10' and yscale == 'square root':
+            x2, y2, dates2 = [], [], []
+            for i, val in enumerate(x):
+                if x[i] > 0 and y[i] >= 0:
+                    x2.append(x[i])
+                    y2.append(y[i])
+                    dates2.append(dates[i])
+                    
+            x = np.log10(x2).tolist()
+            y = np.sqrt(y2).tolist()
+            dates = list(dates2)
+          
+        # 9.
+        elif yscale == 'log10' and xscale == 'square root':
+            x2, y2, dates2 = [], [], []
+            for i, val in enumerate(x):
+                if x[i] >= 0 and y[i] > 0:
+                    x2.append(x[i])
+                    y2.append(y[i])
+                    dates2.append(dates[i])
+                    
+            x = np.sqrt(x2).tolist()
+            y = np.log10(y2).tolist()
+            dates = list(dates2)
+            
             
         hi = HOSPITALS.index(hospital)
         if hospital == focal_h or focal_h == 'No focal hospital' or focal_h not in hospitals:
@@ -1688,15 +1785,112 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     column2 = column2[0]
     y = df[column2].tolist()
     
-    if xscale == 'log10' and np.nanmin(x) >= 0:
-        x = np.log10(x)
-    elif xscale == 'square root' and np.nanmin(x) >= 0:
-        x = np.sqrt(x)
+    # 1. linear-linear
+    
+    # 2. 
+    if xscale == 'log10' and yscale == 'log10':
+        x2, y2, dates2 = [], [], []
+        for i, val in enumerate(x):
+            if x[i] > 0 and y[i] > 0:
+                x2.append(x[i])
+                y2.append(y[i])
+                dates2.append(dates[i])
+                
+        x = np.log10(x2).tolist()
+        y = np.log10(y2).tolist()
+        dates = list(dates2)
+    
+    # 3.
+    elif xscale == 'square root' and yscale == 'square root':
+        x2, y2, dates2 = [], [], []
+        for i, val in enumerate(x):
+            if x[i] >= 0 and y[i] >= 0:
+                x2.append(x[i])
+                y2.append(y[i])
+                dates2.append(dates[i])
+                
+        x = np.sqrt(x2).tolist()
+        y = np.log10(y2.tolist())
+        dates = list(dates2)
+
+    # 4.
+    elif xscale == 'log10' and yscale == 'linear':
+        x2, y2, dates2 = [], [], []
+        for i, val in enumerate(x):
+            if x[i] > 0:
+                x2.append(x[i])
+                y2.append(y[i])
+                dates2.append(dates[i])
+                
+        x = np.log10(x2).tolist()
+        y = list(y2)
+        dates = list(dates2)
+    
+    # 5.
+    elif yscale == 'log10' and xscale == 'linear':
+        x2, y2, dates2 = [], [], []
+        for i, val in enumerate(x):
+            if y[i] > 0:
+                x2.append(x[i])
+                y2.append(y[i])
+                dates2.append(dates[i])
+                
+        x = list(x2)
+        y = np.log10(y2)
+        dates = list(dates2)
+    
+    # 6.
+    elif xscale == 'square root' and yscale == 'linear':
+        x2, y2, dates2 = [], [], []
+        for i, val in enumerate(x):
+            if x[i] >= 0:
+                x2.append(x[i])
+                y2.append(y[i])
+                dates2.append(dates[i])
+                
+        x = np.sqrt(x2).tolist()
+        y = list(y2)
+        dates = list(dates2)
+    
+    # 7.
+    elif yscale == 'square root' and xscale == 'linear':
+        x2, y2, dates2 = [], [], []
+        for i, val in enumerate(x):
+            if y[i] >= 0:
+                x2.append(x[i])
+                y2.append(y[i])
+                dates2.append(dates[i])
+                
+        x = list(x2)
+        y = np.sqrt(y2).tolist()
+        dates = list(dates2)
         
-    if yscale == 'log10' and np.nanmin(y) >= 0:
-        y = np.log10(y)
-    elif yscale == 'square root' and np.nanmin(y) >= 0:
-        y = np.sqrt(y)
+    # 8. 
+    elif xscale == 'log10' and yscale == 'square root':
+        x2, y2, dates2 = [], [], []
+        for i, val in enumerate(x):
+            if x[i] > 0 and y[i] >= 0:
+                x2.append(x[i])
+                y2.append(y[i])
+                dates2.append(dates[i])
+                
+        x = np.log10(x2).tolist()
+        y = np.sqrt(y2).tolist()
+        dates = list(dates2)
+      
+    # 9.
+    elif yscale == 'log10' and xscale == 'square root':
+        x2, y2, dates2 = [], [], []
+        for i, val in enumerate(x):
+            if x[i] >= 0 and y[i] > 0:
+                x2.append(x[i])
+                y2.append(y[i])
+                dates2.append(dates[i])
+                
+        x = np.sqrt(x2).tolist()
+        y = np.log10(y2).tolist()
+        dates = list(dates2)
+        
         
     tdf = pd.DataFrame(columns = ['x', 'y'])
     tdf['x'] = x
@@ -1742,8 +1936,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                       plot_bgcolor="#f0f0f0",
                       )
         
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
         return fig
         
     x_o, y_o = zip(*sorted(zip(x_o, y_o)))
@@ -1809,15 +2003,15 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
         eqn = eqn + ' - ' + str(np.abs(b))
         
     r2 = model.rsquared_adj
-    r2_adj = model.rsquared_adj
-    aic = model.aic
-    bic = model.bic
-    fp = model.f_pvalue
-    llf = model.llf
+    #r2_adj = model.rsquared_adj
+    #aic = model.aic
+    #bic = model.bic
+    #fp = model.f_pvalue
+    #llf = model.llf
     
     st, data, ss2 = summary_table(model, alpha=0.05)
-    fittedvalues = data[:, 2]
-    predict_mean_se  = data[:, 3]
+    #fittedvalues = data[:, 2]
+    #predict_mean_se  = data[:, 3]
     predict_mean_ci_low, predict_mean_ci_upp = data[:, 4:6].T
     predict_ci_low, predict_ci_upp = data[:, 6:8].T
     
@@ -1867,7 +2061,7 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                     x = x_o,
                     y = ypred,
                     mode = "lines",
-                    name = 'fitted: r2 = <sup>'+str(np.round(r2, 3))+'</sup>',
+                    name = 'fitted: r2 = <sup>'+str(round(r2, 3))+'</sup>',
                     opacity = 0.75,
                     line = dict(color = clr, width = 2),
                 )
@@ -1986,7 +2180,7 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
         
     if x.tolist() != [] and y.tolist() != []:
         figure.update_layout(
-            title="Percent variation explained by the model: " + str(100*np.round(r2,2)),
+            title="Percent variation explained by the model: " + str(round(100 * r2, 2)),
             font=dict(
                 size=10,
                 color="rgb(38, 38, 38)"
@@ -2015,8 +2209,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     del txt1
     del txt2
     
-    ex_time = timeit.default_timer() - start
-    print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
 
     return figure
 
@@ -2035,7 +2229,7 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     )
 def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
     
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     if df is None or numer1 is None or numer2 is None or denom1 is None or denom2 is None or denom2 == 'NUMBER OF BEDS':
             
@@ -2056,8 +2250,8 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
                       plot_bgcolor="#f0f0f0",
                       )
         
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
         return fig
             
     
@@ -2092,8 +2286,8 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
                       paper_bgcolor="#f0f0f0",
                       plot_bgcolor="#f0f0f0",
                       )
-        ex_time = timeit.default_timer() - start
-        print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
+        #ex_time = timeit.default_timer() - start
+        #print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
         return fig
     
     
@@ -2217,8 +2411,8 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
     del date_var
     del name_var
     
-    ex_time = timeit.default_timer() - start
-    print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
+    #ex_time = timeit.default_timer() - start
+    #print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
     return figure
 
 
