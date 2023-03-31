@@ -64,7 +64,7 @@ ctypes = ['NaN' if x is np.nan else x for x in ctypes]
 HOSPITALS, beds, states, htypes, ctypes = (list(t) for t in zip(*sorted(zip(HOSPITALS, beds, states, htypes, ctypes))))
 HOSPITALS_SET = sorted(list(set(HOSPITALS)))
 
-ddfs = "90%"
+ddfs = "100%"
 
 with open('dataframe_data/report_categories.csv', newline='') as csvfile:
     categories = csv.reader(csvfile, delimiter=',')
@@ -129,9 +129,11 @@ def description_card1():
             html.H5("Hospital cost reports", style={
             'textAlign': 'left',
         }),
-           dcc.Markdown("Gaining insights into the Healthcare Cost Report Information System (HCRIS) " +
-                        "usually means tackling large, complicated files with expensive software or paying someone " +
-                        "else to do it."),
+           dcc.Markdown("Each year, thousands of hospitals submit cost reports to " +
+                        "the federal government. Analyzing these publicly available " +
+                        "data can mean tackling large, complicated files with expensive software " +
+                        "or paying someone else to do it."),
+           
            dcc.Markdown("This app allows you to analyze and download 3,800+ cost related " +
                         "variables for 6,000+ hospitals, for each year since 2010. Get the source code " +
                         "for this app [here] (https://github.com/Rush-Quality-Analytics/hcris-app) and the cost reports " +
@@ -194,69 +196,209 @@ def generate_control_card1():
                 ),
             
             html.Br(),
-            html.P("Select hospital types"),
-            dcc.Dropdown(
-                id="hospital_type1",
-                options=[{"label": i, "value": i} for i in sorted(list(set(htypes)))],
-                multi=True,
-                value=sorted(list(set(htypes))),
-                style={
-                    #'width': '320px', 
-                    'font-size': ddfs,
-                    },
-                ),
+            #html.P("Select hospital types"),
             
+            dbc.Button("Hospital types",
+                       id="open-centered4",
+                       #color="dark",
+                       #className="mr-1",
+                       style={
+                           "background-color": "#2a8cff",
+                           'width': '80%',
+                               'font-size': 12,
+                           'display': 'inline-block',
+                           #"height": "40px", 
+                           #'padding': '10px',
+                           'margin-left': '10%',
+                           #'margin-bottom': '10px',
+                           #'margin-right': '20px',
+                           },
+                ),
+            dbc.Modal(
+                [dbc.ModalBody([
+                                html.P("Select hospital types"),
+                                dcc.Dropdown(
+                                    id="hospital_type1",
+                                    options=[{"label": i, "value": i} for i in sorted(list(set(htypes)))],
+                                    multi=True,
+                                    value=sorted(list(set(htypes))),
+                                    style={
+                                        #'width': '320px', 
+                                        'font-size': ddfs,
+                                        },
+                                    ),
+                                html.Br(),
+                                html.Br(), 
+                                ]),
+                                dbc.ModalFooter(
+                                dbc.Button("Save & Close", id="close-centered4", className="ml-auto")
+                                ),
+                        ],
+                id="modal-centered4",
+                is_open=False,
+                centered=True,
+                autoFocus=True,
+                size="xl",
+                keyboard=True,
+                fade=True,
+                backdrop=True,
+                ),
             html.Br(),
-            html.P("Select hospital control types"),
-            dcc.Dropdown(
-                id="control_type1",
-                options=[{"label": i, "value": i} for i in sorted(list(set(ctypes)))],
-                multi=True,
-                value=sorted(list(set(ctypes))),
-                style={
-                    #'width': '320px', 
-                    'font-size': ddfs,
-                    },
-                ),
-            
-            html.Br(),
-            html.P("Select a set of states"),
-            dcc.Dropdown(
-                id="states-select1",
-                options=[{"label": i, "value": i} for i in sorted(list(set(states)))],
-                multi=True,
-                value=sorted(list(set(states))),
-                style={
-                    #'width': '320px', 
-                    'font-size': ddfs,
-                    }
-            ),
-            html.Br(),
-            
-            html.H5("2. Select hospitals",
-                   style={'display': 'inline-block', 'width': '58%'},),
-            
-            html.I(className="fas fa-question-circle fa-lg", id="target1",
-                style={'display': 'inline-block', 'width': '10%', 'color':'#99ccff'},
-                ),
-            dbc.Tooltip("Hospital names can change over time. This app not only returns data for the hospitals you choose but also returns data for any hospitals with matching CMS numbers.", target="target1",
-                style = {'font-size': 12},
-                ),
-            
-            dcc.Dropdown(
-                id="hospital-select1",
-                options=[{"label": i, "value": i} for i in HOSPITALS_SET],
-                multi=True,
-                value=None,
-                optionHeight=50,
-                style={
-                    #'width': '320px',
-                    'font-size': ddfs,
-                    }
-            ),
             html.Br(),
             
-            html.H5("3. Load cost reports",
+            
+            #html.P("Select hospital control types"),
+            dbc.Button("Hospital ownership",
+                       id="open-centered1",
+                       #color="dark",
+                       #className="mr-1",
+                       style={
+                           "background-color": "#2a8cff",
+                           'width': '80%',
+                               'font-size': 12,
+                           'display': 'inline-block',
+                           #"height": "40px", 
+                           #'padding': '10px',
+                           'margin-left': '10%',
+                           #'margin-bottom': '10px',
+                           #'margin-right': '20px',
+                           },
+                ),
+            dbc.Modal(
+                [dbc.ModalBody([
+                                html.P("Select hospital ownership types"),
+                                dcc.Dropdown(
+                                    id="control_type1",
+                                    options=[{"label": i, "value": i} for i in sorted(list(set(ctypes)))],
+                                    multi=True,
+                                    value=sorted(list(set(ctypes))),
+                                    style={
+                                        #'width': '320px', 
+                                        'font-size': ddfs,
+                                        },
+                                    ),
+                                html.Br(),
+                                html.Br(), 
+                                ]),
+                                dbc.ModalFooter(
+                                dbc.Button("Save & Close", id="close-centered1", className="ml-auto")
+                                ),
+                        ],
+                id="modal-centered1",
+                is_open=False,
+                centered=True,
+                autoFocus=True,
+                size="xl",
+                keyboard=True,
+                fade=True,
+                backdrop=True,
+                ),
+            html.Br(),
+            html.Br(),
+            
+            
+            #html.P("Select a set of states"),
+            dbc.Button("US states & territories",
+                       id="open-centered3",
+                       #color="dark",
+                       #className="mr-1",
+                       style={
+                           "background-color": "#2a8cff",
+                           'width': '80%',
+                               'font-size': 12,
+                           'display': 'inline-block',
+                           #"height": "40px", 
+                           #'padding': '10px',
+                           'margin-left': '10%',
+                           #'margin-bottom': '10px',
+                           #'margin-right': '20px',
+                           },
+                ),
+            dbc.Modal(
+                [dbc.ModalBody([
+                                html.P("Select a set of US states and/or territories"),
+                                dcc.Dropdown(
+                                    id="states-select1",
+                                    options=[{"label": i, "value": i} for i in sorted(list(set(states)))],
+                                    multi=True,
+                                    value=sorted(list(set(states))),
+                                    style={
+                                        #'width': '320px', 
+                                        'font-size': ddfs,
+                                        }
+                                ),
+                                html.Br(),
+                                html.Br(), 
+                                ]),
+                                dbc.ModalFooter(
+                                dbc.Button("Save & Close", id="close-centered3", className="ml-auto")
+                                ),
+                        ],
+                id="modal-centered3",
+                is_open=False,
+                centered=True,
+                autoFocus=True,
+                size="xl",
+                keyboard=True,
+                fade=True,
+                backdrop=True,
+                ),
+            html.Br(),
+            html.Br(),
+            
+            
+            #html.H5("2. Select hospitals", style={'display': 'inline-block', 'width': '58%'},),
+            dbc.Button("Hospital names & numbers",
+                       id="open-centered2",
+                       #color="dark",
+                       #className="mr-1",
+                       style={
+                           "background-color": "#2a8cff",
+                           'width': '80%',
+                               'font-size': 12,
+                           'display': 'inline-block',
+                           #"height": "40px", 
+                           #'padding': '10px',
+                           'margin-left': '10%',
+                           #'margin-bottom': '10px',
+                           #'margin-right': '20px',
+                           },
+                ),
+            dbc.Modal(
+                [dbc.ModalBody([
+                                html.P("Hospital names can change over time. This app not only returns data for the hospitals you choose but also returns data for any hospitals with matching CMS numbers."),
+                                dcc.Dropdown(
+                                    id="hospital-select1",
+                                    options=[{"label": i, "value": i} for i in HOSPITALS_SET],
+                                    multi=True,
+                                    value=None,
+                                    optionHeight=50,
+                                    style={
+                                        #'width': '320px',
+                                        'font-size': ddfs,
+                                        }
+                                ),
+                                html.Br(), 
+                                #html.P("", id='table1txt'),
+                                ]),
+                                dbc.ModalFooter(
+                                dbc.Button("Save & Close", id="close-centered2", className="ml-auto")
+                                ),
+                        ],
+                id="modal-centered2",
+                is_open=False,
+                centered=True,
+                autoFocus=True,
+                size="xl",
+                keyboard=True,
+                fade=True,
+                backdrop=True,
+                ),
+            html.Br(),
+            html.Br(),
+            
+            
+            html.H5("2. Load cost reports",
                    style={'display': 'inline-block', 'width': '64%'},),
             
             html.I(className="fas fa-question-circle fa-lg", id="target2",
@@ -267,12 +409,65 @@ def generate_control_card1():
                 style = {'font-size': 12},
                 ),
             
-            html.Button('Click to load or update', id='btn1', n_clicks=0,
-                style={'width': '80%',
-                        'display': 'inline-block',
-                        'margin-left': '10%',
-                },
+            dbc.Button("Load or update reports",
+                       id="btn1",
+                       #color="dark",
+                       #className="mr-1",
+                       style={
+                           "background-color": "#2a8cff",
+                           'width': '80%',
+                               'font-size': 12,
+                           'display': 'inline-block',
+                           #"height": "40px", 
+                           #'padding': '10px',
+                           'margin-left': '10%',
+                           #'margin-bottom': '10px',
+                           #'margin-right': '20px',
+                           },
                 ),
+            
+            html.Br(),
+            html.Br(),
+            dcc.Loading(
+                id="loading-fig1",
+                type="default",
+                fullscreen=False,
+                children=[
+                    
+                     html.Div(
+                        [html.B(str(len(HOSPITALS_SET)) + " hospitals available", style={'fontSize':16,
+                                                                                         #'display': 'inline-block',
+                                                                                         }),
+                         html.H6(id="text1", style={'fontSize':16, 'display': 'inline-block'},),
+                         html.H6(id="filler_text1", style={'fontSize':16, 'display': 'inline-block'},)],
+                        id="des1",
+                        className="mini_container",
+                        style={
+                            'width': '100%',
+                            #'display': 'inline-block',
+                            'fontSize':16,
+                            'textAlign': 'center',
+                            },
+                        ),
+                    
+                    html.Button("Download reports", id="download-btn",
+                        style={'width': '80%',
+                            #'display': 'inline-block',
+                            'margin-left': '10%',
+                            },
+                        ),
+                    dcc.Download(id="data-download"),
+                    
+                    html.Br(),
+                    ],
+                    
+                    
+                    #),
+                #],
+            ),
+            
+            
+            
             
             
         ],
@@ -548,6 +743,7 @@ def generate_control_card5():
 app.layout = html.Div([
     
     dcc.Store(id='df_tab1', storage_type='memory'),
+    
     html.Div(
         id='url_ls',
         style={'display': 'none'}
@@ -579,7 +775,7 @@ app.layout = html.Div([
             },
         ),
         
-    # Right column
+    # Right column 1
     html.Div(
             id="right-column1",
             className="eight columns",
@@ -602,58 +798,10 @@ app.layout = html.Div([
                             },
                 ),
                 
-                
-                html.Div(
-                    [
-                     html.Div(
-                        [html.B(str(len(HOSPITALS_SET)) + " hospitals available", style={'fontSize':16,
-                                                                                         'display': 'inline-block',}),
-                         html.H6(id="text1", style={'fontSize':16, 'display': 'inline-block'},)],
-                        id="des1",
-                        className="mini_container",
-                        style={
-                            'width': '35%',
-                            'display': 'inline-block',
-                            #'border-radius': '0px',
-                            #'box-shadow': '1px 1px 1px grey',
-                            #'background-color': '#f0f0f0',
-                            #'padding': '0px',
-                            #'margin-right': '0px',
-                            #'margin-bottom': '10px',
-                            'fontSize':16,
-                            'textAlign': 'center',
-                            },
-                        ),
-                     
-                    html.Button("Download cost reports", id="download-btn",
-                        style={'width': '25%',
-                            'display': 'inline-block'},),
-                    dcc.Download(id="data-download"),
-                    
-                    html.Br(),
-                    ],
-                    
-                    id="des3",
-                    className="mini_container",
-                    style={
-                        'width': '107%',
-                        'display': 'inline-block',
-                        'border-radius': '10px',
-                        'box-shadow': '1px 1px 1px grey',
-                        'background-color': '#f0f0f0',
-                        'padding': '10px',
-                        'margin-right': '10px',
-                        'margin-bottom': '10px',
-                        'fontSize':16,
-                        'textAlign': 'center',
-                        },
-                    ),
-                
-                
                 html.Div(
                     id="cost_report1",
                     children=[
-                        html.H5("Cost Report Across Fiscal Years"),
+                        html.H5("Cost Reports Across Fiscal Years"),
                         html.P("Select a category and then a feature. You may also select a focal hospital."),
                         dcc.Dropdown(
                             id="categories-select1",
@@ -721,8 +869,14 @@ app.layout = html.Div([
                 ),
                 html.Br(),
                 html.Br(),
-                
-                
+            ],
+        ),
+    
+    # Left column
+    html.Div(
+            id="left-column2",
+            className="eleven columns",
+            children=[
                 
                 html.Div(
                     id="cost_report2",
@@ -732,7 +886,7 @@ app.layout = html.Div([
                         generate_control_card4(),
                         ],
                     style={
-                        'width': '107%',
+                        'width': '105%',
                         'display': 'inline-block',
                         'border-radius': '15px',
                         'box-shadow': '1px 1px 1px grey',
@@ -771,7 +925,7 @@ app.layout = html.Div([
                         ),
                         ],
                     style={
-                        'width': '107%',
+                        'width': '105%',
                         'display': 'inline-block',
                         'border-radius': '15px',
                         'box-shadow': '1px 1px 1px grey',
@@ -781,16 +935,59 @@ app.layout = html.Div([
                         'height': '780px',
                         },
                 ),
-                html.Br(),
-                
-            ],
-        ),
+                ],
+            ),
+
     ],
 )
 
   
 ##############################   Callbacks   ############################################
 #########################################################################################
+
+@app.callback(
+    Output("modal-centered1", "is_open"),
+    [Input("open-centered1", "n_clicks"), Input("close-centered1", "n_clicks")],
+    [State("modal-centered1", "is_open")],
+)
+def toggle_modal1(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+
+@app.callback(
+    Output("modal-centered2", "is_open"),
+    [Input("open-centered2", "n_clicks"), Input("close-centered2", "n_clicks")],
+    [State("modal-centered2", "is_open")],
+)
+def toggle_modal2(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+
+@app.callback(
+    Output("modal-centered3", "is_open"),
+    [Input("open-centered3", "n_clicks"), Input("close-centered3", "n_clicks")],
+    [State("modal-centered3", "is_open")],
+)
+def toggle_modal3(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+@app.callback(
+    Output("modal-centered4", "is_open"),
+    [Input("open-centered4", "n_clicks"), Input("close-centered4", "n_clicks")],
+    [State("modal-centered4", "is_open")],
+)
+def toggle_modal1(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+
 
 
 @app.callback( # Updated number of beds text
@@ -890,10 +1087,10 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
 
 @app.callback(
     [Output('url_ls', "children"),
-     Output("text1", 'children'),
      Output('hospital-select1b', 'options'),
      Output('hospital-select1c', 'options'),
-     Output('hospital-select1d', 'options')],
+     Output('hospital-select1d', 'options'),
+     ],
     [Input('btn1', 'n_clicks')],
     [State("hospital-select1", "value"),
      State("hospital-select1", "options"),],
@@ -911,7 +1108,7 @@ def get_urls(btn1, hospitals, hospital_options):
         #print("get_urls executed in "+str(ex_time)) # It returns time in seconds
         ls1 = [{"label": i, "value": i} for i in ['No focal hospital']]
         #ls2 = [{"label": i, "value": i} for i in ['No focal hospital']]
-        return None, ', 0 selected', ls1, ls1, ls1 
+        return None, ls1, ls1, ls1
     
     if isinstance(hospitals, str) == True:
         hospitals = [hospitals]
@@ -923,7 +1120,7 @@ def get_urls(btn1, hospitals, hospital_options):
         #print("get_urls executed in "+str(ex_time)) # It returns time in seconds
         ls1 = [{"label": i, "value": i} for i in ['No focal hospital']]
         #ls2 = [{"label": i, "value": i} for i in ['No focal hospital']]
-        return None, ', 0 selected', ls1, ls1, ls1
+        return None, ls1, ls1, ls1
     
     url_ls = []
     for i, val in enumerate(hospitals):
@@ -941,11 +1138,12 @@ def get_urls(btn1, hospitals, hospital_options):
     hospitals = ['No focal hospital'] + hospitals
     ls1 = [{"label": i, "value": i} for i in hospitals]
     #ls2 = [{"label": i, "value": i} for i in hospitals]
-    return url_ls, txt, ls1, ls1, ls1 
+    return url_ls, ls1, ls1, ls1
     
 
 @app.callback(
-    Output('df_tab1', "data"),
+    [Output('df_tab1', "data"),
+     Output('filler_text1', 'children')],
     [
      Input('url_ls', 'children'),
      Input('df_tab1', "data"),
@@ -956,7 +1154,7 @@ def update_df1_tab1(urls, df):
     #start = timeit.default_timer()
     
     if urls is None or urls is []:
-        return None
+        return None,""
     
     elif df is None:
         
@@ -975,7 +1173,7 @@ def update_df1_tab1(urls, df):
         
         #ex_time = timeit.default_timer() - start
         #print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
-        return df.to_json()
+        return df.to_json(),""
 
     else:
         df = pd.read_json(df)
@@ -985,7 +1183,7 @@ def update_df1_tab1(urls, df):
         url_ls = list(set(urls)-set(df_urls))
              
         for i, url in enumerate(url_ls):
-            print('new:', url)
+            #print('new:', url)
             
             tdf = pd.read_csv(url, header=[0,1,2,3], index_col=[0])
             tdf = tdf.to_json()
@@ -998,11 +1196,12 @@ def update_df1_tab1(urls, df):
         
         #ex_time = timeit.default_timer() - start
         #print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
-        return df.to_json()
+        return df.to_json(),""
 
 
 @app.callback(
-    Output("map_plot1", "figure"),
+    [Output("map_plot1", "figure"),
+     Output("text1", 'children')],
     [
      Input("df_tab1", "data"),
      Input("hospital-select1", "value"),
@@ -1037,13 +1236,15 @@ def update_map_plot1(df, h):
         )
 
     if df is None:
-        return figure
+        return figure, ', 0 Selected'
     
     df = pd.read_json(df)
     
+    num_h = len(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())
+    
     features = list(df)
     if "('Lon', 'Lon', 'Lon', 'Lon')" not in features or "('Lat', 'Lat', 'Lat', 'Lat')" not in features:
-        return figure
+        return figure,  ', ' + str(num_h) + ' Selected'
     
     figure = go.Figure()
     figure.add_trace(go.Scattermapbox(
@@ -1081,7 +1282,7 @@ def update_map_plot1(df, h):
         margin={"r":0,"t":0,"l":0,"b":0},
         )
     
-    return figure
+    return figure,  ', ' + str(num_h) + ' Selected'
 
 
 
@@ -1354,6 +1555,7 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                           color="rgb(38, 38, 38)", 
                           ),
                           showlegend=True,
+                          height=400,
                           margin=dict(l=100, r=10, b=10, t=10),
                           paper_bgcolor="#f0f0f0",
                           plot_bgcolor="#f0f0f0",
@@ -1379,6 +1581,7 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                           color="rgb(38, 38, 38)", 
                           ),
                           showlegend=True,
+                          height=400,
                           margin=dict(l=100, r=10, b=10, t=10),
                           paper_bgcolor="#f0f0f0",
                           plot_bgcolor="#f0f0f0",
@@ -1425,6 +1628,7 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                               color="rgb(38, 38, 38)", 
                               ),
                               showlegend=True,
+                              height=400,
                               margin=dict(l=100, r=10, b=10, t=10),
                               paper_bgcolor="#f0f0f0",
                               plot_bgcolor="#f0f0f0",
