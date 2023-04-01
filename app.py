@@ -71,6 +71,8 @@ with open('dataframe_data/report_categories.csv', newline='') as csvfile:
     for row in categories:
         report_categories = row
         report_categories = report_categories[1:]
+report_categories.remove('File Date')
+report_categories.remove('Name and Num')
 report_categories.sort()
 
 
@@ -495,9 +497,9 @@ def generate_control_card3():
                 id="categories-select2",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=75,
+                optionHeight=65,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
@@ -511,9 +513,9 @@ def generate_control_card3():
                 id="categories-select22",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=75,
+                optionHeight=65,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
@@ -545,9 +547,9 @@ def generate_control_card3():
                 id="categories-select2-2",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=75,
+                optionHeight=65,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
@@ -561,9 +563,9 @@ def generate_control_card3():
                 id="categories-select22-2",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=75,
+                optionHeight=65,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
@@ -667,9 +669,9 @@ def generate_control_card5():
                 id="categories-select3",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=75,
+                optionHeight=65,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
@@ -683,9 +685,9 @@ def generate_control_card5():
                 id="categories-select33",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=75,
+                optionHeight=65,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
@@ -702,9 +704,9 @@ def generate_control_card5():
                 id="categories-select3-2",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=75,
+                optionHeight=65,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
@@ -718,9 +720,9 @@ def generate_control_card5():
                 id="categories-select33-2",
                 options=[{"label": i, "value": i} for i in report_categories],
                 value=None,
-                optionHeight=75,
+                optionHeight=65,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
