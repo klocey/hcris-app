@@ -216,7 +216,7 @@ def generate_control_card1():
                 ),
             dbc.Modal(
                 [dbc.ModalBody([
-                                html.P("Select hospital types"),
+                                html.P("Select hospital types",style={'font-size': 16,}),
                                 dcc.Dropdown(
                                     id="hospital_type1",
                                     options=[{"label": i, "value": i} for i in sorted(list(set(htypes)))],
@@ -224,14 +224,15 @@ def generate_control_card1():
                                     value=sorted(list(set(htypes))),
                                     style={
                                         #'width': '320px', 
-                                        'font-size': ddfs,
+                                        'font-size': 16,
                                         },
                                     ),
                                 html.Br(),
                                 html.Br(), 
                                 ]),
                                 dbc.ModalFooter(
-                                dbc.Button("Save & Close", id="close-centered4", className="ml-auto")
+                                dbc.Button("Save & Close", id="close-centered4", className="ml-auto", 
+                                           style={'font-size': 12,})
                                 ),
                         ],
                 id="modal-centered4",
@@ -266,7 +267,7 @@ def generate_control_card1():
                 ),
             dbc.Modal(
                 [dbc.ModalBody([
-                                html.P("Select hospital ownership types"),
+                                html.P("Select hospital ownership types",style={'font-size': 16,}),
                                 dcc.Dropdown(
                                     id="control_type1",
                                     options=[{"label": i, "value": i} for i in sorted(list(set(ctypes)))],
@@ -274,14 +275,15 @@ def generate_control_card1():
                                     value=sorted(list(set(ctypes))),
                                     style={
                                         #'width': '320px', 
-                                        'font-size': ddfs,
+                                        'font-size': 16,
                                         },
                                     ),
                                 html.Br(),
                                 html.Br(), 
                                 ]),
                                 dbc.ModalFooter(
-                                dbc.Button("Save & Close", id="close-centered1", className="ml-auto")
+                                dbc.Button("Save & Close", id="close-centered1", className="ml-auto",
+                                           style={'font-size': 12,})
                                 ),
                         ],
                 id="modal-centered1",
@@ -316,7 +318,7 @@ def generate_control_card1():
                 ),
             dbc.Modal(
                 [dbc.ModalBody([
-                                html.P("Select a set of US states and/or territories"),
+                                html.P("Select a set of US states and/or territories",style={'font-size': 16,}),
                                 dcc.Dropdown(
                                     id="states-select1",
                                     options=[{"label": i, "value": i} for i in sorted(list(set(states)))],
@@ -324,14 +326,15 @@ def generate_control_card1():
                                     value=sorted(list(set(states))),
                                     style={
                                         #'width': '320px', 
-                                        'font-size': ddfs,
+                                        'font-size': 16,
                                         }
                                 ),
                                 html.Br(),
                                 html.Br(), 
                                 ]),
                                 dbc.ModalFooter(
-                                dbc.Button("Save & Close", id="close-centered3", className="ml-auto")
+                                dbc.Button("Save & Close", id="close-centered3", className="ml-auto", 
+                                           style={'font-size': 12,})
                                 ),
                         ],
                 id="modal-centered3",
@@ -366,7 +369,8 @@ def generate_control_card1():
                 ),
             dbc.Modal(
                 [dbc.ModalBody([
-                                html.P("Hospital names can change over time. This app not only returns data for the hospitals you choose but also returns data for any hospitals with matching CMS numbers."),
+                                html.P("Hospital names can change over time. This app returns data for the hospitals you choose and for any hospitals with matching CMS numbers.",
+                                       style={'font-size': 16,}),
                                 dcc.Dropdown(
                                     id="hospital-select1",
                                     options=[{"label": i, "value": i} for i in HOSPITALS_SET],
@@ -375,14 +379,15 @@ def generate_control_card1():
                                     optionHeight=50,
                                     style={
                                         #'width': '320px',
-                                        'font-size': ddfs,
+                                        'font-size': 14,
                                         }
                                 ),
                                 html.Br(), 
                                 #html.P("", id='table1txt'),
                                 ]),
                                 dbc.ModalFooter(
-                                dbc.Button("Save & Close", id="close-centered2", className="ml-auto")
+                                dbc.Button("Save & Close", id="close-centered2", className="ml-auto",
+                                           style={'font-size': 12,})
                                 ),
                         ],
                 id="modal-centered2",
@@ -493,7 +498,7 @@ def generate_control_card3():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -509,7 +514,7 @@ def generate_control_card3():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -543,7 +548,7 @@ def generate_control_card3():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -559,7 +564,7 @@ def generate_control_card3():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -574,7 +579,7 @@ def generate_control_card3():
                     options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
                     multi=False, value='linear',
                     style={'width': '120px', 
-                            'font-size': ddfs,
+                            'font-size': 12,
                             'display': 'inline-block',
                             'border-radius': '15px',
                             #'box-shadow': '1px 1px 1px grey',
@@ -610,7 +615,7 @@ def generate_control_card4():
                 value='linear',
                 style={
                     'width': '200px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -627,7 +632,7 @@ def generate_control_card4():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -665,7 +670,7 @@ def generate_control_card5():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -681,7 +686,7 @@ def generate_control_card5():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -700,7 +705,7 @@ def generate_control_card5():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -716,7 +721,7 @@ def generate_control_card5():
                 optionHeight=70,
                 style={
                     'width': '250px', 
-                    'font-size': ddfs,
+                    'font-size': 12,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     #'box-shadow': '1px 1px 1px grey',
@@ -811,7 +816,7 @@ app.layout = html.Div([
                             optionHeight=70,
                             style={
                                 'width': '250px', 
-                                'font-size': ddfs,
+                                'font-size': 12,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
                                 #'box-shadow': '1px 1px 1px grey',
@@ -828,7 +833,7 @@ app.layout = html.Div([
                             optionHeight=70,
                             style={
                                 'width': '250px', 
-                                'font-size': ddfs,
+                                'font-size': 12,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
                                 #'box-shadow': '1px 1px 1px grey',
@@ -845,7 +850,7 @@ app.layout = html.Div([
                             optionHeight=70,
                             style={
                                 'width': '250px', 
-                                'font-size': ddfs,
+                                'font-size': 12,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
                                 #'box-shadow': '1px 1px 1px grey',
@@ -905,7 +910,7 @@ app.layout = html.Div([
                     children=[
                         generate_control_card5(),
                         dcc.Graph(id="cost_report_plot3"),
-                        html.P("You may select a select a focal hospital."),
+                        html.P("You can select a select a focal hospital."),
                         dcc.Dropdown(
                             id='hospital-select1d',
                             options=[{"label": i, "value": i} for i in []],
@@ -914,7 +919,7 @@ app.layout = html.Div([
                             optionHeight=70,
                             style={
                                 'width': '250px', 
-                                'font-size': ddfs,
+                                'font-size': 12,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
                                 #'box-shadow': '1px 1px 1px grey',
