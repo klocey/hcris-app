@@ -3,6 +3,7 @@ from dash import dcc
 from dash import html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+from dash import dash_table
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -45,6 +46,18 @@ gendat_df = pd.read_pickle('dataframe_data/GenDat4App_p4.pkl')
 gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'Not given')
 gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'Not given')
 gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'Not given')
+
+
+crosswalk_df = pd.read_csv('dataframe_data/2552-10 SAS FILE RECORD LAYOUT AND CROSSWALK TO 96 - 2021.csv')
+crosswalk_df.drop(labels=['WORKSHEET', 'DATA_TYPE', '96_FIELD_NAME', 'WKSHT CD', 'LINE', 'COLUMN'], axis=1, inplace=True)
+
+crosswalk_df.rename(columns={"TYPE": "Category",
+                             "SUBTYPE": 'Sub-category',
+                             "10_FIELD_NAME": 'Feature code',
+                             "FIELD DESCRIPTION ": "Feature description",
+                             },
+                    inplace=True,
+                    )
 
 ######################## SELECTION LISTS #####################################
 
@@ -182,7 +195,6 @@ def generate_control_card1():
             html.Div(id='Filterbeds1'),
             dcc.RangeSlider(
                 id='beds1',
-                #count=1,
                 min=0,
                 max=2800,
                 step=50,
@@ -198,22 +210,15 @@ def generate_control_card1():
                 ),
             
             html.Br(),
-            #html.P("Select hospital types"),
             
             dbc.Button("Hospital types",
                        id="open-centered4",
-                       #color="dark",
-                       #className="mr-1",
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
                                'font-size': 12,
                            'display': 'inline-block',
-                           #"height": "40px", 
-                           #'padding': '10px',
                            'margin-left': '10%',
-                           #'margin-bottom': '10px',
-                           #'margin-right': '20px',
                            },
                 ),
             dbc.Modal(
@@ -225,7 +230,6 @@ def generate_control_card1():
                                     multi=True,
                                     value=sorted(list(set(htypes))),
                                     style={
-                                        #'width': '320px', 
                                         'font-size': 16,
                                         },
                                     ),
@@ -250,21 +254,14 @@ def generate_control_card1():
             html.Br(),
             
             
-            #html.P("Select hospital control types"),
             dbc.Button("Hospital ownership",
                        id="open-centered1",
-                       #color="dark",
-                       #className="mr-1",
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
                                'font-size': 12,
                            'display': 'inline-block',
-                           #"height": "40px", 
-                           #'padding': '10px',
                            'margin-left': '10%',
-                           #'margin-bottom': '10px',
-                           #'margin-right': '20px',
                            },
                 ),
             dbc.Modal(
@@ -301,21 +298,14 @@ def generate_control_card1():
             html.Br(),
             
             
-            #html.P("Select a set of states"),
             dbc.Button("US states & territories",
                        id="open-centered3",
-                       #color="dark",
-                       #className="mr-1",
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
                                'font-size': 12,
                            'display': 'inline-block',
-                           #"height": "40px", 
-                           #'padding': '10px',
                            'margin-left': '10%',
-                           #'margin-bottom': '10px',
-                           #'margin-right': '20px',
                            },
                 ),
             dbc.Modal(
@@ -327,7 +317,6 @@ def generate_control_card1():
                                     multi=True,
                                     value=sorted(list(set(states))),
                                     style={
-                                        #'width': '320px', 
                                         'font-size': 16,
                                         }
                                 ),
@@ -351,22 +340,14 @@ def generate_control_card1():
             html.Br(),
             html.Br(),
             
-            
-            #html.H5("2. Select hospitals", style={'display': 'inline-block', 'width': '58%'},),
             dbc.Button("Hospital names & numbers",
                        id="open-centered2",
-                       #color="dark",
-                       #className="mr-1",
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
                                'font-size': 12,
                            'display': 'inline-block',
-                           #"height": "40px", 
-                           #'padding': '10px',
                            'margin-left': '10%',
-                           #'margin-bottom': '10px',
-                           #'margin-right': '20px',
                            },
                 ),
             dbc.Modal(
@@ -380,12 +361,10 @@ def generate_control_card1():
                                     value=None,
                                     optionHeight=50,
                                     style={
-                                        #'width': '320px',
                                         'font-size': 14,
                                         }
                                 ),
                                 html.Br(), 
-                                #html.P("", id='table1txt'),
                                 ]),
                                 dbc.ModalFooter(
                                 dbc.Button("Save & Close", id="close-centered2", className="ml-auto",
@@ -404,7 +383,7 @@ def generate_control_card1():
             html.Br(),
             html.Br(),
             
-            
+            html.Hr(),
             html.H5("2. Load cost reports",
                    style={'display': 'inline-block', 'width': '64%'},),
             
@@ -418,23 +397,18 @@ def generate_control_card1():
             
             dbc.Button("Load or update reports",
                        id="btn1",
-                       #color="dark",
-                       #className="mr-1",
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
                                'font-size': 12,
                            'display': 'inline-block',
-                           #"height": "40px", 
-                           #'padding': '10px',
                            'margin-left': '10%',
-                           #'margin-bottom': '10px',
-                           #'margin-right': '20px',
                            },
                 ),
             
             html.Br(),
             html.Br(),
+            html.Hr(),
             dcc.Loading(
                 id="loading-fig1",
                 type="default",
@@ -451,7 +425,6 @@ def generate_control_card1():
                         className="mini_container",
                         style={
                             'width': '100%',
-                            #'display': 'inline-block',
                             'fontSize':16,
                             'textAlign': 'center',
                             },
@@ -459,24 +432,15 @@ def generate_control_card1():
                     
                     html.Button("Download reports", id="download-btn",
                         style={'width': '80%',
-                            #'display': 'inline-block',
                             'margin-left': '10%',
                             },
                         ),
                     dcc.Download(id="data-download"),
                     
                     html.Br(),
+                    html.Br(),
                     ],
-                    
-                    
-                    #),
-                #],
-            ),
-            
-            
-            
-            
-            
+            ), 
         ],
     )
 
@@ -503,8 +467,6 @@ def generate_control_card3():
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-bottom': '0px',
                     }
@@ -519,8 +481,6 @@ def generate_control_card3():
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-left': '10px',
                     }
@@ -534,8 +494,6 @@ def generate_control_card3():
                             'font-size': 13,
                             'display': 'inline-block',
                             'border-radius': '15px',
-                            #'box-shadow': '1px 1px 1px grey',
-                            #'background-color': '#f0f0f0',
                             'padding': '0px',
                             'margin-left': '10px',
                          },
@@ -553,8 +511,6 @@ def generate_control_card3():
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-bottom': '0px',
                     }
@@ -569,8 +525,6 @@ def generate_control_card3():
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-left': '10px',
                     }
@@ -584,8 +538,6 @@ def generate_control_card3():
                             'font-size': 13,
                             'display': 'inline-block',
                             'border-radius': '15px',
-                            #'box-shadow': '1px 1px 1px grey',
-                            #'background-color': '#f0f0f0',
                             'padding': '0px',
                             'margin-left': '10px',
                          },
@@ -594,7 +546,6 @@ def generate_control_card3():
             
         ],
         style={
-            #'width': '2000px', 
             'font-size': "100%",
             'display': 'inline-block',
             },
@@ -611,17 +562,15 @@ def generate_control_card4():
         id="control-card4",
         children=[
             html.Br(),
-            html.P("Select a model to fit. You can also select a focal hospital."),
             dcc.Dropdown(
                 id='trendline-1',
-                value='linear',
+                value=None,
+                placeholder='Select a model to fit ... or not',
                 style={
-                    'width': '200px', 
+                    'width': '250px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-left': '0px',
                     }
@@ -630,15 +579,13 @@ def generate_control_card4():
                 id='hospital-select1c',
                 options=[{"label": i, "value": i} for i in []],
                 value=None,
-                placeholder='Select a focal hospital',
+                placeholder='Select a focal hospital ... or not',
                 optionHeight=75,
                 style={
-                    'width': '250px', 
+                    'width': '400px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-left': '15px',
                     }
@@ -646,7 +593,6 @@ def generate_control_card4():
             
         ],
         style={
-            #'width': '2000px', 
             'font-size': "100%",
             'display': 'inline-block',
             },
@@ -675,8 +621,6 @@ def generate_control_card5():
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-bottom': '0px',
                     }
@@ -691,8 +635,6 @@ def generate_control_card5():
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-left': '10px',
                     }
@@ -710,8 +652,6 @@ def generate_control_card5():
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-bottom': '0px',
                     }
@@ -726,8 +666,6 @@ def generate_control_card5():
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
-                    #'box-shadow': '1px 1px 1px grey',
-                    #'background-color': '#f0f0f0',
                     'padding': '0px',
                     'margin-left': '10px',
                     }
@@ -735,7 +673,6 @@ def generate_control_card5():
             
         ],
         style={
-            #'width': '2000px', 
             'font-size': "100%",
             'display': 'inline-block',
             },
@@ -795,21 +732,69 @@ app.layout = html.Div([
                         html.Hr(),
                         dcc.Graph(id="map_plot1"),
                     ],
-                    style={'width': '107%', 'display': 'inline-block',
+                    style={'width': '107%',
                                  'border-radius': '15px',
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
                                  'padding': '10px',
                                  'margin-bottom': '10px',
-                                 #'fontSize':16
                             },
                 ),
+                
+                
+                html.Div(
+                    id="crosswalk",
+                    children=[
+                        
+                        dbc.Button("Click to search the cost report crosswalk",
+                                   id="open-centered5",
+                                   style={
+                                       "background-color": "#2a8cff",
+                                       'width': '50%',
+                                           'font-size': 12,
+                                       'display': 'inline-block',
+                                       'margin-left': '25%',
+                                       
+                                       },
+                            ),
+                        dbc.Modal(
+                            [dbc.ModalBody([
+                                            html.P("This table can be sorted and filtered using any column or combination of columns. Just click the arrows or start typing in a filter cell. Click on the pink 'AA' to select whether you prefer case sensitive filtering. ",
+                                                   style={'font-size': 16,}),
+                                            html.Div(id='crosswalk_table'),
+                                            html.Br(), 
+                                            ]),
+                                            dbc.ModalFooter(
+                                            dbc.Button("Close", id="close-centered5", className="ml-auto", 
+                                                       style={'font-size': 12,})
+                                            ),
+                                    ],
+                            id="modal-centered5",
+                            is_open=False,
+                            centered=True,
+                            autoFocus=True,
+                            size="xl",
+                            keyboard=True,
+                            fade=True,
+                            backdrop=True,
+                            ),
+                        
+                    ],
+                    style={'width': '107%', 
+                                 'border-radius': '15px',
+                                 'box-shadow': '1px 1px 1px grey',
+                                 'background-color': '#f0f0f0',
+                                 'padding': '10px',
+                                 'margin-bottom': '10px',
+                                 
+                            },
+                ),
+                
                 
                 html.Div(
                     id="cost_report1",
                     children=[
                         html.H5("Cost Reports Across Fiscal Years"),
-                        html.P("Select a category and then a feature. You may also select a focal hospital."),
                         dcc.Dropdown(
                             id="categories-select1",
                             options=[{"label": i, "value": i} for i in report_categories],
@@ -821,8 +806,6 @@ app.layout = html.Div([
                                 'font-size': 13,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
-                                #'box-shadow': '1px 1px 1px grey',
-                                #'background-color': '#f0f0f0',
                                 'padding': '0px',
                                 'margin-bottom': '0px',
                                 }
@@ -838,8 +821,6 @@ app.layout = html.Div([
                                 'font-size': 13,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
-                                #'box-shadow': '1px 1px 1px grey',
-                                #'background-color': '#f0f0f0',
                                 'padding': '0px',
                                 'margin-left': '10px',
                                 }
@@ -848,15 +829,13 @@ app.layout = html.Div([
                             id='hospital-select1b',
                             options=[{"label": i, "value": i} for i in []],
                             value=None,
-                            placeholder='Select a focal hospital',
+                            placeholder='Select a focal hospital ... or not',
                             optionHeight=75,
                             style={
                                 'width': '250px', 
                                 'font-size': 13,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
-                                #'box-shadow': '1px 1px 1px grey',
-                                #'background-color': '#f0f0f0',
                                 'padding': '0px',
                                 'margin-left': '15px',
                                 }
@@ -871,7 +850,6 @@ app.layout = html.Div([
                                  'background-color': '#f0f0f0',
                                  'padding': '10px',
                                  'margin-bottom': '10px',
-                                 #'fontSize':16
                             },
                 ),
                 html.Br(),
@@ -904,7 +882,6 @@ app.layout = html.Div([
                         },
                 ),
                 html.Br(),
-                #html.Br(),
                 
                 
                 html.Div(
@@ -912,20 +889,17 @@ app.layout = html.Div([
                     children=[
                         generate_control_card5(),
                         dcc.Graph(id="cost_report_plot3"),
-                        html.P("You can select a select a focal hospital."),
                         dcc.Dropdown(
                             id='hospital-select1d',
                             options=[{"label": i, "value": i} for i in []],
                             value=None,
-                            placeholder='Select a focal hospital',
+                            placeholder='Select a focal hospital ... or not',
                             optionHeight=75,
                             style={
                                 'width': '250px', 
                                 'font-size': 13,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
-                                #'box-shadow': '1px 1px 1px grey',
-                                #'background-color': '#f0f0f0',
                                 'padding': '0px',
                                 'margin-left': '10px',
                                 }
@@ -994,6 +968,40 @@ def toggle_modal1(n1, n2, is_open):
         return not is_open
     return is_open
 
+@app.callback(
+    [Output("modal-centered5", "is_open"),
+     Output("crosswalk_table", "children"),
+     ],
+    [Input("open-centered5", "n_clicks"), Input("close-centered5", "n_clicks")],
+    [State("modal-centered5", "is_open")],
+)
+def toggle_modal5(n1, n2, is_open):
+    
+    dashT = dash_table.DataTable(
+        data = crosswalk_df.to_dict('records'),
+        columns = [{'id': c, 'name': c} for c in crosswalk_df.columns],
+        
+        export_format="csv",
+        page_action='native',
+        page_size=100,
+        sort_action="native",
+        sort_mode="multi",
+        filter_action="native",
+        
+        style_table={'height': '500px', 
+                     'overflowY': 'auto',
+                     'horizontalAligment':'center',
+                     },
+        style_cell={'padding':'5px',
+                    'minwidth':'160',
+                    'width':'160',
+                    'maxwidth':'160',
+                    },
+    )
+    
+    if n1 or n2:
+        return not is_open, dashT
+    return is_open, dashT
 
 
 
@@ -1021,7 +1029,6 @@ def update_output3(value, df):
     del df2
     
     if df is not None:
-        #start = timeit.default_timer()
         
         df = pd.read_json(df)
         df.dropna(axis=1, how='all', inplace=True)
@@ -1036,13 +1043,8 @@ def update_output3(value, df):
         for c in sub_cat:
             if c in cols2:
                 sub_categories.append(c)
-                
-        #ex_time = timeit.default_timer() - start
-        #print("update_output3 executed in "+str(ex_time)) # It returns time in seconds
-        
     else:
         sub_categories = sub_cat
-    
     
     return [{"label": i, "value": i} for i in sub_categories]
 
@@ -1070,7 +1072,6 @@ def update_output4(available_options):
      ],
     )
 def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
-    #start = timeit.default_timer()
     
     low, high = bed_range
     hospitals = []
@@ -1085,10 +1086,6 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
                     hospitals.append(h)
             
     hospitals = sorted(list(set(hospitals)))
-    
-    #ex_time = timeit.default_timer() - start
-    #print("update_hospitals executed in "+str(ex_time)) # It returns time in seconds
-    
     return [{"label": i, "value": i} for i in hospitals]
 
 
@@ -1103,7 +1100,6 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
      State("hospital-select1", "options"),],
     )
 def get_urls(btn1, hospitals, hospital_options):
-    #start = timeit.default_timer()
     
     options = []
     for h in hospital_options:
@@ -1111,10 +1107,7 @@ def get_urls(btn1, hospitals, hospital_options):
         options.append(h1[0])
     
     if hospitals is None or hospitals == []:
-        #ex_time = timeit.default_timer() - start
-        #print("get_urls executed in "+str(ex_time)) # It returns time in seconds
         ls1 = [{"label": i, "value": i} for i in ['No focal hospital']]
-        #ls2 = [{"label": i, "value": i} for i in ['No focal hospital']]
         return None, ls1, ls1, ls1
     
     if isinstance(hospitals, str) == True:
@@ -1123,10 +1116,7 @@ def get_urls(btn1, hospitals, hospital_options):
     hospitals = list(set(hospitals) & set(options))
     
     if hospitals == []:
-        #ex_time = timeit.default_timer() - start
-        #print("get_urls executed in "+str(ex_time)) # It returns time in seconds
         ls1 = [{"label": i, "value": i} for i in ['No focal hospital']]
-        #ls2 = [{"label": i, "value": i} for i in ['No focal hospital']]
         return None, ls1, ls1, ls1
     
     url_ls = []
@@ -1138,13 +1128,9 @@ def get_urls(btn1, hospitals, hospital_options):
         url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
         url_ls.append(url)
     
-    #ex_time = timeit.default_timer() - start
-    #print("get_urls executed in "+str(ex_time)) # It returns time in seconds
-    
     txt = ', ' + str(len(hospitals)) + ' selected'
     hospitals = ['No focal hospital'] + hospitals
     ls1 = [{"label": i, "value": i} for i in hospitals]
-    #ls2 = [{"label": i, "value": i} for i in hospitals]
     return url_ls, ls1, ls1, ls1
     
 
@@ -1157,8 +1143,6 @@ def get_urls(btn1, hospitals, hospital_options):
      ],
     )
 def update_df1_tab1(urls, df):
-    
-    #start = timeit.default_timer()
     
     if urls is None or urls is []:
         return None,""
@@ -1177,9 +1161,6 @@ def update_df1_tab1(urls, df):
                 
         df.dropna(axis=1, how='all', inplace=True)
         df.reset_index(drop=True, inplace=True)
-        
-        #ex_time = timeit.default_timer() - start
-        #print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
         return df.to_json(),""
 
     else:
@@ -1190,8 +1171,6 @@ def update_df1_tab1(urls, df):
         url_ls = list(set(urls)-set(df_urls))
              
         for i, url in enumerate(url_ls):
-            #print('new:', url)
-            
             tdf = pd.read_csv(url, header=[0,1,2,3], index_col=[0])
             tdf = tdf.to_json()
             tdf = pd.read_json(tdf)
@@ -1200,9 +1179,6 @@ def update_df1_tab1(urls, df):
     
         df.dropna(axis=1, how='all', inplace=True)
         df.reset_index(drop=True, inplace=True)
-        
-        #ex_time = timeit.default_timer() - start
-        #print("update_df1_tab1 executed in "+str(ex_time)) # It returns time in seconds
         return df.to_json(),""
 
 
@@ -1318,9 +1294,6 @@ def update_download(n_clicks, df):
             c = list(eval(c))
             tdf[(c[0], c[1], c[2], c[3])] = vals
             
-        #csv_string = tdf.to_csv(index=True, encoding='utf-8')
-        #csv_string = "data:text/csv;charset=utf-8,%EF%BB%BF" + urllib.parse.quote(csv_string)
-            
     return dcc.send_data_frame(tdf.to_csv, "cost_reports.csv")
     
 
@@ -1334,8 +1307,6 @@ def update_download(n_clicks, df):
      ],
     )
 def update_output7(value, df):
-    
-    #start = timeit.default_timer()
     
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
@@ -1357,9 +1328,6 @@ def update_output7(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
-    
-    #ex_time = timeit.default_timer() - start
-    #print("update_output7 executed in "+str(ex_time)) # It returns time in seconds
     
     return [{"label": i, "value": i} for i in sub_categories]
 
@@ -1386,8 +1354,6 @@ def update_output8(available_options):
     )
 def update_output9(value, df):
 
-    #start = timeit.default_timer()
-
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
@@ -1410,10 +1376,6 @@ def update_output9(value, df):
     else:
         sub_categories = sub_cat
     
-    #sub_categories = sorted(sub_categories)
-    #ex_time = timeit.default_timer() - start
-    #print("update_output9 executed in "+str(ex_time)) # It returns time in seconds
-
     return [{"label": i, "value": i} for i in sub_categories]
 
 
@@ -1439,8 +1401,6 @@ def update_output10(available_options):
     )
 def update_output11(value, df):
     
-    #start = timeit.default_timer()
-    
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
@@ -1462,9 +1422,6 @@ def update_output11(value, df):
     else:
         sub_categories = sub_cat
     
-    #ex_time = timeit.default_timer() - start
-    #print("update_output11 executed in "+str(ex_time)) # It returns time in seconds
-
     return [{"label": i, "value": i} for i in sub_categories]
 
 
@@ -1490,8 +1447,6 @@ def update_output12(available_options):
     )
 def update_output13(value, df):
     
-    #start = timeit.default_timer()
-    
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
@@ -1514,10 +1469,6 @@ def update_output13(value, df):
     else:
         sub_categories = sub_cat
     
-    #ex_time = timeit.default_timer() - start
-    #print("update_output13 executed in "+str(ex_time)) # It returns time in seconds
-
-    #sub_categories = sorted(sub_categories)
     return [{"label": i, "value": i} for i in sub_categories]
 
 
@@ -1546,8 +1497,6 @@ def update_output14(available_options):
     )
 def update_cost_report_plot1(df, var1, var2, focal_h):
     
-    #start = timeit.default_timer()
-    
     if df is None or var1 is None or var1 is None:
         fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
 
@@ -1562,17 +1511,14 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                           color="rgb(38, 38, 38)", 
                           ),
                           showlegend=True,
-                          height=400,
+                          height=404,
                           margin=dict(l=100, r=10, b=10, t=10),
                           paper_bgcolor="#f0f0f0",
                           plot_bgcolor="#f0f0f0",
                           )
-        
-        #ex_time = timeit.default_timer() - start
-        #print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
-        
         return fig
          
+    
     df = pd.read_json(df)
     if df.shape[0] == 0:
         fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
@@ -1588,17 +1534,14 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                           color="rgb(38, 38, 38)", 
                           ),
                           showlegend=True,
-                          height=400,
+                          height=404,
                           margin=dict(l=100, r=10, b=10, t=10),
                           paper_bgcolor="#f0f0f0",
                           plot_bgcolor="#f0f0f0",
                           )
-        
-        #ex_time = timeit.default_timer() - start
-        #print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
-        
         return fig
         
+    
     fig_data = []
     x = "('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"
     hospitals = sorted(df[x].unique())
@@ -1625,32 +1568,25 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
             fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
 
             fig.update_yaxes(title_font=dict(size=14, 
-                                             #family='sans-serif', 
                                              color="rgb(38, 38, 38)"))
             fig.update_xaxes(title_font=dict(size=14, 
-                                             #family='sans-serif', 
                                              color="rgb(38, 38, 38)"))
 
             fig.update_layout(title_font=dict(size=14, 
                               color="rgb(38, 38, 38)", 
                               ),
                               showlegend=True,
-                              height=400,
+                              height=404,
                               margin=dict(l=100, r=10, b=10, t=10),
                               paper_bgcolor="#f0f0f0",
                               plot_bgcolor="#f0f0f0",
                               )
             
-            #ex_time = timeit.default_timer() - start
-            #print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
-            
             return fig
         
+        
         column = column[0]
-        
         obs_y = sub_df[column].tolist()     
-        
-        #dates, obs_y = map(list, zip(*sorted(zip(dates, obs_y), reverse=False)))
         hospital = str(hospital)
         
         hi = HOSPITALS.index(hospital)
@@ -1669,7 +1605,6 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                         name=hospital,
                         mode='lines+markers',
                         marker=dict(color=clr),
-                        #text= text,
                     )
                 )
         
@@ -1723,7 +1658,7 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
                 
                 margin=dict(l=100, r=30, b=10, t=40),
                 showlegend=True,
-                height=400,
+                height=404,
                 paper_bgcolor="#f0f0f0",
                 plot_bgcolor="#f0f0f0",
             ),
@@ -1745,10 +1680,6 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
     del fig_data
     del dates
     del x
-    
-    #ex_time = timeit.default_timer() - start
-    #print("update_cost_report_plot1 executed in "+str(ex_time)) # It returns time in seconds
-    
     return figure
 
 
@@ -1768,7 +1699,6 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
     prevent_initial_call=True,
     )
 def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, focal_h, df):
-    #start = timeit.default_timer()
     
     if df is None or xvar1 is None or xvar2 is None or yvar1 is None or yvar2 is None or yvar2 == 'NUMBER OF BEDS':
             
@@ -1789,8 +1719,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                       plot_bgcolor="#f0f0f0",
                       )
         
-        #ex_time = timeit.default_timer() - start
-        #print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
         return fig
             
     
@@ -1822,9 +1750,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                       paper_bgcolor="#f0f0f0",
                       plot_bgcolor="#f0f0f0",
                       )
-        
-        #ex_time = timeit.default_timer() - start
-        #print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
         return fig
     
     
@@ -2147,8 +2072,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                       plot_bgcolor="#f0f0f0",
                       )
         
-        #ex_time = timeit.default_timer() - start
-        #print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
         return fig
         
     x_o, y_o = zip(*sorted(zip(x_o, y_o)))
@@ -2168,6 +2091,7 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     if model == 'linear': d = 1
     elif model == 'quadratic': d = 2
     elif model == 'cubic': d = 3
+    else: d = 1
     
     polynomial_features = PolynomialFeatures(degree = d)
     xp = polynomial_features.fit_transform(x)
@@ -2214,15 +2138,8 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
         eqn = eqn + ' - ' + str(np.abs(b))
         
     r2 = model.rsquared_adj
-    #r2_adj = model.rsquared_adj
-    #aic = model.aic
-    #bic = model.bic
-    #fp = model.f_pvalue
-    #llf = model.llf
     
     st, data, ss2 = summary_table(model, alpha=0.05)
-    #fittedvalues = data[:, 2]
-    #predict_mean_se  = data[:, 3]
     predict_mean_ci_low, predict_mean_ci_upp = data[:, 4:6].T
     predict_ci_low, predict_ci_upp = data[:, 6:8].T
     
@@ -2239,7 +2156,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
             nonoutlier_x.append(x_o[i])
             
     clr = "#3399ff"
-    #x, y, ypred = zip(*sorted(zip(x, y, ypred)))
     
     fig_data.append(go.Scatter(
                         x = nonoutlier_x,
@@ -2360,7 +2276,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                         size=14,
                     ),
                 ),
-                #rangemode="tozero",
                 zeroline=True,
                 showticklabels=True,
             ),
@@ -2375,7 +2290,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
                             
                     ),
                 ),
-                #rangemode="tozero",
                 zeroline=True,
                 showticklabels=True,
                     
@@ -2419,10 +2333,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     del x
     del txt1
     del txt2
-    
-    #ex_time = timeit.default_timer() - start
-    #print("update_cost_report_plot2 executed in "+str(ex_time)) # It returns time in seconds
-
     return figure
 
 
@@ -2439,8 +2349,6 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     prevent_initial_call=True,
     )
 def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
-    
-    #start = timeit.default_timer()
     
     if df is None or numer1 is None or numer2 is None or denom1 is None or denom2 is None or denom2 == 'NUMBER OF BEDS':
             
@@ -2460,18 +2368,12 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
                       paper_bgcolor="#f0f0f0",
                       plot_bgcolor="#f0f0f0",
                       )
-        
-        #ex_time = timeit.default_timer() - start
-        #print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
         return fig
             
     
     df = pd.read_json(df)
     
     fig_data = []
-    
-    #df['years'] = pd.to_datetime(dates).dt.year
-    #headers = list(set(list(df)))
     
     numer = numer1 + "', '" + numer2 + "')"
     denom = denom1 + "', '" + denom2 + "')"
@@ -2497,8 +2399,6 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
                       paper_bgcolor="#f0f0f0",
                       plot_bgcolor="#f0f0f0",
                       )
-        #ex_time = timeit.default_timer() - start
-        #print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
         return fig
     
     
@@ -2531,8 +2431,6 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
         dates = tdf["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]
         names = tdf["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"]
         y = tdf['y']
-        #dates, y, x = map(list, zip(*sorted(zip(dates, y, x), reverse=False)))
-        #x, y, dates = map(list, zip(*sorted(zip(x, y, dates), reverse=False)))
         
         text = names + '<br>' + dates.astype(str)
         
@@ -2587,7 +2485,6 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
                             
                     ),
                 ),
-                #rangemode="tozero",
                 zeroline=True,
                 showticklabels=True,
                     
@@ -2621,9 +2518,6 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
     del y
     del date_var
     del name_var
-    
-    #ex_time = timeit.default_timer() - start
-    #print("update_cost_report_plot3 executed in "+str(ex_time)) # It returns time in seconds
     return figure
 
 
