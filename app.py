@@ -23,15 +23,15 @@ from scipy import stats
 from sklearn.preprocessing import PolynomialFeatures
 from statsmodels.stats.outliers_influence import summary_table
 
-from uuid import uuid4
-from dash.long_callback import DiskcacheLongCallbackManager
-import diskcache
+#from uuid import uuid4
+#from dash.long_callback import DiskcacheLongCallbackManager
+#import diskcache
 
-launch_uid = uuid4()
-cache = diskcache.Cache("./cache")
-long_callback_manager = DiskcacheLongCallbackManager(
-    cache, cache_by=[lambda: launch_uid], expire=60,
-)
+#launch_uid = uuid4()
+#cache = diskcache.Cache("./cache")
+#long_callback_manager = DiskcacheLongCallbackManager(
+#    cache, cache_by=[lambda: launch_uid], expire=60,
+#)
 
 px.set_mapbox_access_token('pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw')
 
@@ -47,7 +47,7 @@ pd.set_option('display.max_columns', None)
 external_stylesheets=[dbc.themes.BOOTSTRAP, FONT_AWESOME, 'https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, 
                 external_stylesheets = external_stylesheets,
-                long_callback_manager = long_callback_manager,
+                #long_callback_manager = long_callback_manager,
                 )
 
 app.config.suppress_callback_exceptions = True
@@ -2386,16 +2386,15 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
 
 
 
-@app.long_callback(
-    output=(Output("cost_report_plot3", "figure")),
-    inputs=(
-     Input("df_tab1", "data"),
+@app.callback(
+    Output("cost_report_plot3", "figure"),
+    [Input("df_tab1", "data"),
      Input('categories-select3', 'value'),
      Input('categories-select33', 'value'),
      Input('categories-select3-2', 'value'),
      Input('categories-select33-2', 'value'),
      Input('hospital-select1d', 'value'),
-     ),
+     ],
     prevent_initial_call=True,
 )
 def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
