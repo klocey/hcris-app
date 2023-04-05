@@ -398,7 +398,7 @@ def generate_control_card1():
             
             html.Hr(),
             html.H5("2. Load cost reports",
-                   style={'display': 'inline-block', 'width': '64%'},),
+                   style={'display': 'inline-block', 'width': '207px'},),
             
             html.I(className="fas fa-question-circle fa-lg", id="target2",
                 style={'display': 'inline-block', 'width': '10%', 'color':'#99ccff'},
