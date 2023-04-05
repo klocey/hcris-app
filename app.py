@@ -430,10 +430,10 @@ def generate_control_card1():
                     
                      html.Div(
                         [html.B(str(len(HOSPITALS_SET)) + " hospitals available", style={'fontSize':16,
-                                                                                         #'display': 'inline-block',
+                                                                                         'display': 'inline-block',
                                                                                          }),
-                         html.H6(id="text1", style={'fontSize':16, 'display': 'inline-block'}),
-                         html.H6(id="filler_text1", style={'fontSize':16, 'display': 'inline-block'}),
+                         html.B(id="text1", style={'fontSize':16, 
+                                                    'display': 'inline-block'}),
                          ],
                         id="des1",
                         className="mini_container",
@@ -1187,7 +1187,6 @@ def get_urls(btn1, hospitals, hospital_options):
 
 @app.callback(
     [Output('df_tab1', "data"),
-     Output('filler_text1', 'children'),
      Output("text1", 'children'),],
     [
      Input('url_ls', 'children'),
@@ -1199,7 +1198,7 @@ def update_df1_tab1(urls, df):
     #start = timeit.default_timer()
     
     if urls is None or urls is []:
-        return None, "", ""
+        return None, ""
     
     elif df is None:
         
@@ -1220,7 +1219,7 @@ def update_df1_tab1(urls, df):
         #print("update_df1_tab1 executed in "+str(ex_time))
         
         num_h = len(df[('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')].unique())
-        return df.to_json(), "", ", " + str(num_h) + " Loaded"
+        return df.to_json(), ", " + str(num_h) + " Loaded"
 
     else:
         print('df is NOT None')
@@ -1254,7 +1253,7 @@ def update_df1_tab1(urls, df):
         
         num_h = len(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())
         
-        return df.to_json(), "", ", " + str(num_h) + " Loaded"
+        return df.to_json(), ", " + str(num_h) + " Loaded"
 
 
 @app.callback(
@@ -1390,10 +1389,11 @@ def update_output7(value, df):
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
-    
+    '''
     if df is not None:
         df = pd.read_json(df)
-        df.dropna(axis=1, how='all', inplace=True)
+        df.dropna(how='all', axis=1, inplace=True)
+        
         cols1 = list(df)
         cols2 = []
         for c in cols1:
@@ -1407,8 +1407,9 @@ def update_output7(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
+    '''
     
-    return [{"label": i, "value": i} for i in sub_categories]
+    return [{"label": i, "value": i} for i in sub_cat]
 
 
 @app.callback( # Select sub-category
@@ -1436,7 +1437,7 @@ def update_output9(value, df):
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
-    
+    '''
     if df is not None:
         df = pd.read_json(df)
         df.dropna(how='all', axis=1, inplace=True)
@@ -1454,8 +1455,9 @@ def update_output9(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
+    '''
     
-    return [{"label": i, "value": i} for i in sub_categories]
+    return [{"label": i, "value": i} for i in sub_cat]
 
 
 @app.callback( # Select sub-category
@@ -1483,10 +1485,11 @@ def update_output11(value, df):
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
-    
+    '''
     if df is not None:
         df = pd.read_json(df)
-        df.dropna(axis=1, how='all', inplace=True)
+        df.dropna(how='all', axis=1, inplace=True)
+        
         cols1 = list(df)
         cols2 = []
         for c in cols1:
@@ -1500,8 +1503,9 @@ def update_output11(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
+    '''
     
-    return [{"label": i, "value": i} for i in sub_categories]
+    return [{"label": i, "value": i} for i in sub_cat]
 
 
 @app.callback( # Select sub-category
@@ -1529,7 +1533,7 @@ def update_output13(value, df):
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
-    
+    '''
     if df is not None:
         df = pd.read_json(df)
         df.dropna(how='all', axis=1, inplace=True)
@@ -1547,8 +1551,9 @@ def update_output13(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
+    '''
     
-    return [{"label": i, "value": i} for i in sub_categories]
+    return [{"label": i, "value": i} for i in sub_cat]
 
 
 @app.callback( # Select sub-category
@@ -1572,7 +1577,6 @@ def update_output14(available_options):
      State('categories-select11', 'value'),
      State('hospital-select1b', 'value'),
      ],
-    prevent_initial_call=True,
     )
 def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
     
@@ -1590,7 +1594,7 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
                           color="rgb(38, 38, 38)", 
                           ),
                           showlegend=True,
-                          height=404,
+                          height=452,
                           margin=dict(l=100, r=10, b=10, t=10),
                           paper_bgcolor="#f0f0f0",
                           plot_bgcolor="#f0f0f0",
@@ -1613,7 +1617,7 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
                           color="rgb(38, 38, 38)", 
                           ),
                           showlegend=True,
-                          height=404,
+                          height=452,
                           margin=dict(l=100, r=10, b=10, t=10),
                           paper_bgcolor="#f0f0f0",
                           plot_bgcolor="#f0f0f0",
@@ -1655,7 +1659,7 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
                               color="rgb(38, 38, 38)", 
                               ),
                               showlegend=True,
-                              height=404,
+                              height=452,
                               margin=dict(l=100, r=10, b=10, t=10),
                               paper_bgcolor="#f0f0f0",
                               plot_bgcolor="#f0f0f0",
@@ -1737,7 +1741,7 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
                 
                 margin=dict(l=100, r=30, b=10, t=40),
                 showlegend=True,
-                height=404,
+                height=452,
                 paper_bgcolor="#f0f0f0",
                 plot_bgcolor="#f0f0f0",
             ),
@@ -1774,7 +1778,6 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
      State('trendline-1', 'value'),
      State('hospital-select1c', 'value'),
      State("df_tab1", "data")],
-    prevent_initial_call=True,
     )
 def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, focal_h, df):
     
@@ -2426,7 +2429,6 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
      State('categories-select33-2', 'value'),
      State('hospital-select1d', 'value'),
      ],
-    prevent_initial_call=True,
 )
 def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal_h):
     
@@ -2620,5 +2622,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
