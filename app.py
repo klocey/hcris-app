@@ -352,7 +352,7 @@ def generate_control_card1():
                 ),
             dbc.Modal(
                 [dbc.ModalBody([
-                                html.P("Hospital names can change over time. This app returns data for the hospitals you choose and for any hospitals with matching CMS numbers.",
+                                html.P("This app returns data for the hospitals you choose and for any hospitals with matching CMS numbers. Note: If you are using the web-application, do not load more than 20 hospitals at a time. Otherwise, the application may timeout.",
                                        style={'font-size': 16,}),
                                 dcc.Dropdown(
                                     id="hospital-select1",
@@ -419,8 +419,9 @@ def generate_control_card1():
                         [html.B(str(len(HOSPITALS_SET)) + " hospitals available", style={'fontSize':16,
                                                                                          #'display': 'inline-block',
                                                                                          }),
-                         html.H6(id="text1", style={'fontSize':16, 'display': 'inline-block'},),
-                         html.H6(id="filler_text1", style={'fontSize':16, 'display': 'inline-block'},)],
+                         html.H6(id="text1", style={'fontSize':16, 'display': 'inline-block'}),
+                         html.H6(id="filler_text1", style={'fontSize':16, 'display': 'inline-block'}),
+                         ],
                         id="des1",
                         className="mini_container",
                         style={
@@ -1063,7 +1064,7 @@ def update_output4(available_options):
     
     
 @app.callback(
-    Output('hospital-select1', 'options'),
+    Output("hospital-select1", 'options'),
     [
      Input('beds1', 'value'),
      Input('states-select1', 'value'),
@@ -1101,6 +1102,8 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
     )
 def get_urls(btn1, hospitals, hospital_options):
     
+    #start = timeit.default_timer()
+    
     options = []
     for h in hospital_options:
         h1 = list(h.values())
@@ -1128,15 +1131,20 @@ def get_urls(btn1, hospitals, hospital_options):
         url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/' + prvdr + '.csv'
         url_ls.append(url)
     
-    txt = ', ' + str(len(hospitals)) + ' selected'
+    #txt = ', ' + str(len(hospitals)) + ' selected'
     hospitals = ['No focal hospital'] + hospitals
     ls1 = [{"label": i, "value": i} for i in hospitals]
+    
+    #ex_time = timeit.default_timer() - start
+    #print("get_urls executed in "+str(ex_time))
+    
     return url_ls, ls1, ls1, ls1
     
 
 @app.callback(
     [Output('df_tab1', "data"),
-     Output('filler_text1', 'children')],
+     Output('filler_text1', 'children'),
+     Output("text1", 'children'),],
     [
      Input('url_ls', 'children'),
      Input('df_tab1', "data"),
@@ -1144,8 +1152,10 @@ def get_urls(btn1, hospitals, hospital_options):
     )
 def update_df1_tab1(urls, df):
     
+    #start = timeit.default_timer()
+    
     if urls is None or urls is []:
-        return None,""
+        return None, "", ""
     
     elif df is None:
         
@@ -1158,36 +1168,56 @@ def update_df1_tab1(urls, df):
                 df = tdf.copy(deep=True)
             else:
                 df = pd.concat([df, tdf]) 
-                
+        
         df.dropna(axis=1, how='all', inplace=True)
         df.reset_index(drop=True, inplace=True)
-        return df.to_json(),""
+                
+        #ex_time = timeit.default_timer() - start
+        #print("update_df1_tab1 executed in "+str(ex_time))
+        
+        num_h = len(df[('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')].unique())
+        return df.to_json(), "", ", " + str(num_h) + " Loaded"
 
     else:
+        print('df is NOT None')
         df = pd.read_json(df)
         df = df[df["('data url', 'data url', 'data url', 'data url')"].isin(urls)]
         df_urls = df["('data url', 'data url', 'data url', 'data url')"].unique()
         
         url_ls = list(set(urls)-set(df_urls))
-             
-        for i, url in enumerate(url_ls):
-            tdf = pd.read_csv(url, header=[0,1,2,3], index_col=[0])
-            tdf = tdf.to_json()
-            tdf = pd.read_json(tdf)
-            tdf["('data url', 'data url', 'data url', 'data url')"] = [url] * tdf.shape[0]
-            df = pd.concat([df, tdf]) 
-    
+        
+        if len(url_ls) > 0:
+            df2 = 0
+            for i, url in enumerate(url_ls):
+                tdf = pd.read_csv(url, header=[0,1,2,3], index_col=[0])
+                tdf[('data url', 'data url', 'data url', 'data url')] = [url] * tdf.shape[0]
+                
+                if i == 0:
+                    df2 = tdf.copy(deep=True)
+                else:
+                    df2 = pd.concat([df2, tdf]) 
+            
+            df2 = df2.to_json()
+            df2 = pd.read_json(df2)
+            df = pd.concat([df, df2])
+            del df2
+        
         df.dropna(axis=1, how='all', inplace=True)
         df.reset_index(drop=True, inplace=True)
-        return df.to_json(),""
+        
+        #ex_time = timeit.default_timer() - start
+        #print("update_df1_tab1 executed in "+str(ex_time))
+        
+        num_h = len(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())
+        
+        return df.to_json(), "", ", " + str(num_h) + " Loaded"
 
 
 @app.callback(
-    [Output("map_plot1", "figure"),
-     Output("text1", 'children')],
-    [
+     Output("map_plot1", "figure"),
+     [
      Input("df_tab1", "data"),
-     Input("hospital-select1", "value"),
+     [State("hospital-select1", "value")],
      ],
     )
 def update_map_plot1(df, h):
@@ -1219,7 +1249,7 @@ def update_map_plot1(df, h):
         )
 
     if df is None:
-        return figure, ', 0 Selected'
+        return figure#, ', 0 Selected'
     
     df = pd.read_json(df)
     
@@ -1227,7 +1257,7 @@ def update_map_plot1(df, h):
     
     features = list(df)
     if "('Lon', 'Lon', 'Lon', 'Lon')" not in features or "('Lat', 'Lat', 'Lat', 'Lat')" not in features:
-        return figure,  ', ' + str(num_h) + ' Selected'
+        return figure#,  ', ' + str(num_h) + ' Selected'
     
     figure = go.Figure()
     figure.add_trace(go.Scattermapbox(
@@ -1265,7 +1295,7 @@ def update_map_plot1(df, h):
         margin={"r":0,"t":0,"l":0,"b":0},
         )
     
-    return figure,  ', ' + str(num_h) + ' Selected'
+    return figure#,  ', ' + str(num_h) + ' Selected'
 
 
 
@@ -1276,6 +1306,8 @@ def update_map_plot1(df, h):
     prevent_initial_call=True,
 )
 def update_download(n_clicks, df):
+    
+    start = timeit.default_timer()
     
     if df is None:
         return dcc.send_data_frame(main_df.to_csv, "cost_reports.csv")
@@ -1293,7 +1325,10 @@ def update_download(n_clicks, df):
             
             c = list(eval(c))
             tdf[(c[0], c[1], c[2], c[3])] = vals
-            
+    
+    ex_time = timeit.default_timer() - start
+    print("update_download executed in "+str(ex_time))
+
     return dcc.send_data_frame(tdf.to_csv, "cost_reports.csv")
     
 
