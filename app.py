@@ -23,6 +23,15 @@ from scipy import stats
 from sklearn.preprocessing import PolynomialFeatures
 from statsmodels.stats.outliers_influence import summary_table
 
+from uuid import uuid4
+from dash.long_callback import DiskcacheLongCallbackManager
+import diskcache
+
+launch_uid = uuid4()
+cache = diskcache.Cache("./cache")
+long_callback_manager = DiskcacheLongCallbackManager(
+    cache, cache_by=[lambda: launch_uid], expire=60,
+)
 
 px.set_mapbox_access_token('pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw')
 
@@ -36,7 +45,11 @@ warnings.filterwarnings('ignore')
 pd.set_option('display.max_columns', None)
 
 external_stylesheets=[dbc.themes.BOOTSTRAP, FONT_AWESOME, 'https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, 
+                external_stylesheets = external_stylesheets,
+                long_callback_manager = long_callback_manager,
+                )
+
 app.config.suppress_callback_exceptions = True
 server = app.server
 
@@ -2371,18 +2384,20 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
     return figure
 
 
-@app.callback( # Update Line plot
-    Output("cost_report_plot3", "figure"),
-    [
+
+
+@app.long_callback(
+    output=(Output("cost_report_plot3", "figure")),
+    inputs=(
      Input("df_tab1", "data"),
      Input('categories-select3', 'value'),
      Input('categories-select33', 'value'),
      Input('categories-select3-2', 'value'),
      Input('categories-select33-2', 'value'),
      Input('hospital-select1d', 'value'),
-     ],
+     ),
     prevent_initial_call=True,
-    )
+)
 def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
     
     if df is None or numer1 is None or numer2 is None or denom1 is None or denom2 is None or denom2 == 'NUMBER OF BEDS':
@@ -2556,6 +2571,7 @@ def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
     return figure
 
 
+
 @app.callback( # Update available sub_categories
     Output('trendline-1', 'options'),
     [
@@ -2574,5 +2590,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
