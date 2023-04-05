@@ -162,7 +162,7 @@ def description_card1():
                         "data can mean tackling large, complicated files with expensive software " +
                         "or paying someone else to do it."),
            
-           dcc.Markdown("This app allows you to analyze and download 3,800+ cost related " +
+           dcc.Markdown("This app allows you to analyze and download 780+ cost related " +
                         "variables for 6,000+ hospitals, for each year since 2010. Get the source code " +
                         "for this app [here] (https://github.com/Rush-Quality-Analytics/hcris-app) and the cost reports " +
                         "for all hospitals [here] (https://github.com/Rush-Quality-Analytics/HCRIS-databuilder/tree/master/provider_data)."),
@@ -575,25 +575,38 @@ def generate_control_card4():
     return html.Div(
         id="control-card4",
         children=[
+            html.Hr(),
             html.Br(),
+            dbc.Button("Run", id="run-btn2",
+                            style={'width': '250px', 
+                                    'font-size': 12,
+                                    "background-color": "#2a8cff",
+                                    'display': 'inline-block',
+                                    'border-radius': '15px',
+                                    'padding': '0px',
+                                    'margin-left': '0px',
+                                    'verticalAlign':'top',
+                                },
+                            ),
+            
             dcc.Dropdown(
                 id='trendline-1',
                 value=None,
-                placeholder='Select a model to fit ... or not',
+                placeholder='Select a model to fit (optional)',
                 style={
                     'width': '250px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
                     'padding': '0px',
-                    'margin-left': '0px',
+                    'margin-left': '10px',
                     }
             ),
             dcc.Dropdown(
                 id='hospital-select1c',
                 options=[{"label": i, "value": i} for i in []],
                 value=None,
-                placeholder='Select a focal hospital ... or not',
+                placeholder='Select a focal hospital (optional)',
                 optionHeight=75,
                 style={
                     'width': '400px', 
@@ -723,7 +736,42 @@ app.layout = html.Div([
     html.Div(
             id="left-column1",
             className="three columns",
-            children=[description_card1(), generate_control_card1()],
+            children=[description_card1(), 
+                      generate_control_card1(),
+                      
+                      html.Button("Search the crosswalk",
+                                         id="open-centered5",
+                                         style={
+                                             #"background-color": "#2a8cff",
+                                             'width': '80%',
+                                             'margin-left': '10%',
+                                             'font-size': 12,
+                                             'display': 'inline-block',
+                                             },
+                                  ),
+                      dbc.Modal(
+                                  [dbc.ModalBody([
+                                                  html.P("This table can be sorted and filtered using any column or combination of columns. Just click the arrows or start typing in a filter cell. Click on the pink 'AA' to select whether you prefer case sensitive filtering. ",
+                                                         style={'font-size': 16,}),
+                                                  html.Div(id='crosswalk_table'),
+                                                  html.Br(), 
+                                                  ]),
+                                                  dbc.ModalFooter(
+                                                  dbc.Button("Close", id="close-centered5", className="ml-auto", 
+                                                             style={'font-size': 12,})
+                                                  ),
+                                          ],
+                                  id="modal-centered5",
+                                  is_open=False,
+                                  centered=True,
+                                  autoFocus=True,
+                                  size="xl",
+                                  keyboard=True,
+                                  fade=True,
+                                  backdrop=True,
+                                  ),
+                      
+                      ],
             style={'width': '24%', 'display': 'inline-block',
                                  'border-radius': '15px',
                                  'box-shadow': '1px 1px 1px grey',
@@ -732,7 +780,9 @@ app.layout = html.Div([
                                  'margin-bottom': '10px',
             },
         ),
-        
+    
+    
+    
     # Right column 1
     html.Div(
             id="right-column1",
@@ -744,7 +794,12 @@ app.layout = html.Div([
                     children=[
                         html.B("Map of selected hospitals"),
                         html.Hr(),
-                        dcc.Graph(id="map_plot1"),
+                        
+                        dcc.Loading(
+                            id="loading-map1",
+                            type="default",
+                            fullscreen=False,
+                            children=[dcc.Graph(id="map_plot1"),],),
                     ],
                     style={'width': '107%',
                                  'border-radius': '15px',
@@ -752,55 +807,6 @@ app.layout = html.Div([
                                  'background-color': '#f0f0f0',
                                  'padding': '10px',
                                  'margin-bottom': '10px',
-                            },
-                ),
-                
-                
-                html.Div(
-                    id="crosswalk",
-                    children=[
-                        
-                        dbc.Button("Click to search the cost report crosswalk",
-                                   id="open-centered5",
-                                   style={
-                                       "background-color": "#2a8cff",
-                                       'width': '50%',
-                                           'font-size': 12,
-                                       'display': 'inline-block',
-                                       'margin-left': '25%',
-                                       
-                                       },
-                            ),
-                        dbc.Modal(
-                            [dbc.ModalBody([
-                                            html.P("This table can be sorted and filtered using any column or combination of columns. Just click the arrows or start typing in a filter cell. Click on the pink 'AA' to select whether you prefer case sensitive filtering. ",
-                                                   style={'font-size': 16,}),
-                                            html.Div(id='crosswalk_table'),
-                                            html.Br(), 
-                                            ]),
-                                            dbc.ModalFooter(
-                                            dbc.Button("Close", id="close-centered5", className="ml-auto", 
-                                                       style={'font-size': 12,})
-                                            ),
-                                    ],
-                            id="modal-centered5",
-                            is_open=False,
-                            centered=True,
-                            autoFocus=True,
-                            size="xl",
-                            keyboard=True,
-                            fade=True,
-                            backdrop=True,
-                            ),
-                        
-                    ],
-                    style={'width': '107%', 
-                                 'border-radius': '15px',
-                                 'box-shadow': '1px 1px 1px grey',
-                                 'background-color': '#f0f0f0',
-                                 'padding': '10px',
-                                 'margin-bottom': '10px',
-                                 
                             },
                 ),
                 
@@ -816,7 +822,7 @@ app.layout = html.Div([
                             placeholder='Select a category',
                             optionHeight=75,
                             style={
-                                'width': '250px', 
+                                'width': '350px', 
                                 'font-size': 13,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
@@ -831,7 +837,7 @@ app.layout = html.Div([
                             placeholder='Select a feature',
                             optionHeight=75,
                             style={
-                                'width': '250px', 
+                                'width': '350px', 
                                 'font-size': 13,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
@@ -843,17 +849,28 @@ app.layout = html.Div([
                             id='hospital-select1b',
                             options=[{"label": i, "value": i} for i in []],
                             value=None,
-                            placeholder='Select a focal hospital ... or not',
+                            placeholder='Select a focal hospital (optional)',
                             optionHeight=75,
                             style={
-                                'width': '250px', 
+                                'width': '350px', 
                                 'font-size': 13,
                                 'display': 'inline-block',
                                 'border-radius': '15px',
                                 'padding': '0px',
-                                'margin-left': '15px',
+                                #'margin-left': '15px',
                                 }
                         ),
+                        
+                        html.Button("Run", id="run-btn1",
+                            style={'width': '350px', 
+                                    'font-size': 12,
+                                    'display': 'inline-block',
+                                    'border-radius': '15px',
+                                    'padding': '0px',
+                                    'margin-left': '20px',
+                                    'verticalAlign':'top',
+                                },
+                            ),
                         
                         html.Hr(),
                         dcc.Graph(id="cost_report_plot1"),
@@ -903,11 +920,25 @@ app.layout = html.Div([
                     children=[
                         generate_control_card5(),
                         dcc.Graph(id="cost_report_plot3"),
+                        html.Hr(),
+                        dbc.Button("Run", id="run-btn3",
+                            style={'width': '250px', 
+                                    'font-size': 12,
+                                    "background-color": "#2a8cff",
+                                    'display': 'inline-block',
+                                    'border-radius': '15px',
+                                    'padding': '0px',
+                                    'margin-left': '0px',
+                                    'verticalAlign':'top',
+                                },
+                            ),
+
+                        
                         dcc.Dropdown(
                             id='hospital-select1d',
                             options=[{"label": i, "value": i} for i in []],
                             value=None,
-                            placeholder='Select a focal hospital ... or not',
+                            placeholder='Select a focal hospital (optional)',
                             optionHeight=75,
                             style={
                                 'width': '250px', 
@@ -1535,15 +1566,15 @@ def update_output14(available_options):
 
 @app.callback( # Update Line plot
     Output("cost_report_plot1", "figure"),
-    [
-     Input('df_tab1', "data"),
-     Input('categories-select1', 'value'),
-     Input('categories-select11', 'value'),
-     Input('hospital-select1b', 'value'),
+    [Input("run-btn1", "n_clicks")],
+    [State('df_tab1', "data"),
+     State('categories-select1', 'value'),
+     State('categories-select11', 'value'),
+     State('hospital-select1b', 'value'),
      ],
     prevent_initial_call=True,
     )
-def update_cost_report_plot1(df, var1, var2, focal_h):
+def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
     
     if df is None or var1 is None or var1 is None:
         fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
@@ -1733,20 +1764,19 @@ def update_cost_report_plot1(df, var1, var2, focal_h):
 
 @app.callback( # Update Line plot
     Output("cost_report_plot2", "figure"),
-    [
-     Input('categories-select2', 'value'),
-     Input('categories-select22', 'value'),
-     Input('categories-select2-2', 'value'),
-     Input('categories-select22-2', 'value'),
-     Input('x_transform', 'value'),
-     Input('y_transform', 'value'),
-     Input('trendline-1', 'value'),
-     Input('hospital-select1c', 'value'),
-     ],
-    [State("df_tab1", "data")],
+    [Input("run-btn2", "n_clicks")],
+    [State('categories-select2', 'value'),
+     State('categories-select22', 'value'),
+     State('categories-select2-2', 'value'),
+     State('categories-select22-2', 'value'),
+     State('x_transform', 'value'),
+     State('y_transform', 'value'),
+     State('trendline-1', 'value'),
+     State('hospital-select1c', 'value'),
+     State("df_tab1", "data")],
     prevent_initial_call=True,
     )
-def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, focal_h, df):
+def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, focal_h, df):
     
     if df is None or xvar1 is None or xvar2 is None or yvar1 is None or yvar2 is None or yvar2 == 'NUMBER OF BEDS':
             
@@ -2388,16 +2418,17 @@ def update_cost_report_plot2(xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, 
 
 @app.callback(
     Output("cost_report_plot3", "figure"),
-    [Input("df_tab1", "data"),
-     Input('categories-select3', 'value'),
-     Input('categories-select33', 'value'),
-     Input('categories-select3-2', 'value'),
-     Input('categories-select33-2', 'value'),
-     Input('hospital-select1d', 'value'),
+    [Input("run-btn3", "n_clicks")],
+    [State("df_tab1", "data"),
+     State('categories-select3', 'value'),
+     State('categories-select33', 'value'),
+     State('categories-select3-2', 'value'),
+     State('categories-select33-2', 'value'),
+     State('hospital-select1d', 'value'),
      ],
     prevent_initial_call=True,
 )
-def update_cost_report_plot3(df, numer1, numer2, denom1, denom2, focal_h):
+def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal_h):
     
     if df is None or numer1 is None or numer2 is None or denom1 is None or denom2 is None or denom2 == 'NUMBER OF BEDS':
             
@@ -2589,5 +2620,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
 
