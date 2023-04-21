@@ -144,7 +144,9 @@ def myround(n):
 
 
 def obs_pred_rsquare(obs, pred):
-    return 1 - sum((obs - pred) ** 2) / sum((obs - np.mean(obs)) ** 2)
+    r2 = 1 - sum((obs - pred) ** 2) / sum((obs - np.mean(obs)) ** 2)
+    return r2
+    
 
 
 def description_card1():
@@ -162,8 +164,8 @@ def description_card1():
                         "data can mean tackling large, complicated files with expensive software " +
                         "or paying someone else to do it."),
            
-           dcc.Markdown("This app allows you to analyze and download 780+ cost related " +
-                        "variables for 6,000+ hospitals, for each year since 2010. Get the source code " +
+           dcc.Markdown("This app allows you to analyze and download 2,760+ cost related " +
+                        "variables for 6,800+ hospitals, for each year since 2010. Get the source code " +
                         "for this app [here] (https://github.com/Rush-Quality-Analytics/hcris-app) and the cost reports " +
                         "for all hospitals [here] (https://github.com/Rush-Quality-Analytics/HCRIS-databuilder/tree/master/provider_data)."),
         ],
@@ -1105,6 +1107,7 @@ def update_output4(available_options):
         return available_options[0]['value']
     except:
         return 'NUMBER OF BEDS'
+
     
     
 @app.callback(
@@ -1222,7 +1225,6 @@ def update_df1_tab1(urls, df):
         return df.to_json(), ", " + str(num_h) + " Loaded"
 
     else:
-        print('df is NOT None')
         df = pd.read_json(df)
         df = df[df["('data url', 'data url', 'data url', 'data url')"].isin(urls)]
         df_urls = df["('data url', 'data url', 'data url', 'data url')"].unique()
@@ -1350,7 +1352,7 @@ def update_map_plot1(df, h):
 )
 def update_download(n_clicks, df):
     
-    start = timeit.default_timer()
+    #start = timeit.default_timer()
     
     if df is None:
         return dcc.send_data_frame(main_df.to_csv, "cost_reports.csv")
@@ -1369,8 +1371,8 @@ def update_download(n_clicks, df):
             c = list(eval(c))
             tdf[(c[0], c[1], c[2], c[3])] = vals
     
-    ex_time = timeit.default_timer() - start
-    print("update_download executed in "+str(ex_time))
+    #ex_time = timeit.default_timer() - start
+    #print("update_download executed in "+str(ex_time))
 
     return dcc.send_data_frame(tdf.to_csv, "cost_reports.csv")
     
@@ -1381,7 +1383,7 @@ def update_download(n_clicks, df):
     Output('categories-select22', 'options'),
     [
      Input('categories-select2', 'value'),
-     Input('df_tab1', "data"),
+     Input('df_tab1', 'data'),
      ],
     )
 def update_output7(value, df):
@@ -1389,7 +1391,7 @@ def update_output7(value, df):
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
-    '''
+    
     if df is not None:
         df = pd.read_json(df)
         df.dropna(how='all', axis=1, inplace=True)
@@ -1407,9 +1409,10 @@ def update_output7(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
-    '''
     
-    return [{"label": i, "value": i} for i in sub_cat]
+    
+    return [{"label": i, "value": i} for i in sub_categories]
+
 
 
 @app.callback( # Select sub-category
@@ -1423,6 +1426,7 @@ def update_output8(available_options):
         return available_options[0]['value']
     except:
         return 'NUMBER OF BEDS'
+
     
     
 @app.callback( # Update available sub_categories
@@ -1437,7 +1441,7 @@ def update_output9(value, df):
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
-    '''
+    
     if df is not None:
         df = pd.read_json(df)
         df.dropna(how='all', axis=1, inplace=True)
@@ -1455,9 +1459,10 @@ def update_output9(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
-    '''
     
-    return [{"label": i, "value": i} for i in sub_cat]
+    
+    return [{"label": i, "value": i} for i in sub_categories]
+
 
 
 @app.callback( # Select sub-category
@@ -1471,7 +1476,8 @@ def update_output10(available_options):
         return available_options[0]['value']
     except:
         return 'NUMBER OF BEDS'
-    
+
+
 
 @app.callback( # Update available sub_categories
     Output('categories-select33', 'options'),
@@ -1485,7 +1491,7 @@ def update_output11(value, df):
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
-    '''
+    
     if df is not None:
         df = pd.read_json(df)
         df.dropna(how='all', axis=1, inplace=True)
@@ -1503,7 +1509,7 @@ def update_output11(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
-    '''
+    
     
     return [{"label": i, "value": i} for i in sub_cat]
 
@@ -1533,7 +1539,7 @@ def update_output13(value, df):
     df2 = main_df.iloc[:, (main_df.columns.get_level_values(2)==value)]
     sub_cat = df2.columns.get_level_values(3).tolist()
     del df2
-    '''
+    
     if df is not None:
         df = pd.read_json(df)
         df.dropna(how='all', axis=1, inplace=True)
@@ -1551,7 +1557,7 @@ def update_output13(value, df):
                 sub_categories.append(c)
     else:
         sub_categories = sub_cat
-    '''
+    
     
     return [{"label": i, "value": i} for i in sub_cat]
 
@@ -1818,10 +1824,8 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
         fig = go.Figure(data=go.Scatter(x = [0], y = [0]))
         
         fig.update_yaxes(title_font=dict(size=14, 
-                                     #family='sans-serif', 
                                      color="rgb(38, 38, 38)"))
         fig.update_xaxes(title_font=dict(size=14, 
-                                     #family='sans-serif', 
                                      color="rgb(38, 38, 38)"))
         fig.update_layout(title_font=dict(size=14, 
                       color="rgb(38, 38, 38)", 
@@ -2219,7 +2223,9 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
         eqn = eqn + ' - ' + str(np.abs(b))
         
     r2 = model.rsquared_adj
-    
+    if r2 < 0:
+        r2 = 0
+        
     st, data, ss2 = summary_table(model, alpha=0.05)
     predict_mean_ci_low, predict_mean_ci_upp = data[:, 4:6].T
     predict_ci_low, predict_ci_upp = data[:, 6:8].T
@@ -2386,7 +2392,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
         
     if x.tolist() != [] and y.tolist() != []:
         figure.update_layout(
-            title="Percent variation explained by the model: " + str(round(100 * r2, 2)),
+            title="Percent variation explained by the model: " + str(round(100 * r2, 2)) + ' , Model equation: ' + eqn,
             font=dict(
                 size=10,
                 color="rgb(38, 38, 38)"
@@ -2622,5 +2628,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
 
