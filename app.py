@@ -132,17 +132,6 @@ print(len(sub_categories), 'choosable features')
 
 ################# DASH APP CONTROL FUNCTIONS #################################
 
-def myround(n):
-    if n == 0:
-        return 0
-    sgn = -1 if n < 0 else 1
-    scale = int(-math.floor(math.log10(abs(n))))
-    if scale <= 0:
-        scale = 2
-    factor = 10**scale
-    return sgn*math.floor(abs(n)*factor)/factor
-
-
 def obs_pred_rsquare(obs, pred):
     r2 = 1 - sum((obs - pred) ** 2) / sum((obs - np.mean(obs)) ** 2)
     return r2
@@ -2186,10 +2175,15 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
     ypred = ypred.tolist()
     
     poly_coefs = model.params[1:].tolist()
+    #print(poly_coefs)
+    
     poly_coefs.reverse()
+    #print(poly_coefs)
     
     poly_exponents = list(range(1, len(poly_coefs)+1))
     poly_exponents.reverse()
+    #print(poly_exponents)
+
     
     eqn = 'y = '
     for i, p in enumerate(poly_coefs):
@@ -2203,23 +2197,23 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
             exp = 'x³'
         
         if i == 0:
-            p = myround(p)
+            p = round(p, 4)
             eqn = eqn + str(p) + exp
             
         else:
             if p >= 0:
-                p = myround(p)
+                p = round(p, 4)
                 eqn = eqn + ' + ' + str(p) + exp
             else:
-                p = myround(p)
+                p = round(p, 4)
                 eqn = eqn + ' - ' + str(np.abs(p)) + exp
     
     b = model.params[0]
     if b >= 0:
-        b = myround(b)
+        b = round(b, 4)
         eqn = eqn + ' + ' + str(b)
     else:
-        b = myround(b)
+        b = round(b, 4)
         eqn = eqn + ' - ' + str(np.abs(b))
         
     r2 = model.rsquared_adj
