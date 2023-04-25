@@ -97,7 +97,7 @@ with open('dataframe_data/report_categories.csv', newline='') as csvfile:
     for row in categories:
         report_categories = row
         report_categories = report_categories[1:]
-report_categories.remove('File Date')
+report_categories.remove('FFY')
 report_categories.remove('Name and Num')
 report_categories.sort()
 
@@ -568,17 +568,22 @@ def generate_control_card4():
         children=[
             html.Hr(),
             html.Br(),
-            dbc.Button("Run", id="run-btn2",
-                            style={'width': '250px', 
-                                    'font-size': 12,
-                                    "background-color": "#2a8cff",
-                                    'display': 'inline-block',
-                                    'border-radius': '15px',
-                                    'padding': '0px',
-                                    'margin-left': '0px',
-                                    'verticalAlign':'top',
-                                },
-                            ),
+            
+            dcc.Dropdown(
+                id='year-1',
+                value='All Federal Fiscal Years',
+                placeholder='Select a federal fiscal year',
+                options=[{"label": i, "value": i} for i in ['All Federal Fiscal Years', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021']],
+                multi=False,
+                style={
+                    'width': '250px', 
+                    'font-size': 13,
+                    'display': 'inline-block',
+                    'border-radius': '15px',
+                    'padding': '0px',
+                    'margin-left': '0px',
+                    }
+            ),
             
             dcc.Dropdown(
                 id='trendline-1',
@@ -600,7 +605,7 @@ def generate_control_card4():
                 placeholder='Select a focal hospital (optional)',
                 optionHeight=75,
                 style={
-                    'width': '400px', 
+                    'width': '350px', 
                     'font-size': 13,
                     'display': 'inline-block',
                     'border-radius': '15px',
@@ -608,6 +613,19 @@ def generate_control_card4():
                     'margin-left': '15px',
                     }
             ),
+            
+            
+            dbc.Button("Run", id="run-btn2",
+                            style={'width': '250px', 
+                                    'font-size': 13,
+                                    "background-color": "#2a8cff",
+                                    'display': 'inline-block',
+                                    'border-radius': '24px',
+                                    'padding': '0px',
+                                    'margin-left': '35px',
+                                    'verticalAlign':'top',
+                                },
+                            ),
             
         ],
         style={
@@ -1634,10 +1652,10 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
             
         sub_df = df[df[x] == hospital]
         
-        sub_df.sort_values(by=["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"],
+        sub_df.sort_values(by=["('FFY', 'FFY', 'FFY', 'FFY')"],
                                 ascending=True, inplace=True)
            
-        dates = sub_df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]
+        dates = sub_df["('FFY', 'FFY', 'FFY', 'FFY')"]
          
         str_ = var1 + "', '" + var2 + "')"
         column = [col for col in sub_df.columns if col.endswith(str_)]  
@@ -1706,15 +1724,15 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
                 transition = {'duration': 500},
                 xaxis=dict(
                     title=dict(
-                        text="<b>Date</b>",
+                        text="<b>Federal Fiscal Year</b>",
                         font=dict(
                             family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                             " Helvetica, Arial, sans-serif",
                             size=18,
                         ),
                     ),
-                    rangemode="tozero",
-                    zeroline=True,
+                    #rangemode="tozero",
+                    zeroline=False,
                     showticklabels=True,
                 ),
                 
@@ -1728,8 +1746,8 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
                             
                         ),
                     ),
-                    rangemode="tozero",
-                    zeroline=True,
+                    #rangemode="tozero",
+                    zeroline=False,
                     showticklabels=True,
                     
                 ),
@@ -1772,9 +1790,10 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
      State('y_transform', 'value'),
      State('trendline-1', 'value'),
      State('hospital-select1c', 'value'),
-     State("df_tab1", "data")],
+     State("df_tab1", "data"),
+     State('year-1', 'value')],
     )
-def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, focal_h, df):
+def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscale, model, focal_h, df, yr1):
     
     if df is None or xvar1 is None or xvar2 is None or yvar1 is None or yvar2 is None or yvar2 == 'NUMBER OF BEDS':
             
@@ -1799,6 +1818,11 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
             
     
     df = pd.read_json(df)
+    
+    if yr1 == 'All Federal Fiscal Years':
+        pass
+    else:
+        df = df[df["('FFY', 'FFY', 'FFY', 'FFY')"] == int(yr1)]
     
     fig_data = []
     
@@ -1849,7 +1873,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
         column2 = column2[0]
         y = tdf[column2].tolist()
         
-        dates = tdf["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]
+        dates = tdf["('FFY', 'FFY', 'FFY', 'FFY')"]
         
         names = tdf["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"]
         
@@ -1882,7 +1906,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
                     dates2.append(dates[i])
                     
             x = np.sqrt(x2).tolist()
-            y = np.log10(y2.tolist())
+            y = np.sqrt(y2).tolist()
             dates = list(dates2)
 
         # 4.
@@ -1968,7 +1992,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
         if hospital == focal_h or focal_h == 'No focal hospital' or focal_h not in hospitals:
             clr = COLORS[hi]
         else:
-            clr = '#cccccc'
+            clr = '#b3b3b3'
         
         if len(hospital) > 30:
             hospital = hospital[0:20] + ' ... ' + hospital[-8:]
@@ -1987,7 +2011,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
     column1 = [col for col in df.columns if col.endswith(str_1)]
     column2 = [col for col in df.columns if col.endswith(str_2)]
     
-    dates = df["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"].tolist()
+    dates = df["('FFY', 'FFY', 'FFY', 'FFY')"].tolist()
     
     column1 = column1[0]
     x = df[column1].tolist()
@@ -2020,7 +2044,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
                 dates2.append(dates[i])
                 
         x = np.sqrt(x2).tolist()
-        y = np.log10(y2.tolist())
+        y = np.sqrt(y2).tolist()
         dates = list(dates2)
 
     # 4.
@@ -2220,6 +2244,16 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
     if r2 < 0:
         r2 = 0
         
+    #r2_obs_pred = obs_pred_rsquare(np.array(y_o), np.array(ypred))
+    #if r2_obs_pred < 0:
+    #    r2_obs_pred = 0
+    #r2_obs_pred = str(round(r2_obs_pred, 2))
+    
+    print(model.summary, '\n')
+    print('mean rate:', np.nanmean(np.array(y_o)/np.array(x_o)))
+    print('SD:', np.nanstd(np.array(y_o)/np.array(x_o)))
+    print('SE:', stats.sem(np.array(y_o)/np.array(x_o)), '\n')
+    
     st, data, ss2 = summary_table(model, alpha=0.05)
     predict_mean_ci_low, predict_mean_ci_upp = data[:, 4:6].T
     predict_ci_low, predict_ci_upp = data[:, 6:8].T
@@ -2386,7 +2420,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
         
     if x.tolist() != [] and y.tolist() != []:
         figure.update_layout(
-            title="Percent variation explained by the model: " + str(round(100 * r2, 2)) + ' , Model equation: ' + eqn,
+            title="Adjusted r<sup>2</sup>: " + str(round(r2, 3)) + ', Model equation: ' + eqn,
             font=dict(
                 size=10,
                 color="rgb(38, 38, 38)"
@@ -2498,7 +2532,7 @@ def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal
         name_var = "('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"
         tdf = df[df[name_var] == hospital]
         
-        date_var = "('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"
+        date_var = "('FFY', 'FFY', 'FFY', 'FFY')"
         tdf.sort_values(by=date_var, inplace=True, ascending=True)
         
         column1 = [col for col in tdf.columns if col.endswith(numer)]
@@ -2510,7 +2544,7 @@ def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal
         tdf = tdf.filter(items=['y', date_var, name_var], axis=1)
         tdf.dropna(how='any', inplace=True)
         
-        dates = tdf["('FY_END_DT', 'Fiscal Year End Date', 'HOSPITAL IDENTIFICATION INFORMATION', 'Fiscal Year End Date (FY_END_DT)')"]
+        dates = tdf["('FFY', 'FFY', 'FFY', 'FFY')"]
         names = tdf["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"]
         y = tdf['y']
         
@@ -2545,7 +2579,7 @@ def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal
             transition = {'duration': 500},
             xaxis=dict(
                 title=dict(
-                    text="<b>Date</b>",
+                    text="<b>Federal Fiscal Year</b>",
                     font=dict(
                         family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                         " Helvetica, Arial, sans-serif",
@@ -2622,5 +2656,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
