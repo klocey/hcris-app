@@ -101,7 +101,7 @@ report_categories.remove('FFY')
 report_categories.remove('Name and Num')
 report_categories.sort()
 
-
+### The following sub_categories file is only used to print the number of features
 with open('dataframe_data/sub_categories.csv', newline='') as csvfile:
     categories = csv.reader(csvfile, delimiter=',')
     for row in categories:
