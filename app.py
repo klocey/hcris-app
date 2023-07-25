@@ -57,8 +57,8 @@ server = app.server
 
 gendat_df = pd.read_pickle('dataframe_data/GenDat4App_p4.pkl')
 gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'Not given')
-gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')] = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].replace(np.nan, 'Not given')
-gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')] = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].replace(np.nan, 'Not given')
+gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')] = gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')].replace(np.nan, 'Not given')
+gendat_df[('Control type', 'Control type', 'Control type', 'Control type')] = gendat_df[('Control type', 'Control type', 'Control type', 'Control type')].replace(np.nan, 'Not given')
 
 
 crosswalk_df = pd.read_csv('dataframe_data/2552-10 SAS FILE RECORD LAYOUT AND CROSSWALK TO 96 - 2021.csv')
@@ -80,8 +80,8 @@ CMS_NUMS = len(gendat_df[('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDE
 beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].tolist()
 
 states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].tolist()
-htypes = gendat_df[('Hospital type, text', 'Hospital type, text', 'Hospital type, text', 'Hospital type, text')].tolist()
-ctypes = gendat_df[('Control type, text', 'Control type, text', 'Control type, text', 'Control type, text')].tolist()
+htypes = gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')].tolist()
+ctypes = gendat_df[('Control type', 'Control type', 'Control type', 'Control type')].tolist()
 
 states = ['NaN' if x is np.nan else x for x in states]
 htypes = ['NaN' if x is np.nan else x for x in htypes]
@@ -101,12 +101,12 @@ report_categories.remove('FFY')
 report_categories.remove('Name and Num')
 report_categories.sort()
 
-### The following sub_categories file is only used to print the number of features
-with open('dataframe_data/sub_categories.csv', newline='') as csvfile:
-    categories = csv.reader(csvfile, delimiter=',')
-    for row in categories:
-        sub_categories = row
-sub_categories.sort()
+### The following sub_categories file was only used to print the number of features
+#with open('dataframe_data/sub_categories.csv', newline='') as csvfile:
+#    categories = csv.reader(csvfile, delimiter=',')
+#    for row in categories:
+#        sub_categories = row
+#sub_categories.sort()
 
 url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/052043.csv'
 
@@ -116,6 +116,10 @@ main_df = pd.DataFrame(columns = main_df.columns)
 print(main_df.shape[1], 'HCRIS features')
 print(CMS_NUMS, 'CMS numbers')
 print(len(list(set(HOSPITALS))), 'hospitals')
+print(len(report_categories), 'report categories:')
+for cat in report_categories:
+    print(cat)
+print('\n')
 
 random.seed(42)
 
@@ -127,8 +131,6 @@ for h in HOSPITALS:
         clr = '#' + "%06x" % random.randint(0, 0xFFFFFF)
     COLORS.append(clr)
     
-
-print(len(sub_categories), 'choosable features')
 
 ################# DASH APP CONTROL FUNCTIONS #################################
 
@@ -1135,10 +1137,16 @@ def update_hospitals(bed_range, states_vals, htype_vals, ctype_vals):
         s = states[i]
         ht = htypes[i]
         ct = ctypes[i]
-        if b > low and b < high:
-            if s in states_vals and ht in htype_vals:
+        
+        if low == 1:
+            b = 1
+        
+        if b >= low and b <= high:
+            if s in states_vals:
                 if ct in ctype_vals:
-                    hospitals.append(h)
+                    for htv in htype_vals:
+                        if htv in ht: 
+                            hospitals.append(h)
             
     hospitals = sorted(list(set(hospitals)))
     return [{"label": i, "value": i} for i in hospitals]
@@ -2656,5 +2664,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
