@@ -58,7 +58,7 @@ server = app.server
 gendat_df = pd.read_pickle('dataframe_data/GenDat4App_p4.pkl')
 gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'Not given')
 gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')] = gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')].replace(np.nan, 'Not given')
-gendat_df[('Control type', 'Control type', 'Control type', 'Control type')] = gendat_df[('Control type', 'Control type', 'Control type', 'Control type')].replace(np.nan, 'Not given')
+gendat_df[('S2_1_C1_21', 'Type of Control of Hospital (See Table I)', '', 'Type of Control of Hospital (See Table I) (S2_1_C1_21)')] = gendat_df[(('S2_1_C1_21', 'Type of Control of Hospital (See Table I)', '', 'Type of Control of Hospital (See Table I) (S2_1_C1_21)'))].replace(np.nan, 'Not given')
 
 
 crosswalk_df = pd.read_csv('dataframe_data/2552-10 SAS FILE RECORD LAYOUT AND CROSSWALK TO 96 - 2021.csv')
@@ -81,7 +81,7 @@ beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facil
 
 states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].tolist()
 htypes = gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')].tolist()
-ctypes = gendat_df[('Control type', 'Control type', 'Control type', 'Control type')].tolist()
+ctypes = gendat_df[('S2_1_C1_21', 'Type of Control of Hospital (See Table I)', '', 'Type of Control of Hospital (See Table I) (S2_1_C1_21)')].tolist()
 
 states = ['NaN' if x is np.nan else x for x in states]
 htypes = ['NaN' if x is np.nan else x for x in htypes]
@@ -96,17 +96,8 @@ with open('dataframe_data/report_categories.csv', newline='') as csvfile:
     categories = csv.reader(csvfile, delimiter=',')
     for row in categories:
         report_categories = row
-        report_categories = report_categories[1:]
-report_categories.remove('FFY')
-report_categories.remove('Name and Num')
 report_categories.sort()
 
-### The following sub_categories file was only used to print the number of features
-#with open('dataframe_data/sub_categories.csv', newline='') as csvfile:
-#    categories = csv.reader(csvfile, delimiter=',')
-#    for row in categories:
-#        sub_categories = row
-#sub_categories.sort()
 
 url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provider_data/052043.csv'
 
