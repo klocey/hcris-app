@@ -146,8 +146,8 @@ def description_card1():
                         "data can mean tackling large, complicated files with expensive software " +
                         "or paying someone else to do it."),
            
-           dcc.Markdown("This app allows you to analyze and download 2,760+ cost related " +
-                        "variables for 6,800+ hospitals, for each year since 2010. Get the source code " +
+           dcc.Markdown("This app allows you to analyze and download 2,600+ cost related " +
+                        "variables for 6,900+ hospitals, for each year since 2010. Get the source code " +
                         "for this app [here] (https://github.com/Rush-Quality-Analytics/hcris-app) and the cost reports " +
                         "for all hospitals [here] (https://github.com/Rush-Quality-Analytics/HCRIS-databuilder/tree/master/provider_data)."),
         ],
@@ -349,7 +349,7 @@ def generate_control_card1():
                 ),
             dbc.Modal(
                 [dbc.ModalBody([
-                                html.P("This app returns data for the hospitals you choose and for any hospitals with matching CMS numbers. Note: If you are using the web-application, do not load more than 20 hospitals at a time. Otherwise, the application may timeout.",
+                                html.P("This app returns data for the hospitals you choose and, because hospital names often change, loads data for any hospitals with CMS numbers matching those of the hospitals you selected. Note: If you are using the web-application, avoiding loading more than 90 hospitals at a time. Otherwise, the application may timeout.",
                                        style={'font-size': 16,}),
                                 dcc.Dropdown(
                                     id="hospital-select1",
@@ -413,9 +413,7 @@ def generate_control_card1():
                 children=[
                     
                      html.Div(
-                        [html.B(str(len(HOSPITALS_SET)) + " hospitals available", style={'fontSize':16,
-                                                                                         'display': 'inline-block',
-                                                                                         }),
+                        [html.B("", style={'fontSize':16, 'display': 'inline-block',}),
                          html.B(id="text1", style={'fontSize':16, 
                                                     'display': 'inline-block'}),
                          ],
@@ -1227,8 +1225,10 @@ def update_df1_tab1(urls, df):
         #ex_time = timeit.default_timer() - start
         #print("update_df1_tab1 executed in "+str(ex_time))
         
-        num_h = len(df[('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')].unique())
-        return df.to_json(), ", " + str(num_h) + " Loaded"
+        #num_h = len(df[('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')].unique())
+        num_IDs = len(df[('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDENTIFICATION INFORMATION', 'Hospital Provider Number (PRVDR_NUM)')].unique())
+        
+        return df.to_json(), "Loaded " + str(num_IDs) + " hospitals"
 
     else:
         df = pd.read_json(df)
@@ -1259,9 +1259,10 @@ def update_df1_tab1(urls, df):
         #ex_time = timeit.default_timer() - start
         #print("update_df1_tab1 executed in "+str(ex_time))
         
-        num_h = len(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())
+        #num_h = len(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())
+        num_IDs = len(df[('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDENTIFICATION INFORMATION', 'Hospital Provider Number (PRVDR_NUM)')].unique())
         
-        return df.to_json(), ", " + str(num_h) + " Loaded"
+        return df.to_json(), "Loaded " + str(num_IDs) + " hospitals"
 
 
 @app.callback(
