@@ -57,7 +57,7 @@ server = app.server
 
 gendat_df = pd.read_pickle('dataframe_data/GenDat4App_p4.pkl')
 gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')] = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].replace(np.nan, 'Not given')
-gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')] = gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')].replace(np.nan, 'Not given')
+gendat_df[('Hospital type (modified)', 'Hospital type (modified)', 'Hospital type (modified)', 'Hospital type (modified)')] = gendat_df[('Hospital type (modified)', 'Hospital type (modified)', 'Hospital type (modified)', 'Hospital type (modified)')].replace(np.nan, 'Not given')
 gendat_df[('S2_1_C1_21', 'Type of Control of Hospital (See Table I)', '', 'Type of Control of Hospital (See Table I) (S2_1_C1_21)')] = gendat_df[(('S2_1_C1_21', 'Type of Control of Hospital (See Table I)', '', 'Type of Control of Hospital (See Table I) (S2_1_C1_21)'))].replace(np.nan, 'Not given')
 
 
@@ -80,7 +80,7 @@ CMS_NUMS = len(gendat_df[('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDE
 beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].tolist()
 
 states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].tolist()
-htypes = gendat_df[('Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)', 'Hospital type (HCRIS + care compare)')].tolist()
+htypes = gendat_df[('Hospital type (modified)', 'Hospital type (modified)', 'Hospital type (modified)', 'Hospital type (modified)')].tolist()
 ctypes = gendat_df[('S2_1_C1_21', 'Type of Control of Hospital (See Table I)', '', 'Type of Control of Hospital (See Table I) (S2_1_C1_21)')].tolist()
 
 states = ['NaN' if x is np.nan else x for x in states]
@@ -451,7 +451,7 @@ def generate_control_card3():
         id="control-card3",
         children=[
             
-            html.H5("Examine relationships between variables"),
+            html.H5("Examine Relationships Between Features"),
             html.P("Select a category, feature, and scale for your x-variable. "),
             dcc.Dropdown(
                 id="categories-select2",
@@ -636,7 +636,7 @@ def generate_control_card5():
         id="control-card5",
         children=[
             
-            html.H5("Build rate variables and examine them over time"),
+            html.H5("Build Rate Variables And Examine Them Over Time"),
             html.P("Select a category and feature for your numerator."),
             dcc.Dropdown(
                 id="categories-select3",
@@ -814,7 +814,7 @@ app.layout = html.Div([
                 html.Div(
                     id="cost_report1",
                     children=[
-                        html.H5("Cost Reports Across Fiscal Years"),
+                        html.H5("Examine Cost Report Features Across Fiscal Years"),
                         dcc.Dropdown(
                             id="categories-select1",
                             options=[{"label": i, "value": i} for i in report_categories],
@@ -2656,5 +2656,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
 
