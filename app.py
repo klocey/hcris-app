@@ -104,13 +104,13 @@ url = 'https://raw.githubusercontent.com/klocey/HCRIS-databuilder/master/provide
 main_df = pd.read_csv(url, index_col=[0], header=[0,1,2,3])
 main_df = pd.DataFrame(columns = main_df.columns)
 
-print(main_df.shape[1], 'HCRIS features')
-print(CMS_NUMS, 'CMS numbers')
-print(len(list(set(HOSPITALS))), 'hospitals')
-print(len(report_categories), 'report categories:')
-for cat in report_categories:
-    print(cat)
-print('\n')
+#print(main_df.shape[1], 'HCRIS features')
+#print(CMS_NUMS, 'CMS numbers')
+#print(len(list(set(HOSPITALS))), 'hospitals')
+#print(len(report_categories), 'report categories:')
+#for cat in report_categories:
+#    print(cat)
+#print('\n')
 
 random.seed(42)
 
@@ -382,10 +382,16 @@ def generate_control_card1():
             
             html.Hr(),
             html.H5("2. Load cost reports",
-                   style={'display': 'inline-block', 'width': '65%'},),
+                   style={'display': 'inline-block', 
+                          'margin-right': '3%',
+                          #'width': '65%',
+                          },
+                   ),
             
             html.I(className="fas fa-question-circle fa-lg", id="target2",
-                style={'display': 'inline-block', 'width': '10%', 'color':'#99ccff'},
+                style={'display': 'inline-block', 
+                       #'width': '10%', 
+                       'color':'#99ccff'},
                 ),
             dbc.Tooltip("If you add or remove any hospitals, you will need to click the button in order for your changes to take effect.", 
                         target="target2",
@@ -2414,10 +2420,10 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
     #    r2_obs_pred = 0
     #r2_obs_pred = str(round(r2_obs_pred, 2))
     
-    print(model.summary, '\n')
-    print('mean rate:', np.nanmean(np.array(y_o)/np.array(x_o)))
-    print('SD:', np.nanstd(np.array(y_o)/np.array(x_o)))
-    print('SE:', stats.sem(np.array(y_o)/np.array(x_o)), '\n')
+    #print(model.summary, '\n')
+    #print('mean rate:', np.nanmean(np.array(y_o)/np.array(x_o)))
+    #print('SD:', np.nanstd(np.array(y_o)/np.array(x_o)))
+    #print('SE:', stats.sem(np.array(y_o)/np.array(x_o)), '\n')
     
     st, data, ss2 = summary_table(model, alpha=0.05)
     predict_mean_ci_low, predict_mean_ci_upp = data[:, 4:6].T
@@ -2821,5 +2827,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
 
