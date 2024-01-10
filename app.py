@@ -9,29 +9,19 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import warnings
-import sys
+#import sys
 import re
 import csv
-import math
+#import math
 import random
-import timeit
+#import timeit
 
-import urllib
+#import urllib
 import numpy as np
 import statsmodels.api as sm
-from scipy import stats
+#from scipy import stats
 from sklearn.preprocessing import PolynomialFeatures
 from statsmodels.stats.outliers_influence import summary_table
-
-#from uuid import uuid4
-#from dash.long_callback import DiskcacheLongCallbackManager
-#import diskcache
-
-#launch_uid = uuid4()
-#cache = diskcache.Cache("./cache")
-#long_callback_manager = DiskcacheLongCallbackManager(
-#    cache, cache_by=[lambda: launch_uid], expire=60,
-#)
 
 px.set_mapbox_access_token('pk.eyJ1Ijoia2xvY2V5IiwiYSI6ImNrYm9uaWhoYjI0ZDcycW56ZWExODRmYzcifQ.Mb27BYst186G4r5fjju6Pw')
 
@@ -144,12 +134,26 @@ def description_card1():
            dcc.Markdown("Each year, thousands of hospitals submit cost reports to " +
                         "the federal government. Analyzing these publicly available " +
                         "data can mean tackling large, complicated files with expensive software " +
-                        "or paying someone else to do it."),
+                        "or paying someone else to do it.",
+                        
+                        style={
+                            'font-size': '100%',
+                            },
+                        ),
            
            dcc.Markdown("This app allows you to analyze and download 2,600+ cost related " +
-                        "variables for 6,900+ hospitals, for each year since 2010. Get the source code " +
-                        "for this app [here] (https://github.com/Rush-Quality-Analytics/hcris-app) and the cost reports " +
-                        "for all hospitals [here] (https://github.com/Rush-Quality-Analytics/HCRIS-databuilder/tree/master/provider_data)."),
+                        "variables for 6,900+ hospitals, for each year since 2010. Get the " +
+                        "source code for this app " +
+                        "[here] (https://github.com/Rush-Quality-Analytics/hcris-app) and the " +
+                        "cost reports for all hospitals " +
+                        "[here] (https://github.com/Rush-Quality-Analytics/HCRIS-databuilder/tree/master/provider_data).",
+                        
+                        style={
+                            'font-size': '100%',
+                            },
+                        
+                        ),
+           
         ],
     )
 
