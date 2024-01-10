@@ -213,7 +213,7 @@ def generate_control_card1():
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
-                               'font-size': 12,
+                           'font-size': 12,
                            'display': 'inline-block',
                            'margin-left': '10%',
                            },
@@ -256,7 +256,7 @@ def generate_control_card1():
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
-                               'font-size': 12,
+                           'font-size': 12,
                            'display': 'inline-block',
                            'margin-left': '10%',
                            },
@@ -270,7 +270,6 @@ def generate_control_card1():
                                     multi=True,
                                     value=sorted(list(set(ctypes))),
                                     style={
-                                        #'width': '320px', 
                                         'font-size': 16,
                                         },
                                     ),
@@ -300,14 +299,15 @@ def generate_control_card1():
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
-                               'font-size': 12,
+                           'font-size': 12,
                            'display': 'inline-block',
                            'margin-left': '10%',
                            },
                 ),
             dbc.Modal(
                 [dbc.ModalBody([
-                                html.P("Select a set of US states and/or territories",style={'font-size': 16,}),
+                                html.P("Select a set of US states and/or territories", 
+                                       style={'font-size': 16,}),
                                 dcc.Dropdown(
                                     id="states-select1",
                                     options=[{"label": i, "value": i} for i in sorted(list(set(states)))],
@@ -342,7 +342,7 @@ def generate_control_card1():
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
-                               'font-size': 12,
+                           'font-size': 12,
                            'display': 'inline-block',
                            'margin-left': '10%',
                            },
@@ -382,7 +382,7 @@ def generate_control_card1():
             
             html.Hr(),
             html.H5("2. Load cost reports",
-                   style={'display': 'inline-block', 'width': '207px'},),
+                   style={'display': 'inline-block', 'width': '65%'},),
             
             html.I(className="fas fa-question-circle fa-lg", id="target2",
                 style={'display': 'inline-block', 'width': '10%', 'color':'#99ccff'},
@@ -397,7 +397,7 @@ def generate_control_card1():
                        style={
                            "background-color": "#2a8cff",
                            'width': '80%',
-                               'font-size': 12,
+                           'font-size': 12,
                            'display': 'inline-block',
                            'margin-left': '10%',
                            },
@@ -453,98 +453,146 @@ def generate_control_card3():
             
             html.H5("Examine Relationships Between Features"),
             html.P("Select a category, feature, and scale for your x-variable. "),
-            dcc.Dropdown(
-                id="categories-select2",
-                options=[{"label": i, "value": i} for i in report_categories],
-                value=None,
-                optionHeight=65,
-                style={
-                    'width': '400px', 
-                    'font-size': 13,
-                    'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-bottom': '0px',
-                    }
-            ),
-            dcc.Dropdown(
-                id="categories-select22",
-                options=[{"label": i, "value": i} for i in report_categories],
-                value=None,
-                optionHeight=65,
-                style={
-                    'width': '400px', 
-                    'font-size': 13,
-                    'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-left': '10px',
-                    }
-            ),
             
-            dcc.Dropdown(
-                    id='x_transform',
-                    options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
-                    multi=False, value='linear',
-                    style={'width': '120px', 
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id="categories-select2",
+                        options=[{"label": i, "value": i} for i in report_categories],
+                        value=None,
+                        optionHeight=65,
+                        style={
+                            'width': '100%', 
                             'font-size': 13,
                             'display': 'inline-block',
                             'border-radius': '15px',
                             'padding': '0px',
-                            'margin-left': '10px',
-                         },
+                            'margin-bottom': '0px',
+                            }
                     ),
+                    ],
+                style={
+                    'width': '35%', 
+                    'display': 'inline-block',
+                    }
+                ),
+            
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id="categories-select22",
+                        options=[{"label": i, "value": i} for i in report_categories],
+                        value=None,
+                        optionHeight=65,
+                        style={
+                            'width': '100%', 
+                            'font-size': 13,
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            'padding': '0px',
+                            }
+                    ),
+                    ],
+                style={
+                    'width': '35%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    }
+                ),
+            
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                            id='x_transform',
+                            options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
+                            multi=False, value='linear',
+                            style={'width': '100%', 
+                                    'font-size': 13,
+                                    'display': 'inline-block',
+                                    'border-radius': '15px',
+                                    'padding': '0px',
+                                 },
+                            ),
+                    ],
+                style={
+                    'width': '10%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    }
+                ),
+            
             
             
             html.P("Select a category, feature, and scale for your y-variable. "),
-            dcc.Dropdown(
-                id="categories-select2-2",
-                options=[{"label": i, "value": i} for i in report_categories],
-                value=None,
-                optionHeight=65,
-                style={
-                    'width': '400px', 
-                    'font-size': 13,
-                    'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-bottom': '0px',
-                    }
-            ),
-            dcc.Dropdown(
-                id="categories-select22-2",
-                options=[{"label": i, "value": i} for i in report_categories],
-                value=None,
-                optionHeight=65,
-                style={
-                    'width': '400px', 
-                    'font-size': 13,
-                    'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-left': '10px',
-                    }
-            ),
-            
-            dcc.Dropdown(
-                    id='y_transform',
-                    options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
-                    multi=False, value='linear',
-                    style={'width': '120px', 
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id="categories-select2-2",
+                        options=[{"label": i, "value": i} for i in report_categories],
+                        value=None,
+                        optionHeight=65,
+                        style={
+                            'width': '100%', 
                             'font-size': 13,
                             'display': 'inline-block',
                             'border-radius': '15px',
                             'padding': '0px',
-                            'margin-left': '10px',
-                         },
+                            'margin-bottom': '0px',
+                            }
                     ),
+                    ],
+                style={
+                    'width': '35%', 
+                    'display': 'inline-block',
+                    }
+                ),
+            
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id="categories-select22-2",
+                        options=[{"label": i, "value": i} for i in report_categories],
+                        value=None,
+                        optionHeight=65,
+                        style={
+                            'width': '100%', 
+                            'font-size': 13,
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            'padding': '0px',
+                            }
+                    ),
+                    ],
+                style={
+                    'width': '35%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    }
+                ),
+            
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                            id='y_transform',
+                            options=[{"label": i, "value": i} for i in ['linear', 'log10', 'square root']],
+                            multi=False, value='linear',
+                            style={'width': '100%', 
+                                    'font-size': 13,
+                                    'display': 'inline-block',
+                                    'border-radius': '15px',
+                                    'padding': '0px',
+                                 },
+                            ),
+                    ],
+                style={
+                    'width': '10%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    }
+                ),
             
             
         ],
-        style={
-            'font-size': "100%",
-            'display': 'inline-block',
-            },
     )
 
 
@@ -560,69 +608,97 @@ def generate_control_card4():
             html.Hr(),
             html.Br(),
             
-            dcc.Dropdown(
-                id='year-1',
-                value='All Federal Fiscal Years',
-                placeholder='Select a federal fiscal year',
-                options=[{"label": i, "value": i} for i in ['All Federal Fiscal Years', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021']],
-                multi=False,
+            html.Div(
+                children=[
+                dcc.Dropdown(
+                    id='year-1',
+                    value='All Federal Fiscal Years',
+                    placeholder='Select a federal fiscal year',
+                    options=[{"label": i, "value": i} for i in ['All Federal Fiscal Years', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021']],
+                    multi=False,
+                    style={
+                        'width': '100%', 
+                        'font-size': 13,
+                        'display': 'inline-block',
+                        'border-radius': '15px',
+                        'padding': '0px',
+                        },
+                    ),
+                ],
                 style={
-                    'width': '250px', 
-                    'font-size': 13,
+                    'width': '20%', 
                     'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-left': '0px',
-                    }
-            ),
-            
-            dcc.Dropdown(
-                id='trendline-1',
-                value=None,
-                placeholder='Select a model to fit (optional)',
+                    },
+                ),
+                
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id='trendline-1',
+                        value=None,
+                        placeholder='Select a model to fit (optional)',
+                        style={
+                            'width': '100%', 
+                            'font-size': 13,
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            'padding': '0px',
+                            
+                            },
+                        ),
+                    ],
                 style={
-                    'width': '250px', 
-                    'font-size': 13,
+                    'width': '20%', 
                     'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-left': '10px',
-                    }
-            ),
-            dcc.Dropdown(
-                id='hospital-select1c',
-                options=[{"label": i, "value": i} for i in []],
-                value=None,
-                placeholder='Select a focal hospital (optional)',
-                optionHeight=75,
+                    'margin-left': '1%',
+                    },
+                ),
+                
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id='hospital-select1c',
+                        options=[{"label": i, "value": i} for i in []],
+                        value=None,
+                        placeholder='Select a focal hospital (optional)',
+                        optionHeight=75,
+                        style={
+                            'width': '100%', 
+                            'font-size': 13,
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            'padding': '0px',
+                            },
+                        ),
+                    ],
                 style={
-                    'width': '350px', 
-                    'font-size': 13,
+                    'width': '20%', 
                     'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-left': '15px',
-                    }
-            ),
+                    'margin-left': '1%',
+                    },
+                ),
             
-            
-            dbc.Button("Run", id="run-btn2",
-                            style={'width': '250px', 
-                                    'font-size': 13,
-                                    "background-color": "#2a8cff",
-                                    'display': 'inline-block',
-                                    'border-radius': '24px',
-                                    'padding': '0px',
-                                    'margin-left': '35px',
-                                    'verticalAlign':'top',
-                                },
-                            ),
+            html.Div(
+                children=[
+                    dbc.Button("Run", id="run-btn2",
+                               style={'width': '100%', 
+                                      'font-size': 13,
+                                      'background-color': '#2a8cff',
+                                      'display': 'inline-block',
+                                      'border-radius': '24px',
+                                      'padding': '0px',
+                                      },
+                               ),
+                    ],
+                style={
+                    'width': '15%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    'verticalAlign':'top',
+                    },
+                ),
             
         ],
-        style={
-            'font-size': "100%",
-            'display': 'inline-block',
-            },
     )
 
 
@@ -638,72 +714,107 @@ def generate_control_card5():
             
             html.H5("Build Rate Variables And Examine Them Over Time"),
             html.P("Select a category and feature for your numerator."),
-            dcc.Dropdown(
-                id="categories-select3",
-                options=[{"label": i, "value": i} for i in report_categories],
-                value=None,
-                optionHeight=65,
-                style={
-                    'width': '400px', 
-                    'font-size': 13,
-                    'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-bottom': '0px',
-                    }
-            ),
-            dcc.Dropdown(
-                id="categories-select33",
-                options=[{"label": i, "value": i} for i in report_categories],
-                value=None,
-                optionHeight=65,
-                style={
-                    'width': '400px', 
-                    'font-size': 13,
-                    'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-left': '10px',
-                    }
-            ),
             
+            html.Div(
+                children=[
+                dcc.Dropdown(
+                    id="categories-select3",
+                    options=[{"label": i, "value": i} for i in report_categories],
+                    value=None,
+                    placeholder='Select a category',
+                    optionHeight=65,
+                    style={
+                        'width': '100%', 
+                        'font-size': 13,
+                        'display': 'inline-block',
+                        'border-radius': '15px',
+                        'padding': '0px',
+                        },
+                    ),
+                ],
+                style={
+                    'width': '40%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    },
+                ),
+            
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id="categories-select33",
+                        options=[{"label": i, "value": i} for i in report_categories],
+                        value=None,
+                        placeholder='Select a feature',
+                        optionHeight=65,
+                        style={
+                            'width': '100%', 
+                            'font-size': 13,
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            'padding': '0px',
+                            },
+                        ),
+                    ],
+                style={
+                    'width': '40%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    },
+                ),
+                    
             
             html.P("Select a category and feature for your denominator."),
-            dcc.Dropdown(
-                id="categories-select3-2",
-                options=[{"label": i, "value": i} for i in report_categories],
-                value=None,
-                optionHeight=65,
-                style={
-                    'width': '400px', 
-                    'font-size': 13,
-                    'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-bottom': '0px',
-                    }
-            ),
-            dcc.Dropdown(
-                id="categories-select33-2",
-                options=[{"label": i, "value": i} for i in report_categories],
-                value=None,
-                optionHeight=65,
-                style={
-                    'width': '400px', 
-                    'font-size': 13,
-                    'display': 'inline-block',
-                    'border-radius': '15px',
-                    'padding': '0px',
-                    'margin-left': '10px',
-                    }
-            ),
             
-        ],
-        style={
-            'font-size': "100%",
-            'display': 'inline-block',
-            },
-    )
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id="categories-select3-2",
+                        options=[{"label": i, "value": i} for i in report_categories],
+                        value=None,
+                        optionHeight=65,
+                        placeholder='Select a category',
+                        style={
+                            'width': '100%', 
+                            'font-size': 13,
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            'padding': '0px',
+                            },
+                        ),
+                    ],
+                style={
+                    'width': '40%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    },
+                ),
+            
+            html.Div(
+                children=[
+                    dcc.Dropdown(
+                        id="categories-select33-2",
+                        options=[{"label": i, "value": i} for i in report_categories],
+                        value=None,
+                        optionHeight=65,
+                        placeholder='Select a feature',
+                        style={
+                            'width': '100%', 
+                            'font-size': 13,
+                            'display': 'inline-block',
+                            'border-radius': '15px',
+                            'padding': '0px',
+                           },
+                        ),
+                    ],
+                style={
+                    'width': '40%', 
+                    'display': 'inline-block',
+                    'margin-left': '1%',
+                    },
+                ),
+            ],
+        )
 
 
 #########################################################################################
@@ -752,20 +863,34 @@ app.layout = html.Div([
                       dbc.Modal(
                                   [dbc.ModalBody([
                                                   html.P("This table can be sorted and filtered using any column or combination of columns. Just click the arrows or start typing in a filter cell. Click on the pink 'AA' to select whether you prefer case sensitive filtering. ",
-                                                         style={'font-size': 16,}),
+                                                         style={'font-size': 16,
+                                                                },
+                                                         ),
                                                   html.Div(id='crosswalk_table'),
                                                   html.Br(), 
-                                                  ]),
-                                                  dbc.ModalFooter(
-                                                  dbc.Button("Close", id="close-centered5", className="ml-auto", 
-                                                             style={'font-size': 12,})
-                                                  ),
-                                          ],
+                                                  ],
+                                      ),
+                                      dbc.ModalFooter(
+                                          dbc.Button("Close", id="close-centered5", 
+                                                     className="ml-auto", 
+                                                     style={'font-size': 13,
+                                                            'width': '30%',
+                                                            },
+                                                     ),
+                                      style={
+                                          "background-color": "#A0A0A0",
+                                          "display": "flex",
+                                          "justify-content": "center",
+                                          "align-items": "center",
+                                          },
+                                      ),
+                                      ],
                                   id="modal-centered5",
                                   is_open=False,
                                   centered=True,
                                   autoFocus=True,
-                                  size="xl",
+                                  #size="xl",
+                                  fullscreen=True,
                                   keyboard=True,
                                   fade=True,
                                   backdrop=True,
@@ -777,7 +902,6 @@ app.layout = html.Div([
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
                                  'padding': '10px',
-                                 'margin-bottom': '10px',
             },
         ),
     
@@ -806,7 +930,7 @@ app.layout = html.Div([
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
                                  'padding': '10px',
-                                 'margin-bottom': '10px',
+                                 'margin-bottom': '1%',
                             },
                 ),
                 
@@ -815,60 +939,94 @@ app.layout = html.Div([
                     id="cost_report1",
                     children=[
                         html.H5("Examine Cost Report Features Across Fiscal Years"),
-                        dcc.Dropdown(
-                            id="categories-select1",
-                            options=[{"label": i, "value": i} for i in report_categories],
-                            value=None,
-                            placeholder='Select a category',
-                            optionHeight=75,
-                            style={
-                                'width': '350px', 
-                                'font-size': 13,
-                                'display': 'inline-block',
-                                'border-radius': '15px',
-                                'padding': '0px',
-                                'margin-bottom': '0px',
-                                }
-                        ),
-                        dcc.Dropdown(
-                            id="categories-select11",
-                            options=[{"label": i, "value": i} for i in report_categories],
-                            value=None,
-                            placeholder='Select a feature',
-                            optionHeight=75,
-                            style={
-                                'width': '350px', 
-                                'font-size': 13,
-                                'display': 'inline-block',
-                                'border-radius': '15px',
-                                'padding': '0px',
-                                'margin-left': '10px',
-                                }
-                        ),
-                        dcc.Dropdown(
-                            id='hospital-select1b',
-                            options=[{"label": i, "value": i} for i in []],
-                            value=None,
-                            placeholder='Select a focal hospital (optional)',
-                            optionHeight=75,
-                            style={
-                                'width': '350px', 
-                                'font-size': 13,
-                                'display': 'inline-block',
-                                'border-radius': '15px',
-                                'padding': '0px',
-                                #'margin-left': '15px',
-                                }
-                        ),
                         
-                        html.Button("Run", id="run-btn1",
-                            style={'width': '350px', 
-                                    'font-size': 12,
-                                    'display': 'inline-block',
-                                    'border-radius': '15px',
-                                    'padding': '0px',
-                                    'margin-left': '20px',
-                                    'verticalAlign':'top',
+                        html.Div(
+                            children=[
+                                dcc.Dropdown(
+                                    id="categories-select1",
+                                    options=[{"label": i, "value": i} for i in report_categories],
+                                    value=None,
+                                    placeholder='Select a category',
+                                    optionHeight=75,
+                                    style={
+                                        'width': '100%', 
+                                        'font-size': 13,
+                                        'display': 'inline-block',
+                                        'border-radius': '15px',
+                                        'padding': '0px',
+                                        },
+                                    ),
+                                ],
+                            style={
+                                'width': '45%', 
+                                'display': 'inline-block',
+                                },
+                            ),
+                        
+                        html.Div(
+                            children=[
+                                dcc.Dropdown(
+                                    id="categories-select11",
+                                    options=[{"label": i, "value": i} for i in report_categories],
+                                    value=None,
+                                    placeholder='Select a feature',
+                                    optionHeight=75,
+                                    style={
+                                        'width': '100%', 
+                                        'font-size': 13,
+                                        'display': 'inline-block',
+                                        'border-radius': '15px',
+                                        'padding': '0px',
+                                        },
+                                    ),
+                                ],
+                            style={
+                                'width': '45%', 
+                                'display': 'inline-block',
+                                'margin-left': '1%',
+                                },
+                            ),
+                            
+                        html.Div(
+                            children=[  
+                                dcc.Dropdown(
+                                    id='hospital-select1b',
+                                    options=[{"label": i, "value": i} for i in []],
+                                    value=None,
+                                    placeholder='Select a focal hospital (optional)',
+                                    optionHeight=75,
+                                    style={
+                                        'width': '100%', 
+                                        'font-size': 13,
+                                        'display': 'inline-block',
+                                        'border-radius': '15px',
+                                        'padding': '0px',
+                                        },
+                                    ),
+                                ],
+                            style={
+                                'width': '45%', 
+                                'display': 'inline-block',
+                                },
+                            ),
+                                
+                        html.Div(
+                            children=[
+                                dbc.Button("Run", id="run-btn1",
+                                    style={'width': '100%', 
+                                           'font-size': 13,
+                                           'background-color': '#2a8cff',
+                                           'display': 'inline-block',
+                                           'border-radius': '15px',
+                                           'padding': '0px',
+                                        },
+                                    ),
+                                ],
+                            style={
+                                'width': '20%', 
+                                'display': 'inline-block',
+                                'margin-left': '1%',
+                                'verticalAlign':'top',
                                 },
                             ),
                         
@@ -880,7 +1038,6 @@ app.layout = html.Div([
                                  'box-shadow': '1px 1px 1px grey',
                                  'background-color': '#f0f0f0',
                                  'padding': '10px',
-                                 'margin-bottom': '10px',
                             },
                 ),
                 html.Br(),
@@ -908,8 +1065,7 @@ app.layout = html.Div([
                         'box-shadow': '1px 1px 1px grey',
                         'background-color': '#f0f0f0',
                         'padding': '10px',
-                        'margin-bottom': '10px',
-                        'height': '810px',
+                        'margin-bottom': '1%',
                         },
                 ),
                 html.Br(),
@@ -921,35 +1077,51 @@ app.layout = html.Div([
                         generate_control_card5(),
                         dcc.Graph(id="cost_report_plot3"),
                         html.Hr(),
-                        dbc.Button("Run", id="run-btn3",
-                            style={'width': '250px', 
-                                    'font-size': 12,
-                                    "background-color": "#2a8cff",
-                                    'display': 'inline-block',
-                                    'border-radius': '15px',
-                                    'padding': '0px',
-                                    'margin-left': '0px',
-                                    'verticalAlign':'top',
+                        
+                        html.Div(
+                            children=[
+                                dcc.Dropdown(
+                                    id='hospital-select1d',
+                                    options=[{"label": i, "value": i} for i in []],
+                                    value=None,
+                                    placeholder='Select a focal hospital (optional)',
+                                    optionHeight=75,
+                                    style={
+                                        'width': '100%', 
+                                        'font-size': 13,
+                                        'display': 'inline-block',
+                                        'border-radius': '15px',
+                                        'padding': '0px',
+                                        },
+                                    ),
+                                ],
+                            style={
+                                'width': '30%', 
+                                'display': 'inline-block',
                                 },
                             ),
-
                         
-                        dcc.Dropdown(
-                            id='hospital-select1d',
-                            options=[{"label": i, "value": i} for i in []],
-                            value=None,
-                            placeholder='Select a focal hospital (optional)',
-                            optionHeight=75,
+                        html.Div(
+                            children=[
+                                dbc.Button("Run", id="run-btn3",
+                                    style={'width': '100%', 
+                                           'font-size': 13,
+                                           'background-color': '#2a8cff',
+                                           'display': 'inline-block',
+                                           'border-radius': '15px',
+                                           'padding': '0px',
+                                        },
+                                    ),
+                                ],
                             style={
-                                'width': '250px', 
-                                'font-size': 13,
+                                'width': '15%', 
                                 'display': 'inline-block',
-                                'border-radius': '15px',
-                                'padding': '0px',
-                                'margin-left': '10px',
-                                }
-                        ),
+                                'margin-left': '1%',
+                                'verticalAlign':'top',
+                                },
+                            ),
                         ],
+                    
                     style={
                         'width': '105%',
                         'display': 'inline-block',
@@ -957,8 +1129,7 @@ app.layout = html.Div([
                         'box-shadow': '1px 1px 1px grey',
                         'background-color': '#f0f0f0',
                         'padding': '10px',
-                        'margin-bottom': '10px',
-                        'height': '780px',
+                        'margin-bottom': '1%',
                         },
                 ),
                 ],
@@ -1033,15 +1204,9 @@ def toggle_modal5(n1, n2, is_open):
         sort_mode="multi",
         filter_action="native",
         
-        style_table={'height': '500px', 
-                     'overflowY': 'auto',
+        style_table={'overflowY': 'auto',
                      'horizontalAligment':'center',
                      },
-        style_cell={'padding':'5px',
-                    'minwidth':'160',
-                    'width':'160',
-                    'maxwidth':'160',
-                    },
     )
     
     if n1 or n2:
