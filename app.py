@@ -380,7 +380,6 @@ def generate_control_card1():
             html.Br(),
             html.Br(),
             
-            html.Hr(),
             html.H5("2. Load cost reports",
                    style={'display': 'inline-block', 
                           'margin-right': '3%',
@@ -411,7 +410,7 @@ def generate_control_card1():
             
             html.Br(),
             html.Br(),
-            html.Hr(),
+            
             dcc.Loading(
                 id="loading-fig1",
                 type="default",
@@ -611,7 +610,6 @@ def generate_control_card4():
     return html.Div(
         id="control-card4",
         children=[
-            html.Hr(),
             html.Br(),
             
             html.Div(
@@ -923,7 +921,6 @@ app.layout = html.Div([
                     id="map1",
                     children=[
                         html.B("Map of selected hospitals"),
-                        html.Hr(),
                         
                         dcc.Loading(
                             id="loading-map1",
@@ -1036,7 +1033,6 @@ app.layout = html.Div([
                                 },
                             ),
                         
-                        html.Hr(),
                         dcc.Graph(id="cost_report_plot1"),
                     ],
                     style={'width': '107%', 'display': 'inline-block',
@@ -1082,7 +1078,6 @@ app.layout = html.Div([
                     children=[
                         generate_control_card5(),
                         dcc.Graph(id="cost_report_plot3"),
-                        html.Hr(),
                         
                         html.Div(
                             children=[
