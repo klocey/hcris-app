@@ -1430,7 +1430,7 @@ def update_df1_tab1(urls, df):
         #print("update_df1_tab1 executed in "+str(ex_time))
         
         #num_h = len(df["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"].unique())
-        num_IDs = len(df[('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDENTIFICATION INFORMATION', 'Hospital Provider Number (PRVDR_NUM)')].unique())
+        num_IDs = len(df["('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDENTIFICATION INFORMATION', 'Hospital Provider Number (PRVDR_NUM)')"].unique())
         
         return df.to_json(), "Loaded " + str(num_IDs) + " hospitals"
 
