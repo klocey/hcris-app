@@ -621,7 +621,7 @@ def generate_control_card4():
                 dcc.Dropdown(
                     id='year-1',
                     value='All Federal Fiscal Years',
-                    placeholder='Select a federal fiscal year',
+                    placeholder='Select a beginning federal fiscal year',
                     options=[{"label": i, "value": i} for i in ['All Federal Fiscal Years', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021']],
                     multi=False,
                     style={
@@ -1894,7 +1894,7 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
                 transition = {'duration': 500},
                 xaxis=dict(
                     title=dict(
-                        text="<b>Federal Fiscal Year</b>",
+                        text="<b>Beginning Federal Fiscal Year</b>",
                         font=dict(
                             family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                             " Helvetica, Arial, sans-serif",
@@ -2749,7 +2749,7 @@ def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal
             transition = {'duration': 500},
             xaxis=dict(
                 title=dict(
-                    text="<b>Federal Fiscal Year</b>",
+                    text="<b>Beginning Federal Fiscal Year</b>",
                     font=dict(
                         family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                         " Helvetica, Arial, sans-serif",
@@ -2826,5 +2826,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = True) # modified to run on linux server
+    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
 
