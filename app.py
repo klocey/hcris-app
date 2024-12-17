@@ -67,7 +67,7 @@ crosswalk_df.rename(columns={"TYPE": "Category",
 HOSPITALS = gendat_df[('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')].tolist()
 CMS_NUMS = len(gendat_df[('PRVDR_NUM', 'Hospital Provider Number', 'HOSPITAL IDENTIFICATION INFORMATION', 'Hospital Provider Number (PRVDR_NUM)')].unique()) 
 # 
-beds = gendat_df[('S3_1_C2_27', 'Total Facility', 'NUMBER OF BEDS', 'Total Facility (S3_1_C2_27)')].tolist()
+beds = gendat_df[('S3_1_C2_27', 'Beds Total Facility', 'NUMBER OF BEDS', 'Beds Total Facility (S3_1_C2_27)')].tolist()
 
 states = gendat_df[('S2_1_C2_2', 'Hospital State', '', 'Hospital State (S2_1_C2_2)')].tolist()
 htypes = gendat_df[('Hospital type (modified)', 'Hospital type (modified)', 'Hospital type (modified)', 'Hospital type (modified)')].tolist()
