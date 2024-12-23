@@ -621,7 +621,7 @@ def generate_control_card4():
                 dcc.Dropdown(
                     id='year-1',
                     value='All Federal Fiscal Years',
-                    placeholder='Select a beginning federal fiscal year',
+                    placeholder='Select a beginning year',
                     options=[{"label": i, "value": i} for i in ['All Federal Fiscal Years', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021']],
                     multi=False,
                     style={
@@ -1822,10 +1822,10 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
             
         sub_df = df[df[x] == hospital]
         
-        sub_df.sort_values(by=["('Beginning FFY', 'Beginning FFY', 'Beginning FFY', 'Beginning FFY')"],
+        sub_df.sort_values(by=["('Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr')"],
                                 ascending=True, inplace=True)
            
-        dates = sub_df["('Beginning FFY', 'Beginning FFY', 'Beginning FFY', 'Beginning FFY')"]
+        dates = sub_df["('Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr')"]
          
         str_ = var1 + "', '" + var2 + "')"
         column = [col for col in sub_df.columns if col.endswith(str_)]  
@@ -1894,7 +1894,7 @@ def update_cost_report_plot1(n_clicks, df, var1, var2, focal_h):
                 transition = {'duration': 500},
                 xaxis=dict(
                     title=dict(
-                        text="<b>Beginning Federal Fiscal Year</b>",
+                        text="<b>Cost Report Period, Start Year</b>",
                         font=dict(
                             family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                             " Helvetica, Arial, sans-serif",
@@ -1992,7 +1992,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
     if yr1 == 'All Federal Fiscal Years':
         pass
     else:
-        df = df[df["('Beginning FFY', 'Beginning FFY', 'Beginning FFY', 'Beginning FFY')"] == int(yr1)]
+        df = df[df["('Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr')"] == int(yr1)]
     
     fig_data = []
     
@@ -2043,7 +2043,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
         column2 = column2[0]
         y = tdf[column2].tolist()
         
-        dates = tdf["('Beginning FFY', 'Beginning FFY', 'Beginning FFY', 'Beginning FFY')"]
+        dates = tdf["('Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr')"]
         
         names = tdf["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"]
         
@@ -2181,7 +2181,7 @@ def update_cost_report_plot2(n_clicks, xvar1, xvar2, yvar1, yvar2, xscale, yscal
     column1 = [col for col in df.columns if col.endswith(str_1)]
     column2 = [col for col in df.columns if col.endswith(str_2)]
     
-    dates = df["('Beginning FFY', 'Beginning FFY', 'Beginning FFY', 'Beginning FFY')"].tolist()
+    dates = df["('Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr')"].tolist()
     
     column1 = column1[0]
     x = df[column1].tolist()
@@ -2702,7 +2702,7 @@ def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal
         name_var = "('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"
         tdf = df[df[name_var] == hospital]
         
-        date_var = "('Beginning FFY', 'Beginning FFY', 'Beginning FFY', 'Beginning FFY')"
+        date_var = "('Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr')"
         tdf.sort_values(by=date_var, inplace=True, ascending=True)
         
         column1 = [col for col in tdf.columns if col.endswith(numer)]
@@ -2714,7 +2714,7 @@ def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal
         tdf = tdf.filter(items=['y', date_var, name_var], axis=1)
         tdf.dropna(how='any', inplace=True)
         
-        dates = tdf["('Beginning FFY', 'Beginning FFY', 'Beginning FFY', 'Beginning FFY')"]
+        dates = tdf["('Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr', 'Report_Period_Begin_Yr')"]
         names = tdf["('Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num', 'Curated Name and Num')"]
         y = tdf['y']
         
@@ -2749,7 +2749,7 @@ def update_cost_report_plot3(n_clicks, df, numer1, numer2, denom1, denom2, focal
             transition = {'duration': 500},
             xaxis=dict(
                 title=dict(
-                    text="<b>Beginning Federal Fiscal Year</b>",
+                    text="<b>Cost Report Period, Start Year</b>",
                     font=dict(
                         family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
                         " Helvetica, Arial, sans-serif",
