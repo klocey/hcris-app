@@ -1073,15 +1073,15 @@ during fiscal year",S500000,01200,00100
 2552-10 WORKSHEET S-48,S-10 DATA,,NUMERIC,,S10_C1_5,,S100000,00500,00100
 2552-10 WORKSHEET S-49,S-10 DATA,,NUMERIC,,S10_C1_6,Medicaid charges,S100000,00600,00100
 2552-10 WORKSHEET S-50,S-10 DATA,,NUMERIC,,S10_C1_7,,S100000,00700,00100
-2552-10 WORKSHEET S-51,S-10 DATA,,NUMERIC,,S10_C1_8,,S100000,00800,00100
+2552-10 WORKSHEET S-51,S-10 DATA,,NUMERIC,,S10_C1_8,Medicaid Shortfall -- Costs minus net revenue (0 min),S100000,00800,00100
 2552-10 WORKSHEET S-52,S-10 DATA,,NUMERIC,,S10_C1_9,Net Revenue from stand-alone SCHIP,S100000,00900,00100
 2552-10 WORKSHEET S-53,S-10 DATA,,NUMERIC,,S10_C1_10,Stand-alone CHIP Charges (Gross Revenue),S100000,01000,00100
-2552-10 WORKSHEET S-54,S-10 DATA,,NUMERIC,,S10_C1_11,Stand-alone CHIP cost,S100000,01100,00100
-2552-10 WORKSHEET S-55,S-10 DATA,,NUMERIC,,S10_C1_12,Stand-alone CHIP -- Costs minus net revenue (0 min),S100000,01200,00100
+2552-10 WORKSHEET S-54,S-10 DATA,,NUMERIC,,S10_C1_11,Stand-alone CHIP Cost,S100000,01100,00100
+2552-10 WORKSHEET S-55,S-10 DATA,,NUMERIC,,S10_C1_12,Stand-alone CHIP Shortfall -- Costs minus net revenue (0 min),S100000,01200,00100
 2552-10 WORKSHEET S-56,S-10 DATA,,NUMERIC,,S10_C1_13,Net revenue from state/local govt indigent care (not Medicaid or CHIP),S100000,01300,00100
 2552-10 WORKSHEET S-57,S-10 DATA,,NUMERIC,,S10_C1_14,Total charges to state or local government programs for indigent care (not Medicaid or CHIP),S100000,01400,00100
 2552-10 WORKSHEET S-58,S-10 DATA,,NUMERIC,,S10_C1_15,Total costs for patients covered by a state or local government program,S100000,01500,00100
-2552-10 WORKSHEET S-59,S-10 DATA,,NUMERIC,,S10_C1_16,State or local govt (not Medicaid or CHIP) -- Costs minus net revenue (0 min),S100000,01600,00100
+2552-10 WORKSHEET S-59,S-10 DATA,,NUMERIC,,S10_C1_16,State or local govt (not Medicaid or CHIP) Shortfall -- Costs minus net revenue (0 min),S100000,01600,00100
 2552-10 WORKSHEET S-60,S-10 DATA,,NUMERIC,,S10_C1_17,Private grants or donations or endowment income restricted to funding charity care,S100000,01700,00100
 2552-10 WORKSHEET S-61,S-10 DATA,,NUMERIC,,S10_C1_18,Government grants or appropriations or transfers for support of hospital operations,S100000,01800,00100
 2552-10 WORKSHEET S-62,S-10 DATA,,NUMERIC,,S10_C1_19,Total unreimbursed cost for Medicaid and CHIP and state and local indigent care programs,S100000,01900,00100
