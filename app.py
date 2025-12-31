@@ -2826,5 +2826,5 @@ def update_output15(value):
 
 # Run the server
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', debug = False) # modified to run on linux server
+    app.run(host='0.0.0.0', debug = False) # modified to run on linux server
 
